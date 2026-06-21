@@ -8,9 +8,16 @@
 
   /* ---------------------------------------------- Sticky header on scroll */
   var header = document.getElementById('header');
+  var hero = document.querySelector('.hero');
   function onScroll() {
-    if (window.scrollY > 12) header.classList.add('scrolled');
+    var y = window.scrollY;
+    if (y > 12) header.classList.add('scrolled');
     else header.classList.remove('scrolled');
+    // Hero füllt am Anfang den ganzen Bildschirm und schrumpft beim Scrollen
+    if (hero) {
+      if (y > 12) hero.classList.add('is-collapsed');
+      else hero.classList.remove('is-collapsed');
+    }
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
