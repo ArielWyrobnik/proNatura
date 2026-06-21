@@ -58,7 +58,10 @@ Tech-Stack bewusst **ohne Build-Schritt** (reines HTML/CSS/JS), weil:
 
 ```
 /
-├── index.html          # Startseite (Hero, Über uns, Produkte, Nachhaltigkeit, Qualität, Kontakt)
+├── index.html          # Startseite (Hero mit Produkt-Bühne, Produkte, Über uns, Ablauf, Nachhaltigkeit, Kontakt)
+├── lactrase.html       # Produkt-Detailseite Lactrase®
+├── fructaid.html       # Produkt-Detailseite Fructaid®
+├── oligase.html        # Produkt-Detailseite Oligase® 600
 ├── impressum.html      # Pflichtangaben (DE) – Platzhalter prüfen!
 ├── datenschutz.html    # DSGVO-Datenschutzerklärung – Platzhalter prüfen!
 ├── css/styles.css      # Komplettes Designsystem (Tokens, Komponenten, Responsive)
@@ -72,10 +75,16 @@ Tech-Stack bewusst **ohne Build-Schritt** (reines HTML/CSS/JS), weil:
 └── CLAUDE.md           # diese Datei
 ```
 
-**Designsprache:** Petrol/Teal-Palette der Original-Website (Primär `#0087A2`, dunkel
-`#0D4554`) mit frischem Grün als Akzent, auf weißem Hintergrund. Display-Serif (Fraunces)
-+ klare Sans (Plus Jakarta Sans via Google Fonts), sanfte Scroll-Animationen, responsives
-Layout, Glas-Navigation beim Scrollen. Produktkarten zeigen die **echten Packshots**.
+**Designsprache (Stand: neutral redesign):** **Bewusst neutrale Palette** – Anthrazit
+(`#1B1E22`) + Grautöne auf Weiß, KEINE durchgehende Markenfarbe. Buttons/Links sind
+anthrazitfarben. Farbe kommt ausschließlich von den **echten Produktfotos** und ihren
+dezenten Produkt-Akzenten (Lactrase blau, Fructaid grün, Oligase dunkelgrün) – nur auf der
+jeweiligen Produktkarte/-seite, nicht global. Display-Serif (Fraunces) + Sans (Plus Jakarta
+Sans). Der Hero zeigt die drei Packshots als „Produkt-Bühne" (kein abstraktes Blatt mehr).
+Produkte stehen im Fokus, jedes Präparat hat eine eigene Detailseite.
+
+> ⚠️ Nutzer-Vorgabe: **neutral halten, keine einzelne Farbe (z.B. Grün) die sich durch die
+> ganze Seite zieht. Professionell wirken, nicht „nach KI".** Kein Blatt/abstrakte Deko.
 
 ---
 

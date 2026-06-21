@@ -5,29 +5,29 @@
 
 /* ----------------------------------------------------------------- Tokens */
 :root {
-  /* Brand palette — abgeleitet aus der Original-Website pro-natura-gmbh.de
-     (Primärton Petrol/Teal #0087A2, dunkles Petrol #0D4554, frisches Grün als Akzent).
-     Variablennamen aus historischen Gründen beibehalten. */
-  --forest-900: #06303b;  /* tiefstes Petrol – Footer / Values */
-  --forest-800: #0d4554;  /* dunkles Petrol – Überschriften */
-  --forest-700: #0087a2;  /* Primärton – Links, Buttons */
-  --forest-600: #0094b2;  /* helleres Petrol */
-  --green-500:  #4ea432;  /* frisches Grün – Akzent */
-  --green-400:  #6cbf45;  /* helles Grün */
-  --green-300:  #8ed3e2;  /* helles Petrol – Highlights */
-  --green-100:  #e3f3f8;  /* zartes Petrol – Soft-Flächen (Original) */
+  /* Neutrale Palette — bewusst zurückhaltend, KEINE durchgehende Markenfarbe.
+     Farbe kommt ausschließlich von den Produktfotos und ihren dezenten
+     Produkt-Akzenten. Variablennamen aus historischen Gründen beibehalten. */
+  --forest-900: #15181b;  /* tiefstes Anthrazit – Footer / dunkle Flächen */
+  --forest-800: #1b1e22;  /* fast Schwarz – Überschriften */
+  --forest-700: #24282c;  /* dunkles Anthrazit – Buttons / Links */
+  --forest-600: #3a4046;  /* sekundäres Grau */
+  --green-500:  #24282c;  /* (Akzent-Button) → neutrales Anthrazit */
+  --green-400:  #cdd2d6;  /* helle Linie */
+  --green-300:  #d7dbdf;  /* heller Marker / Highlight */
+  --green-100:  #f1f2f4;  /* sehr helle Fläche */
 
   /* Neutrals / surfaces */
   --bg:         #ffffff;
-  --bg-soft:    #f3f9fb;
+  --bg-soft:    #f6f7f8;
   --surface:    #ffffff;
-  --ink:        #2e2e2e;
-  --ink-soft:   #58595c;
-  --ink-faint:  #919191;
-  --line:       #dfeaee;
+  --ink:        #1b1e22;
+  --ink-soft:   #565b61;
+  --ink-faint:  #8a9097;
+  --line:       #e7e9ec;
 
   /* Accents */
-  --amber:      #a3d109;  /* Limegrün (Verpackungsakzent) */
+  --amber:      #b07b2c;  /* dezenter warmer Akzent (sparsam) */
   --gradient-hero: var(--bg);
 
   /* Type */
@@ -152,9 +152,8 @@ section { position: relative; }
   font-size: .85rem; font-weight: 600; color: var(--forest-700);
 }
 .hero__badge b { background: var(--forest-700); color: #fff; padding: .15rem .55rem; border-radius: var(--radius-pill); font-size: .76rem; }
-.hero h1 { font-size: clamp(2.5rem, 6vw, 4.4rem); letter-spacing: -.025em; }
-.hero h1 em { font-style: normal; color: var(--forest-600); position: relative; }
-.hero h1 em::after { content: ""; position: absolute; left: 0; right: 0; bottom: .08em; height: .14em; background: var(--green-300); border-radius: 4px; z-index: -1; }
+.hero h1 { font-size: clamp(2.5rem, 6vw, 4.4rem); letter-spacing: -.025em; color: var(--ink); }
+.hero h1 em { font-style: italic; color: var(--ink); }
 .hero__lead { font-size: 1.2rem; color: var(--ink-soft); margin-top: 1.5rem; max-width: 36ch; }
 .hero__cta { display: flex; flex-wrap: wrap; gap: .9rem; margin-top: 2.2rem; }
 .hero__meta { display: flex; gap: 2rem; margin-top: 2.6rem; flex-wrap: wrap; }
@@ -162,23 +161,20 @@ section { position: relative; }
 .hero__meta strong { display: block; font-family: var(--font-display); font-size: 1.9rem; color: var(--forest-800); line-height: 1; }
 .hero__meta span { font-size: .9rem; color: var(--ink-faint); }
 
-/* Hero visual */
-.hero__visual { position: relative; aspect-ratio: 1 / 1; }
-.hero__orb { position: absolute; inset: 8% ; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, var(--green-100) 55%, var(--green-300) 100%); box-shadow: var(--shadow-lg); }
-.hero__leaf { position: absolute; inset: 0; animation: float 7s ease-in-out infinite; }
-.hero__chip {
-  position: absolute; background: rgba(255,255,255,.92); border: 1px solid var(--line);
-  border-radius: 16px; padding: .7rem .95rem; box-shadow: var(--shadow-md);
-  display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: .9rem; color: var(--forest-800);
-  backdrop-filter: blur(6px);
+/* Hero visual — produktfokussierte „Bühne" mit den echten Packshots */
+.hero__visual { position: relative; }
+.hero__stage {
+  background: linear-gradient(180deg, #f7f8f9, #eef0f2);
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+  padding: clamp(1.6rem, 3vw, 2.6rem) clamp(1.2rem, 3vw, 2.4rem) 0;
+  box-shadow: var(--shadow-md); overflow: hidden;
 }
-.hero__chip i { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 10px; background: var(--green-100); color: var(--forest-700); font-style: normal; }
-.hero__chip span { font-weight: 500; font-size: .76rem; color: var(--ink-faint); display: block; }
-.hero__chip--1 { top: 12%; left: -4%; animation: float 6s ease-in-out infinite; }
-.hero__chip--2 { bottom: 16%; right: -6%; animation: float 6s ease-in-out infinite .8s; }
-.hero__chip--3 { bottom: 4%; left: 12%; animation: float 7s ease-in-out infinite .4s; }
-
-@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.hero__shelf { display: grid; grid-template-columns: 1fr 1.25fr 1fr; align-items: end; gap: clamp(.5rem, 1.5vw, 1.2rem); }
+.hero__shelf figure { margin: 0; text-align: center; }
+.hero__shelf img { width: 100%; height: auto; object-fit: contain; filter: drop-shadow(0 18px 26px rgba(20,23,26,.18)); }
+.hero__shelf figcaption { font-size: .8rem; font-weight: 600; color: var(--ink-soft); margin-top: .7rem; padding-bottom: 1.4rem; }
+.hero__shelf figcaption span { display: block; font-weight: 500; font-size: .74rem; color: var(--ink-faint); }
+.hero__shelf .is-lead img { filter: drop-shadow(0 24px 34px rgba(20,23,26,.24)); }
 
 /* ------------------------------------------------------------------ Marquee */
 .trust { border-block: 1px solid var(--line); background: var(--surface); }
@@ -213,12 +209,12 @@ section { position: relative; }
 .product-card__icon { width: 64px; height: 64px; border-radius: 18px; display: grid; place-items: center; background: var(--accent-soft, var(--green-100)); color: var(--accent, var(--forest-700)); margin-bottom: 1.3rem; }
 .product-card__icon svg { width: 32px; height: 32px; }
 .product-card__media {
-  border-radius: var(--radius); background: var(--accent-soft, var(--green-100));
-  display: grid; place-items: center; padding: 1.4rem; margin-bottom: 1.4rem; aspect-ratio: 4 / 3;
+  border-radius: var(--radius); background: var(--bg-soft); border: 1px solid var(--line);
+  display: grid; place-items: center; padding: 1.6rem; margin-bottom: 1.5rem; aspect-ratio: 1 / 1;
 }
-.product-card__media img { max-height: 100%; width: auto; object-fit: contain; filter: drop-shadow(0 14px 22px rgba(13,69,84,.16)); transition: transform .35s var(--ease); }
+.product-card__media img { max-height: 100%; max-width: 100%; width: auto; object-fit: contain; filter: drop-shadow(0 14px 22px rgba(20,23,26,.14)); transition: transform .35s var(--ease); }
 .product-card:hover .product-card__media img { transform: translateY(-4px) scale(1.03); }
-.product-card__tag { position: absolute; top: 1.5rem; right: 1.5rem; font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--accent, var(--forest-600)); background: var(--accent-soft, var(--green-100)); padding: .3rem .7rem; border-radius: var(--radius-pill); }
+.product-card__tag { position: absolute; top: 1.6rem; left: 1.6rem; z-index: 2; font-size: .68rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-soft); background: rgba(255,255,255,.92); border: 1px solid var(--line); padding: .32rem .7rem; border-radius: var(--radius-pill); }
 .product-card h3 { font-size: 1.5rem; }
 .product-card h3 sup { font-size: .6em; top: -.6em; }
 .product-card .sub { color: var(--accent, var(--forest-600)); font-weight: 700; font-size: .9rem; margin: .3rem 0 .9rem; }
@@ -244,7 +240,7 @@ section { position: relative; }
 
 /* ------------------------------------------------------- Sustainability/CTA */
 .values { background: linear-gradient(160deg, var(--forest-800), var(--forest-900)); color: #fff; border-radius: var(--radius-lg); overflow: hidden; position: relative; }
-.values::after { content: ""; position: absolute; right: -10%; top: -30%; width: 60%; aspect-ratio: 1; background: radial-gradient(circle, rgba(149,213,178,.28), transparent 70%); }
+.values::after { content: ""; position: absolute; right: -10%; top: -30%; width: 60%; aspect-ratio: 1; background: radial-gradient(circle, rgba(255,255,255,.12), transparent 70%); }
 .values__inner { position: relative; padding: clamp(2.5rem, 6vw, 4.5rem); display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem,5vw,4rem); align-items: center; }
 .values h2 { color: #fff; font-size: clamp(1.9rem, 4vw, 2.8rem); }
 .values .eyebrow { color: var(--green-300); }
@@ -288,10 +284,42 @@ section { position: relative; }
 .footer__logo img { height: 30px; width: auto; }
 .footer__col h5 { color: #fff; font-family: var(--font-sans); font-size: .82rem; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1rem; }
 .footer__col a { color: rgba(255,255,255,.72); display: block; padding: .3rem 0; font-size: .96rem; transition: color .2s, padding .2s; }
-.footer__col a:hover { color: var(--green-300); padding-left: 4px; }
+.footer__col a:hover { color: #fff; padding-left: 4px; }
 .footer__bottom { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center; margin-top: 3rem; padding-top: 1.6rem; border-top: 1px solid rgba(255,255,255,.12); font-size: .88rem; }
 .footer__bottom a { color: rgba(255,255,255,.72); }
-.footer__bottom a:hover { color: var(--green-300); }
+.footer__bottom a:hover { color: #fff; }
+
+/* ----------------------------------------------------- Product detail page */
+.pdp { padding-top: clamp(6.5rem, 12vw, 9rem); }
+.pdp.is-lactrase { --accent: #0a6aa1; }
+.pdp.is-fructaid { --accent: #5e9b1f; }
+.pdp.is-oligase  { --accent: #2f6b3a; }
+.pdp__back { display: inline-flex; align-items: center; gap: .45rem; font-weight: 600; font-size: .9rem; color: var(--ink-soft); margin-bottom: 1.6rem; }
+.pdp__back:hover { color: var(--ink); }
+.pdp__back svg { width: 16px; height: 16px; }
+.pdp__hero { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
+.pdp__media { position: relative; background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius-lg); aspect-ratio: 1 / 1; display: grid; place-items: center; padding: clamp(1.6rem, 4vw, 3.2rem); }
+.pdp__media::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; background: var(--accent); }
+.pdp__media img { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 22px 32px rgba(20,23,26,.18)); }
+.pdp__copy .eyebrow { color: var(--accent); }
+.pdp__copy .eyebrow::before { background: var(--accent); }
+.pdp__copy h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); margin-top: 1rem; }
+.pdp__copy h1 sup { font-size: .5em; top: -.7em; }
+.pdp__lead { color: var(--ink-soft); font-size: 1.15rem; margin-top: 1.1rem; }
+.pdp__facts { display: grid; gap: .75rem; margin: 1.8rem 0; }
+.pdp__facts li { display: flex; gap: .7rem; align-items: flex-start; color: var(--ink-soft); font-size: 1rem; }
+.pdp__facts svg { width: 20px; height: 20px; flex-shrink: 0; margin-top: .15rem; color: var(--accent); }
+.pdp__cta { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.8rem; }
+.pdp__cta .btn--primary { background: var(--accent); }
+.pdp__split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.prose h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); }
+.prose p { color: var(--ink-soft); margin-top: 1rem; }
+.spec-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: clamp(1.6rem, 3vw, 2.2rem); box-shadow: var(--shadow-sm); }
+.spec-card h3 { font-size: 1.15rem; margin-bottom: 1rem; }
+.spec-row { display: flex; justify-content: space-between; gap: 1rem; padding: .8rem 0; border-top: 1px solid var(--line); font-size: .98rem; }
+.spec-row:first-of-type { border-top: 0; }
+.spec-row span { color: var(--ink-faint); }
+.spec-row strong { color: var(--ink); font-weight: 600; text-align: right; }
 
 /* --------------------------------------------------------- Legal subpages */
 .legal { padding-top: clamp(7rem, 14vw, 10rem); }
