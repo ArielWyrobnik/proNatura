@@ -143,7 +143,8 @@ section { position: relative; }
 .nav__toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 /* -------------------------------------------------------------------- Hero */
-.hero { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; padding-top: clamp(6rem, 12vw, 8rem); padding-bottom: clamp(2.5rem, 6vw, 5rem); background: var(--gradient-hero); overflow: hidden; }
+.hero { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; padding-top: clamp(6rem, 12vw, 8rem); padding-bottom: clamp(2.5rem, 6vw, 5rem); background: var(--gradient-hero); overflow: hidden; transition: min-height .55s var(--ease); }
+.hero.is-collapsed { min-height: 0; }
 .hero > .container { width: 100%; }
 .hero__grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
 .hero__badge {
@@ -279,7 +280,7 @@ section { position: relative; }
 
 /* ----------------------------------------------------------------- Footer */
 .site-footer { position: relative; background: linear-gradient(to bottom, transparent 60px, var(--forest-900) 60px); color: rgba(255,255,255,.72); padding-top: calc(70px + clamp(2.5rem, 5vw, 4rem)); padding-bottom: 2rem; }
-.site-footer::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 70px; background-image: url("../assets/wave-top.svg"); background-repeat: no-repeat; background-position: 50% bottom; background-size: 100% 100%; pointer-events: none; }
+.site-footer::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 70px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'%3E%3Cpath d='M0,30 C220,56 430,8 700,22 C950,35 1180,58 1440,22 L1440,70 L0,70 Z' fill='%233a4046'/%3E%3Cpath d='M0,38 C220,64 430,16 700,30 C950,43 1180,66 1440,30 L1440,70 L0,70 Z' fill='%2315181b'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 50% bottom; background-size: 100% 100%; pointer-events: none; }
 .footer__grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 2.5rem; }
 .footer__brand p { margin-top: 1.1rem; font-size: .95rem; max-width: 30ch; }
 .footer__logo img { height: 30px; width: auto; filter: brightness(0) invert(1); }
@@ -292,14 +293,22 @@ section { position: relative; }
 
 /* ----------------------------------------------------- Product detail page */
 .pdp { padding-top: clamp(6.5rem, 12vw, 9rem); }
-.pdp.is-lactrase { --accent: #0a6aa1; }
-.pdp.is-fructaid { --accent: #5e9b1f; }
-.pdp.is-oligase  { --accent: #2f6b3a; }
+.pdp.is-lactrase { --accent: #0a6aa1; --accent-soft: #e7f1f8; }
+.pdp.is-fructaid { --accent: #5e9b1f; --accent-soft: #eef6dd; }
+.pdp.is-oligase  { --accent: #2f6b3a; --accent-soft: #e4efe6; }
+/* Signaturfarbe großzügiger einbringen – mehr Emotion je Produktseite */
+.pdp .eyebrow { color: var(--accent); }
+.pdp .eyebrow::before { background: var(--accent); }
+.pdp .btn--primary { background: var(--accent); }
+.pdp .step::before { color: var(--accent); }
+.pdp .spec-card { border-top: 4px solid var(--accent); }
+.pdp .media-split__img { box-shadow: 0 24px 50px -24px var(--accent); }
+.pdp__lead { border-left: 3px solid var(--accent); padding-left: 1.1rem; }
 .pdp__back { display: inline-flex; align-items: center; gap: .45rem; font-weight: 600; font-size: .9rem; color: var(--ink-soft); margin-bottom: 1.6rem; }
 .pdp__back:hover { color: var(--ink); }
 .pdp__back svg { width: 16px; height: 16px; }
 .pdp__hero { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
-.pdp__media { position: relative; background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius-lg); aspect-ratio: 1 / 1; display: grid; place-items: center; padding: clamp(1.6rem, 4vw, 3.2rem); }
+.pdp__media { position: relative; background: var(--accent-soft, var(--bg-soft)); border: 1px solid var(--line); border-radius: var(--radius-lg); aspect-ratio: 1 / 1; display: grid; place-items: center; padding: clamp(1.6rem, 4vw, 3.2rem); }
 .pdp__media::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; background: var(--accent); }
 .pdp__media img { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 22px 32px rgba(20,23,26,.18)); }
 .pdp__copy .eyebrow { color: var(--accent); }
@@ -372,6 +381,8 @@ section { position: relative; }
 .news-card__img { aspect-ratio: 16 / 10; background: var(--bg-soft); display: grid; place-items: center; overflow: hidden; }
 .news-card__img img { width: 100%; height: 100%; object-fit: cover; }
 .news-card__img.is-contain img { width: auto; height: 100%; object-fit: contain; padding: 1rem; }
+.news-card__img.is-brand-lactrase { background: #cfe6f3; }
+.news-card__img.is-brand-oligase { background: #d9e8d1; }
 .news-card__body { padding: 1.4rem 1.5rem 1.6rem; }
 .news-card__date { font-size: .76rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-faint); }
 .news-card h3 { font-size: 1.16rem; margin: .5rem 0 .5rem; }
@@ -392,12 +403,18 @@ section { position: relative; }
 .brand-card:hover .brand-card__more svg { transform: translateX(4px); }
 
 /* CTA-Banner (Distributor) */
-.cta-banner { background: linear-gradient(160deg, var(--forest-800), var(--forest-900)); color: #fff; border-radius: var(--radius-lg); padding: clamp(2.2rem, 5vw, 3.6rem); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.6rem 2rem; }
-.cta-banner__text { max-width: 42ch; }
+.cta-banner { position: relative; overflow: hidden; background: linear-gradient(160deg, var(--forest-800), var(--forest-900)); color: #fff; border-radius: var(--radius-lg); padding: clamp(2.2rem, 5vw, 3.6rem); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.6rem 2rem; }
+.cta-banner__text { max-width: 42ch; position: relative; }
 .cta-banner h2 { color: #fff; font-size: clamp(1.5rem, 3vw, 2.1rem); }
 .cta-banner p { color: rgba(255,255,255,.8); margin-top: .6rem; font-size: 1.02rem; }
+.cta-banner .btn { position: relative; }
 .btn--light { background: #fff; color: var(--ink); }
 .btn--light:hover { background: #f1f2f4; }
+
+/* Distributor-Bar: 3 Produkt-Signaturfarben, getrennt durch vertikale Wellen */
+.cta-banner--waves { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 360' preserveAspectRatio='none'%3E%3Crect width='1200' height='360' fill='%235fbfe6'/%3E%3Cpath d='M400,0 C430,60 370,120 400,180 C430,240 370,300 400,360 L1200,360 L1200,0 Z' fill='%232f6b3a'/%3E%3Cpath d='M800,0 C830,60 770,120 800,180 C830,240 770,300 800,360 L1200,360 L1200,0 Z' fill='%238cc63f'/%3E%3C/svg%3E"); background-size: 100% 100%; background-repeat: no-repeat; }
+.cta-banner--waves h2 { text-shadow: 0 2px 16px rgba(8,12,16,.55); }
+.cta-banner--waves p { color: #fff; text-shadow: 0 1px 12px rgba(8,12,16,.55); }
 
 /* --------------------------------------------------------- Legal subpages */
 .legal { padding-top: clamp(7rem, 14vw, 10rem); }
