@@ -51,14 +51,13 @@
           <img src="assets/logo-original.png" alt="pronatura" width="141" height="30" />
         </a>
         <ul class="nav__links">
-          <li><a href="#produkte">Produkte</a></li>
-          <li><a href="#ueber-uns">Über uns</a></li>
-          <li><a href="#geschichte">Geschichte</a></li>
-          <li><a href="#qualitaet">Qualität</a></li>
+          <li><a href="ueber-uns.html">Über uns</a></li>
+          <li><a href="#marken">Produkte</a></li>
+          <li><a href="#news">News</a></li>
           <li><a href="#kontakt">Kontakt</a></li>
         </ul>
         <div class="nav__actions">
-          <a href="#kontakt" class="btn btn--primary">Beratung anfragen</a>
+          <a href="#kontakt" class="btn btn--primary">Kontakt</a>
           <button class="nav__toggle" id="navToggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="nav">
             <span></span><span></span><span></span>
           </button>
@@ -73,331 +72,143 @@
     <section class="hero">
       <div class="container hero__grid">
         <div class="hero__copy">
-          <span class="hero__badge" data-reveal><b>Seit 1994</b> Verträglich. Genussvoll. Gesund.</span>
-          <h1 data-reveal data-delay="1">Wieder <em>unbeschwert</em><br />genießen.</h1>
+          <span class="hero__badge" data-reveal><b>Seit 1994</b> Apothekenqualität aus Bad Vilbel</span>
+          <h1 data-reveal data-delay="1">Verträglich.<br />Genussvoll.<br /><em>Gesund.</em></h1>
           <p class="hero__lead" data-reveal data-delay="2">
-            Pro Natura entwickelt innovative Enzympräparate für Menschen mit
-            Lebensmittel­unverträglichkeiten – damit sich alle gesund ernähren und
-            wieder mit Freude essen können.
+            Innovative Enzympräparate, mit denen Menschen mit Lebensmittel­unverträglichkeiten
+            wieder unbeschwert essen und genießen können.
           </p>
           <div class="hero__cta" data-reveal data-delay="3">
-            <a href="#produkte" class="btn btn--accent">
-              Produkte entdecken
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </a>
-            <a href="#ueber-uns" class="btn btn--ghost">Über das Unternehmen</a>
-          </div>
-          <div class="hero__meta" data-reveal data-delay="3">
-            <div><strong>30+</strong><span>Jahre Erfahrung</span></div>
-            <div><strong>Nr. 1</strong><span>Laktasemarke in Apotheken*</span></div>
-            <div><strong>100%</strong><span>Entwickelt in Deutschland</span></div>
+            <a href="#marken" class="btn btn--primary">Unsere Produkte</a>
+            <a href="ueber-uns.html" class="btn btn--ghost">Über uns</a>
           </div>
         </div>
-
-        <div class="hero__visual" data-reveal data-delay="2">
-          <div class="hero__stage">
-            <div class="hero__shelf">
-              <figure>
-                <a href="lactrase.html"><img src="assets/products/lactrase.jpg" alt="Lactrase® 1500" width="220" height="220" /></a>
-                <figcaption>Lactrase<sup>®</sup><span>bei Laktose</span></figcaption>
-              </figure>
-              <figure class="is-lead">
-                <a href="oligase.html"><img src="assets/products/oligase.png" alt="Oligase® 600" width="280" height="280" /></a>
-                <figcaption>Oligase<sup>®</sup> 600<span>bei Blähungen</span></figcaption>
-              </figure>
-              <figure>
-                <a href="fructaid.html"><img src="assets/products/fructaid.png" alt="Fructaid®" width="240" height="150" /></a>
-                <figcaption>Fructaid<sup>®</sup><span>bei Fructose</span></figcaption>
-              </figure>
-            </div>
-          </div>
+        <div class="hero__image" data-reveal data-delay="2">
+          <img src="assets/img/hero-products.png" alt="Lactrase®, Fructaid® und Oligase® 600" width="760" height="760" />
         </div>
       </div>
     </section>
 
-    <!-- =========================================================== TRUST -->
-    <section class="trust">
-      <div class="container trust__inner">
-        <div class="trust__item" data-reveal>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke-linejoin="round"/></svg>
-          Geprüfte Qualität
-        </div>
-        <div class="trust__item" data-reveal data-delay="1">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.4-7-10a7 7 0 0114 0c0 5.6-7 10-7 10z" stroke-linejoin="round"/><circle cx="12" cy="11" r="2.5"/></svg>
-          Made in Germany
-        </div>
-        <div class="trust__item" data-reveal data-delay="2">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9"/></svg>
-          In Apotheken erhältlich
-        </div>
-        <div class="trust__item" data-reveal data-delay="3">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18" stroke-linecap="round"/></svg>
-          Forschung seit 1994
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================= PRODUCTS -->
-    <section class="products section-pad" id="produkte">
-      <div class="container">
-        <div class="section-head center" data-reveal>
-          <span class="eyebrow">Unsere Präparate</span>
-          <h2>Ein Produkt für jede Unverträglichkeit</h2>
-          <p>Jedes Pro-Natura-Präparat setzt genau dort an, wo dem Körper ein Enzym fehlt –
-            natürlich, gut verträglich und wissenschaftlich fundiert.</p>
-        </div>
-
-        <div class="product-grid">
-          <!-- Lactrase -->
-          <article class="product-card is-lactrase" data-reveal>
-            <span class="product-card__tag">Nr. 1 Laktasemarke*</span>
-            <div class="product-card__media">
-              <img src="assets/products/lactrase.jpg" alt="Lactrase® 1500 – Dose mit 100 Kapseln" width="320" height="320" loading="lazy" />
-            </div>
-            <h3>Lactrase<sup>®</sup></h3>
-            <p class="sub">Bei Laktoseintoleranz</p>
-            <p>Seit über 23 Jahren die meistverkaufte Marke im Segment der Lactasepräparate in
-              der Apotheke. Die „saure" Laktase spaltet den Milchzucker bereits im Magen in
-              Glucose und Galactose – für unbeschwerten Milchgenuss.</p>
-            <div class="chips">
-              <span>3.300 FCC</span><span>6.000 FCC</span><span>12.000 FCC</span><span>18.000 FCC</span>
-            </div>
-            <div class="more">
-              <a href="lactrase.html">Mehr erfahren
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </a>
-            </div>
-          </article>
-
-          <!-- Fructaid -->
-          <article class="product-card is-fructaid" data-reveal data-delay="1">
-            <span class="product-card__tag">Patentiertes Medizinprodukt</span>
-            <div class="product-card__media">
-              <img src="assets/products/fructaid.png" alt="Fructaid® – Verpackung" width="360" height="224" loading="lazy" />
-            </div>
-            <h3>Fructaid<sup>®</sup></h3>
-            <p class="sub">Bei Fructose-Malabsorption</p>
-            <p>Das patentierte Medizinprodukt bei intestinaler Fructose-Intoleranz. Die
-              Glucose-Isomerase wandelt nicht resorbierte Fructose in gut verträgliche Glucose
-              um – zur Verhütung und Linderung von Fructose-bedingten Verdauungsbeschwerden.</p>
-            <div class="chips">
-              <span>1–4 Kapseln</span><span>vor der Mahlzeit</span><span>bis 4×/Tag</span>
-            </div>
-            <div class="more">
-              <a href="fructaid.html">Mehr erfahren
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </a>
-            </div>
-          </article>
-
-          <!-- Oligase -->
-          <article class="product-card is-oligase" data-reveal>
-            <span class="product-card__tag">Einzigartige Enzymmischung</span>
-            <div class="product-card__media">
-              <img src="assets/products/oligase.png" alt="Oligase 600 – Verpackung" width="300" height="300" loading="lazy" />
-            </div>
-            <h3>Oligase<sup>®</sup> 600</h3>
-            <p class="sub">Bei blähenden Lebensmitteln</p>
-            <p>Die Enzymmischung zum Spalten unverdaulicher FODMAP Oligo- und Polysaccharide aus
-              Hülsenfrüchten, Gemüse und Getreide. So lassen sich auch blähende Lebensmittel
-              wieder unbeschwert genießen.</p>
-            <div class="chips">
-              <span>600 GalU</span><span>1–3 Kapseln/Mahlzeit</span><span>FODMAP</span>
-            </div>
-            <div class="more">
-              <a href="oligase.html">Mehr erfahren
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </a>
-            </div>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================== ABOUT -->
-    <section class="section-pad" id="ueber-uns">
-      <div class="container about__grid">
-        <figure class="about__media" data-reveal>
+    <!-- ========================================================= MISSION -->
+    <section class="section-pad" id="mission">
+      <div class="container media-split">
+        <div class="media-split__img is-wide" data-reveal>
           <img src="assets/img/office.jpg" alt="Firmensitz der Pro Natura in Bad Vilbel" width="1024" height="708" loading="lazy" />
-          <figcaption>Unser Sitz in Bad Vilbel – seit 1994</figcaption>
-        </figure>
-
-        <div class="about__copy">
-          <div class="section-head" data-reveal>
-            <span class="eyebrow">Über uns</span>
-            <h2>Unbeschwert essen – Lösungen bei Unverträglichkeiten</h2>
-            <p>Als erstes Unternehmen in Deutschland haben wir bereits 1995 mit Lactrase® ein
-              Lactaseprodukt entwickelt und auf den Markt gebracht. Seither hat sich die Pro Natura
-              Gesellschaft für gesunde Ernährung mbH zu einem führenden Anbieter von Enzympräparaten
-              bei Lebensmittelintoleranzen entwickelt – mit dem Anspruch, hochwertige Produkte zu
-              einem fairen Preis-Leistungs-Verhältnis anzubieten.</p>
-          </div>
-          <ul class="feature-list">
-            <li data-reveal>
-              <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.2 6.6H21l-5.4 4 2 6.6L12 15.2 6.4 19.2l2-6.6L3 8.6h6.8z" stroke-linejoin="round"/></svg></i>
-              <div><h4>Pionier &amp; Marktführer</h4><p>Seit über 20 Jahren Experte und Marktführer in Deutschland und Österreich auf dem Gebiet der Lebensmittelunverträglichkeiten.</p></div>
-            </li>
-            <li data-reveal data-delay="1">
-              <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
-              <div><h4>Apothekenqualität</h4><p>Herstellung in Deutschland nach strengen pharmazeutischen Maßstäben – verlässlich, rein und gut verträglich.</p></div>
-            </li>
-            <li data-reveal data-delay="2">
-              <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c-1 4-4 5-4 9a4 4 0 008 0c0-4-3-5-4-9z" stroke-linejoin="round"/></svg></i>
-              <div><h4>Forschung &amp; Innovation</h4><p>Eigene Entwicklung neuer Enzympräparate – wie Fructaid® als Antwort auf die weit verbreitete Fructose­malabsorption.</p></div>
-            </li>
-          </ul>
+        </div>
+        <div class="prose" data-reveal data-delay="1">
+          <span class="eyebrow">Unsere Mission</span>
+          <h2>Gesunde Ernährung für alle</h2>
+          <p>Die Pro Natura Gesellschaft für gesunde Ernährung mbH wurde 1994 gegründet – mit dem
+            Ziel, innovative Produkte zu entwickeln, die es Menschen mit Lebensmittel­unverträglichkeiten
+            ermöglichen, sich dennoch gesund zu ernähren.</p>
+          <p>Besonders wichtig ist es uns, die Produkte zu einem guten Preis-Leistungs-Verhältnis
+            anzubieten, damit möglichst viele Menschen etwas für ihr Wohlbefinden tun können.</p>
+          <a href="ueber-uns.html" class="btn btn--primary" style="margin-top:.6rem">Mehr erfahren</a>
         </div>
       </div>
     </section>
 
-    <!-- ======================================================= GESCHICHTE -->
-    <section class="section-pad" style="padding-top:0" id="geschichte">
+    <!-- ============================================================ NEWS -->
+    <section class="section-pad" id="news" style="padding-top:0">
       <div class="container">
         <div class="section-head center" data-reveal>
-          <span class="eyebrow">Unsere Geschichte</span>
-          <h2>30 Jahre Pionierarbeit</h2>
-          <p>Seit unserer Gründung 1994 entwickeln wir Präparate, die Menschen mit
-            Lebensmittelintoleranzen den unbeschwerten Genuss zurückgeben – ein Weg voller Premieren.</p>
+          <span class="eyebrow">Aktuelles</span>
+          <h2>Neuigkeiten &amp; Entwicklungen</h2>
         </div>
-        <div class="timeline">
-          <div class="timeline__item" data-reveal>
-            <div class="timeline__year">1994</div>
-            <h4>Gründung in Bad Vilbel</h4>
-            <p>Die Pro Natura Gesellschaft für gesunde Ernährung mbH wird mit dem Ziel gegründet,
-              innovative Produkte für eine gesunde Ernährung zu entwickeln.</p>
-          </div>
-          <div class="timeline__item" data-reveal>
-            <div class="timeline__year">1995</div>
-            <h4>Lactrase® – Deutschlands erstes Lactasepräparat</h4>
-            <p>Als erstes Unternehmen in Deutschland bringen wir ein Lactaseprodukt auf den Markt.
-              Lactrase® ist bis heute die Nr. 1 Marke im Segment Lactasepräparate in der Apotheke.*</p>
-          </div>
-          <div class="timeline__item" data-reveal>
-            <div class="timeline__year">2009</div>
-            <h4>Oligase® – einzigartige Enzymmischung</h4>
-            <p>Mit Oligase® (Nachfolger des Vegitase®) bringen wir Deutschlands erstes
-              Enzymmischpräparat zur Spaltung unverdaulicher Kohlenhydrate in die Apotheken.</p>
-          </div>
-          <div class="timeline__item" data-reveal>
-            <div class="timeline__year">2016</div>
-            <h4>Fructaid® – Medizinprodukt bei Fructose-Intoleranz</h4>
-            <p>Antwort auf die weit verbreitete intestinale Fructoseintoleranz: ein patentiertes
-              Medizinprodukt zur Linderung und Verhütung von Verdauungsbeschwerden.</p>
-          </div>
-          <div class="timeline__item" data-reveal>
-            <div class="timeline__year">2024</div>
-            <h4>30-jähriges Jubiläum</h4>
-            <p>Drei Jahrzehnte als Pionier und Marktführer in der Apotheke im Bereich der
-              Lebensmittelunverträglichkeiten.</p>
-          </div>
-        </div>
-        <div class="stat-band">
-          <div data-reveal><strong>30</strong><span>Jahre Pionierarbeit</span></div>
-          <div data-reveal data-delay="1"><strong>10+</strong><span>Länder weltweit beliefert</span></div>
-          <div data-reveal data-delay="2"><strong>31</strong><span>Produkte im Sortiment</span></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================= QUALITÄT -->
-    <section class="section-pad" style="padding-top:0" id="qualitaet">
-      <div class="container">
-        <div class="section-head center" data-reveal>
-          <span class="eyebrow">Qualitätsversprechen</span>
-          <h2>Worauf Sie sich verlassen können</h2>
-          <p>Eine gesunde Ernährung, abwechslungsreich und ohne Abstriche beim Geschmack – dafür
-            stehen wir mit klaren Qualitätsversprechen.</p>
-        </div>
-        <div class="promise-grid">
-          <div class="promise" data-reveal>
-            <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.4-7-10a7 7 0 0114 0c0 5.6-7 10-7 10z" stroke-linejoin="round"/><circle cx="12" cy="11" r="2.5"/></svg></i>
-            <h4>Made in Germany</h4>
-            <p>Herstellung in Deutschland mit strengen Qualitätskontrollen auf jeder Produktionsstufe.</p>
-          </div>
-          <div class="promise" data-reveal data-delay="1">
-            <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c-1 4-4 5-4 9a4 4 0 008 0c0-4-3-5-4-9z" stroke-linejoin="round"/></svg></i>
-            <h4>Pflanzlich &amp; vegetarisch</h4>
-            <p>Alle Bestandteile sind nicht-tierischen Ursprungs und damit für Vegetarier geeignet.</p>
-          </div>
-          <div class="promise" data-reveal data-delay="2">
-            <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M5 5l14 14" stroke-linecap="round"/></svg></i>
-            <h4>Frei von Zusätzen</h4>
-            <p>Ohne Histamin, Laktose und Gluten. Frei von Konservierungs- und künstlichen Aromastoffen.</p>
-          </div>
-          <div class="promise" data-reveal data-delay="3">
-            <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9"/></svg></i>
-            <h4>Geprüfte Inhaltsstoffe</h4>
-            <p>Sorgfältig ausgewählte und geprüfte Inhaltsstoffe – für eine hohe Apothekenqualität.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================== STEPS -->
-    <section class="section-pad" id="ablauf">
-      <div class="container">
-        <div class="section-head center" data-reveal>
-          <span class="eyebrow">So einfach wirkt es</span>
-          <h2>In drei Schritten unbeschwert essen</h2>
-        </div>
-        <div class="steps">
-          <div class="step" data-reveal>
-            <h4>Einnehmen</h4>
-            <p>Die passende Kapsel oder Tablette kurz vor oder zu Beginn der Mahlzeit mit etwas
-              Flüssigkeit einnehmen.</p>
-          </div>
-          <div class="step" data-reveal data-delay="1">
-            <h4>Enzyme wirken</h4>
-            <p>Das jeweilige Enzym spaltet den problematischen Bestandteil – Laktose, Fructose oder
-              Mehrfachzucker – bereits während der Verdauung.</p>
-          </div>
-          <div class="step" data-reveal data-delay="2">
-            <h4>Beschwerdefrei genießen</h4>
-            <p>Die Nahrung wird verträglich verdaut. Typische Beschwerden wie Blähungen oder
-              Bauchschmerzen bleiben aus.</p>
-          </div>
-        </div>
-        <p style="text-align:center; margin-top:1.8rem; font-size:.88rem; color:var(--ink-faint)" data-reveal>
-          Hinweis: Dosierung und Anwendung bitte der jeweiligen Packungsbeilage entnehmen oder in
-          Ihrer Apotheke erfragen.
-        </p>
-      </div>
-    </section>
-
-    <!-- ==================================================== SUSTAINABILITY -->
-    <section class="section-pad" id="nachhaltigkeit">
-      <div class="container">
-        <div class="values">
-          <div class="values__inner">
-            <div data-reveal>
-              <span class="eyebrow">Verantwortung</span>
-              <h2>Gesund für den Menschen, gut für die Natur</h2>
-              <p>Nachhaltigkeit ist bei Pro Natura kein Schlagwort, sondern Teil unseres Namens.
-                Wir setzen auf ressourcenschonende Produktion und engagieren uns für Umwelt- und
-                Sozialprojekte.</p>
+        <div class="news-grid">
+          <article class="news-card" data-reveal>
+            <div class="news-card__img"><img src="assets/img/news-vitafoods.jpg" alt="Pro Natura auf der Vitafoods 2024" width="1024" height="473" loading="lazy" /></div>
+            <div class="news-card__body">
+              <span class="news-card__date">Messe · 2024</span>
+              <h3>Pro Natura besucht die Vitafoods 2024</h3>
+              <p>Wir blicken auf unsere erfolgreiche Teilnahme an der diesjährigen Fachmesse
+                Vitafoods zurück.</p>
             </div>
-            <ul class="values__list">
-              <li data-reveal>
-                <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5-3 8-7 8-12a8 8 0 00-16 0c0 5 3 9 8 12z" stroke-linejoin="round"/></svg></i>
-                <div><h4>Ressourcenschonend</h4><p>Effiziente Herstellungsprozesse mit Blick auf Umwelt und Energie.</p></div>
-              </li>
-              <li data-reveal data-delay="1">
-                <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.5"/><path d="M5 21c0-4 3-6 7-6s7 2 7 6" stroke-linecap="round"/></svg></i>
-                <div><h4>Sozial engagiert</h4><p>Unterstützung von Projekten, die Mensch und Gemeinschaft stärken.</p></div>
-              </li>
-              <li data-reveal data-delay="2">
-                <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1118 0 9 9 0 01-18 0z"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
-                <div><h4>Langfristig gedacht</h4><p>Qualität und Beständigkeit statt kurzlebiger Trends – seit 1994.</p></div>
-              </li>
-            </ul>
+          </article>
+          <article class="news-card" data-reveal data-delay="1">
+            <div class="news-card__img is-contain"><img src="assets/products/lactrase.jpg" alt="Lactrase® 1500" width="300" height="300" loading="lazy" /></div>
+            <div class="news-card__body">
+              <span class="news-card__date">Produkt</span>
+              <h3>Farbanpassung bei Lactrase® 1500</h3>
+              <p>Harmonischere Integration in das Sortiment: Lactrase® 1500 ab sofort mit goldenem
+                Schriftzug.</p>
+            </div>
+          </article>
+          <article class="news-card" data-reveal data-delay="2">
+            <div class="news-card__img is-contain"><img src="assets/products/oligase.png" alt="Oligase® 600" width="300" height="300" loading="lazy" /></div>
+            <div class="news-card__body">
+              <span class="news-card__date">Produkt</span>
+              <h3>Oligase® 600 mit modernisiertem Design</h3>
+              <p>Harmonischere Integration in das Sortiment: Oligase® 600 ab sofort mit neuem
+                Verpackungsdesign.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================== MARKEN -->
+    <section class="section-pad" id="marken" style="padding-top:0">
+      <div class="container">
+        <div class="section-head center" data-reveal>
+          <span class="eyebrow">Unsere Marken</span>
+          <h2>Zu unseren Marken</h2>
+          <p>Für jede Unverträglichkeit das passende Präparat – natürlich, gut verträglich und in
+            Apotheken erhältlich.</p>
+        </div>
+        <div class="brand-grid">
+          <a class="brand-card" href="lactrase.html" data-reveal>
+            <div class="brand-card__img"><img src="assets/img/brand-lactrase.jpg" alt="Lactrase®" width="300" height="255" loading="lazy" /></div>
+            <div class="brand-card__body">
+              <h3>Lactrase<sup>®</sup></h3>
+              <p>Sind Sie laktoseintolerant? Seit über 23 Jahren die meistverkaufte Marke im Segment
+                Lactasepräparate in der Apotheke.*</p>
+              <span class="brand-card__more">Mehr erfahren
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </span>
+            </div>
+          </a>
+          <a class="brand-card" href="oligase.html" data-reveal data-delay="1">
+            <div class="brand-card__img"><img src="assets/img/brand-oligase.jpg" alt="Oligase® 600" width="300" height="255" loading="lazy" /></div>
+            <div class="brand-card__body">
+              <h3>Oligase<sup>®</sup> 600</h3>
+              <p>Sie wollen Hülsenfrüchte, Gemüse und Vollkornprodukte genießen? Ihre Enzymmischung
+                zum Spalten unverdaulicher FODMAP Oligo- und Polysaccharide.</p>
+              <span class="brand-card__more">Mehr erfahren
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </span>
+            </div>
+          </a>
+          <a class="brand-card" href="fructaid.html" data-reveal data-delay="2">
+            <div class="brand-card__img"><img src="assets/img/brand-fructaid.jpg" alt="Fructaid®" width="300" height="255" loading="lazy" /></div>
+            <div class="brand-card__body">
+              <h3>Fructaid<sup>®</sup></h3>
+              <p>Zur Verhütung und Linderung von Fructose-bedingten Verdauungsbeschwerden. Das
+                patentierte Medizinprodukt bei intestinaler Fructose-Intoleranz.</p>
+              <span class="brand-card__more">Mehr erfahren
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== DISTRIBUTOR -->
+    <section class="section-pad" style="padding-top:0">
+      <div class="container">
+        <div class="cta-banner" data-reveal>
+          <div class="cta-banner__text">
+            <h2>Sie sind Distributor und an einer Partnerschaft interessiert?</h2>
+            <p>Kontaktieren Sie uns gerne über das Formular – wir freuen uns auf Sie.</p>
           </div>
+          <a href="#kontakt" class="btn btn--light">Jetzt Kontakt aufnehmen</a>
         </div>
       </div>
     </section>
 
     <!-- ========================================================= CONTACT -->
-    <section class="section-pad" id="kontakt">
+    <section class="section-pad" id="kontakt" style="padding-top:0">
       <div class="container">
         <div class="section-head center" data-reveal>
           <span class="eyebrow">Kontakt</span>
@@ -414,7 +225,7 @@
             </div>
             <div class="contact-card" data-reveal data-delay="1">
               <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h4l2 5-3 2c1 3 3 5 6 6l2-3 5 2v4a2 2 0 01-2 2C12 22 4 14 4 7a2 2 0 012-2z" stroke-linejoin="round"/></svg></i>
-              <div><span>Telefon</span><p><a href="tel:+49610180272910">+49 (0)6101 80272910</a></p></div>
+              <div><span>Telefon</span><p><a href="tel:+49610180272910">+49 (0)6101 80272910</a><br />Telefax: +49 (0)6101 80272963</p></div>
             </div>
             <div class="contact-card" data-reveal data-delay="2">
               <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
@@ -445,10 +256,7 @@
               <label for="message">Nachricht</label>
               <textarea id="message" name="message" required placeholder="Ihre Nachricht an uns …"></textarea>
             </div>
-            <button type="submit" class="btn btn--accent" style="width:100%">
-              Nachricht senden
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-            </button>
+            <button type="submit" class="btn btn--primary" style="width:100%">Nachricht senden</button>
             <p class="form__note">Mit dem Absenden öffnet sich Ihr E-Mail-Programm. Es werden keine
               Daten auf dieser Website gespeichert.</p>
             <p class="form__status" id="formStatus">Vielen Dank! Ihr E-Mail-Programm wurde geöffnet.</p>
@@ -477,9 +285,8 @@
         </div>
         <div class="footer__col">
           <h5>Unternehmen</h5>
-          <a href="#ueber-uns">Über uns</a>
-          <a href="#nachhaltigkeit">Nachhaltigkeit</a>
-          <a href="#ablauf">So wirkt es</a>
+          <a href="ueber-uns.html">Über uns</a>
+          <a href="#news">News</a>
           <a href="#kontakt">Kontakt</a>
         </div>
         <div class="footer__col">
