@@ -5,27 +5,29 @@
 
 /* ----------------------------------------------------------------- Tokens */
 :root {
-  /* Brand greens */
-  --forest-900: #081c15;
-  --forest-800: #1b4332;
-  --forest-700: #2d6a4f;
-  --forest-600: #40916c;
-  --green-500:  #52b788;
-  --green-400:  #74c69d;
-  --green-300:  #95d5b2;
-  --green-100:  #d8f3dc;
+  /* Brand palette — abgeleitet aus der Original-Website pro-natura-gmbh.de
+     (Primärton Petrol/Teal #0087A2, dunkles Petrol #0D4554, frisches Grün als Akzent).
+     Variablennamen aus historischen Gründen beibehalten. */
+  --forest-900: #06303b;  /* tiefstes Petrol – Footer / Values */
+  --forest-800: #0d4554;  /* dunkles Petrol – Überschriften */
+  --forest-700: #0087a2;  /* Primärton – Links, Buttons */
+  --forest-600: #0094b2;  /* helleres Petrol */
+  --green-500:  #4ea432;  /* frisches Grün – Akzent */
+  --green-400:  #6cbf45;  /* helles Grün */
+  --green-300:  #8ed3e2;  /* helles Petrol – Highlights */
+  --green-100:  #e3f3f8;  /* zartes Petrol – Soft-Flächen (Original) */
 
   /* Neutrals / surfaces */
   --bg:         #ffffff;
-  --bg-soft:    #f4f7f4;
+  --bg-soft:    #f3f9fb;
   --surface:    #ffffff;
-  --ink:        #16201b;
-  --ink-soft:   #44524b;
-  --ink-faint:  #6b7a72;
-  --line:       #e3ece5;
+  --ink:        #2e2e2e;
+  --ink-soft:   #58595c;
+  --ink-faint:  #919191;
+  --line:       #dfeaee;
 
   /* Accents */
-  --amber:      #e9b949;
+  --amber:      #a3d109;  /* Limegrün (Verpackungsakzent) */
   --gradient-hero: var(--bg);
 
   /* Type */
@@ -36,9 +38,9 @@
   --radius: 18px;
   --radius-lg: 28px;
   --radius-pill: 999px;
-  --shadow-sm: 0 1px 2px rgba(8,28,21,.05), 0 4px 14px rgba(8,28,21,.05);
-  --shadow-md: 0 10px 30px -12px rgba(8,28,21,.18);
-  --shadow-lg: 0 30px 60px -24px rgba(8,28,21,.28);
+  --shadow-sm: 0 1px 2px rgba(13,69,84,.05), 0 4px 14px rgba(13,69,84,.06);
+  --shadow-md: 0 10px 30px -12px rgba(13,69,84,.18);
+  --shadow-lg: 0 30px 60px -24px rgba(13,69,84,.26);
   --container: 1180px;
   --ease: cubic-bezier(.22,.61,.36,1);
 }
@@ -123,8 +125,8 @@ section { position: relative; }
   padding-block: .55rem;
 }
 .nav { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
-.nav__logo { flex-shrink: 0; }
-.nav__logo svg { height: 42px; width: auto; }
+.nav__logo { flex-shrink: 0; display: inline-flex; }
+.nav__logo img { height: 30px; width: auto; }
 .nav__links { display: flex; align-items: center; gap: .35rem; }
 .nav__links a {
   padding: .5rem .85rem; border-radius: var(--radius-pill);
@@ -210,6 +212,12 @@ section { position: relative; }
 .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: transparent; }
 .product-card__icon { width: 64px; height: 64px; border-radius: 18px; display: grid; place-items: center; background: var(--accent-soft, var(--green-100)); color: var(--accent, var(--forest-700)); margin-bottom: 1.3rem; }
 .product-card__icon svg { width: 32px; height: 32px; }
+.product-card__media {
+  border-radius: var(--radius); background: var(--accent-soft, var(--green-100));
+  display: grid; place-items: center; padding: 1.4rem; margin-bottom: 1.4rem; aspect-ratio: 4 / 3;
+}
+.product-card__media img { max-height: 100%; width: auto; object-fit: contain; filter: drop-shadow(0 14px 22px rgba(13,69,84,.16)); transition: transform .35s var(--ease); }
+.product-card:hover .product-card__media img { transform: translateY(-4px) scale(1.03); }
 .product-card__tag { position: absolute; top: 1.5rem; right: 1.5rem; font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--accent, var(--forest-600)); background: var(--accent-soft, var(--green-100)); padding: .3rem .7rem; border-radius: var(--radius-pill); }
 .product-card h3 { font-size: 1.5rem; }
 .product-card h3 sup { font-size: .6em; top: -.6em; }
@@ -222,11 +230,10 @@ section { position: relative; }
 .product-card .more a svg { width: 16px; height: 16px; transition: transform .2s var(--ease); }
 .product-card:hover .more a svg { transform: translateX(4px); }
 
-/* Accent variants */
-.product-card.is-lactrase { --accent: #2563a8; --accent-soft: #e1edf9; }
-.product-card.is-fructaid { --accent: #d97706; --accent-soft: #fdecd2; }
-.product-card.is-oligase  { --accent: #2d6a4f; --accent-soft: #d8f3dc; }
-.product-card.is-pektin   { --accent: #7c3aed; --accent-soft: #ede4fc; }
+/* Accent variants — abgestimmt auf die echten Verpackungen */
+.product-card.is-lactrase { --accent: #0087a2; --accent-soft: #e3f3f8; }
+.product-card.is-fructaid { --accent: #5e9b1f; --accent-soft: #eef6dd; }
+.product-card.is-oligase  { --accent: #2f6b3a; --accent-soft: #e3efe5; }
 
 /* ------------------------------------------------------------ How it works */
 .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; counter-reset: step; }
@@ -278,9 +285,7 @@ section { position: relative; }
 .site-footer { background: var(--forest-900); color: rgba(255,255,255,.72); padding-block: clamp(3rem, 6vw, 4.5rem) 2rem; }
 .footer__grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 2.5rem; }
 .footer__brand p { margin-top: 1.1rem; font-size: .95rem; max-width: 30ch; }
-.footer__logo svg { height: 40px; }
-.footer__logo text { fill: #fff; }
-.footer__logo text:last-of-type { fill: var(--green-300); }
+.footer__logo img { height: 30px; width: auto; }
 .footer__col h5 { color: #fff; font-family: var(--font-sans); font-size: .82rem; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1rem; }
 .footer__col a { color: rgba(255,255,255,.72); display: block; padding: .3rem 0; font-size: .96rem; transition: color .2s, padding .2s; }
 .footer__col a:hover { color: var(--green-300); padding-left: 4px; }

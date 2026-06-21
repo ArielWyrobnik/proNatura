@@ -64,44 +64,44 @@ Tech-Stack bewusst **ohne Build-Schritt** (reines HTML/CSS/JS), weil:
 ├── css/styles.css      # Komplettes Designsystem (Tokens, Komponenten, Responsive)
 ├── js/main.js          # Navigation, Scroll-Reveal, Mobile-Menü, Formular, Jahr im Footer
 ├── assets/
-│   ├── logo.svg        # Wortmarke + Blatt-Icon
-│   └── favicon.svg     # Favicon
+│   ├── logo-original.png   # Wortmarke „pronatura®" (dunkel) – Original
+│   ├── logo-white.png      # Wortmarke weiß (Footer)
+│   ├── favicon-32/180/192.png  # Favicons (Original)
+│   └── products/           # echte Packshots: lactrase.jpg, fructaid.png, oligase.png
 ├── README.md           # Kurzanleitung (Hosting/Anpassen)
 └── CLAUDE.md           # diese Datei
 ```
 
-**Designsprache:** Naturgrün-Palette (Wald-/Frischgrün) auf warmem Off-White,
-Display-Serif (Fraunces) + klare Sans (Plus Jakarta Sans / Inter via Google Fonts),
-sanfte Scroll-Animationen, responsives Layout, Glas-Navigation beim Scrollen.
-Produktbilder sind aktuell **stilisierte SVG-Icons** (echte Packshots fehlen, siehe unten).
+**Designsprache:** Petrol/Teal-Palette der Original-Website (Primär `#0087A2`, dunkel
+`#0D4554`) mit frischem Grün als Akzent, auf weißem Hintergrund. Display-Serif (Fraunces)
++ klare Sans (Plus Jakarta Sans via Google Fonts), sanfte Scroll-Animationen, responsives
+Layout, Glas-Navigation beim Scrollen. Produktkarten zeigen die **echten Packshots**.
 
 ---
 
 ## 4. Offene Punkte / TODO (für die Zukunft)
 
-**🚩 NÄCHSTE AUFGABE (sofort, höchste Priorität):**
-Der Nutzer hat die Hosts `pro-natura-gmbh.de`, `lactrase.de`, `fructaid.de`, `oligase.de`
-in der **Egress-Allowlist freigeschaltet**. Sie sollten ab dieser Session per `curl`
-erreichbar sein (vorher kam „Host not in allowlist"). Zu tun, um die Seite näher ans
-Original zu bringen:
-1. **Zugriff testen:** `curl -sIL https://www.pro-natura-gmbh.de/` — wenn KEIN 403
-   „Host not in allowlist" mehr kommt, ist es frei. Sonst Nutzer bitten, eine NEUE
-   Session zu starten (Egress greift erst bei Container-Neustart).
-2. **Logo + Favicon** vom Original ziehen → `assets/logo.*` / `assets/favicon.*` ersetzen.
-   HTML-Einbindungen prüfen.
-3. **Original-Farbtöne** aus deren CSS/Markup auslesen (Hauptgrün, Akzent, Hintergrund) →
-   Tokens in `css/styles.css` (`:root`) angleichen. Nutzer will „die Farbtöne der
-   Original-Webseite".
-4. **Produktfotos / Packshots** für Lactrase®, Fructaid®, Oligase® 600 laden
-   (von lactrase.de / fructaid.de / oligase.de) → `assets/products/` → in die
-   Produktkarten (`.product-card`) statt der SVG-Icons einbauen.
-5. **Allgemein näher ans Original** angleichen (Aufbau/Texte/Anmutung), aber optisch
-   moderner halten. Hintergrund bleibt **blank/weiß** (so vom Nutzer gewünscht).
-6. ⚠️ **Pektinkapseln NICHT** wieder aufnehmen (wird nicht mehr verkauft).
+**✅ ERLEDIGT (diese Session): Angleichung ans Original.** Egress war frei
+(`pro-natura-gmbh.de` u.a. per `curl` erreichbar, kein „Host not in allowlist" mehr):
+1. **Logo + Favicon** vom Original geladen → `assets/logo-original.png` (dunkle Wortmarke
+   „pronatura®"), `assets/logo-white.png` (Footer), `assets/favicon-32/180/192.png`.
+   Alte SVG-Platzhalter entfernt, HTML-Einbindungen (index/impressum/datenschutz) aktualisiert.
+2. **Original-Farbtöne** aus `app/themes/pronatura/main.css` ausgelesen → Palette in
+   `css/styles.css` (`:root`) auf **Petrol/Teal** umgestellt: Primär `#0087A2`, dunkel
+   `#0D4554`, tiefstes Petrol `#06303B`, Soft-Fläche `#E3F3F8`; Akzent frisches Grün
+   `#4EA432` + Limegrün `#A3D109`. Text `#2E2E2E`. (Variablennamen `--forest-*`/`--green-*`
+   beibehalten, nur Werte geändert.)
+3. **Produktfotos** geladen → `assets/products/lactrase.jpg`, `fructaid.png`, `oligase.png`;
+   in die Produktkarten (`.product-card__media`) statt der SVG-Icons eingebaut. Accentfarben
+   je Karte an die echten Verpackungen angepasst.
+4. **Texte näher ans Original**: Hero-Claim „Verträglich. Genussvoll. Gesund.", Über-uns-Mission
+   (1994/Preis-Leistung), Produkttexte (Lactrase = meistverkauft seit 23 J., Fructaid =
+   patentiertes Medizinprodukt, Oligase = FODMAP-Enzymmischung), Footnote „Quelle: IQVIA".
+   Optik bleibt modern, Hintergrund **weiß**.
+5. ⚠️ **Pektinkapseln** weiterhin NICHT aufgenommen.
 
 **Inhalte & Recht (wichtig, vor Go-Live):**
-- [ ] **Echte Produktfotos / Packshots** der Präparate einbauen (`assets/products/`).
-      Aktuell nur SVG-Platzhalter.
+- [x] **Echte Produktfotos / Packshots** der Präparate eingebaut (`assets/products/`).
 - [ ] **Impressum verifizieren:** Geschäftsführer, vollständige USt-IdNr., genaue
       Register-/Aufsichtsangaben, ggf. Verantwortlicher i.S.d. § 18 MStV.
 - [ ] **Datenschutzerklärung** mit echtem Hosting-/Tool-Setup abgleichen (Google Fonts

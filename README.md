@@ -22,7 +22,7 @@ python3 -m http.server 8000
 | `impressum.html` / `datenschutz.html` | Pflichtseiten (DE) – Platzhalter ⚠️ noch prüfen |
 | `css/styles.css` | Komplettes Designsystem |
 | `js/main.js` | Navigation, Scroll-Animationen, Kontaktformular |
-| `assets/` | Logo & Favicon (SVG) |
+| `assets/` | Logo & Favicon (Original-PNG), `products/` mit Packshots |
 | `robots.txt`, `sitemap.xml` | SEO |
 | `CLAUDE.md` | Projektkontext & offene Aufgaben |
 
@@ -30,8 +30,8 @@ python3 -m http.server 8000
 
 - **Texte/Inhalte:** direkt in den HTML-Dateien.
 - **Farben/Design:** Variablen am Anfang von `css/styles.css` (`:root`).
-- **Logo:** `assets/logo.svg` ersetzen.
-- **Echte Produktfotos:** in `assets/` ablegen und in `index.html` einbinden.
+- **Logo:** `assets/logo-original.png` (dunkel) bzw. `assets/logo-white.png` (Footer).
+- **Produktfotos:** liegen in `assets/products/` und sind in den Produktkarten eingebunden.
 
 ## Vor dem Go-Live
 
