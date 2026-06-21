@@ -16,8 +16,8 @@
   --green-100:  #d8f3dc;
 
   /* Neutrals / surfaces */
-  --bg:         #fbfdfb;
-  --bg-soft:    #f3f7f3;
+  --bg:         #ffffff;
+  --bg-soft:    #f4f7f4;
   --surface:    #ffffff;
   --ink:        #16201b;
   --ink-soft:   #44524b;
@@ -26,7 +26,7 @@
 
   /* Accents */
   --amber:      #e9b949;
-  --gradient-hero: radial-gradient(120% 120% at 80% 0%, #d8f3dc 0%, #f3f7f3 38%, #fbfdfb 70%);
+  --gradient-hero: var(--bg);
 
   /* Type */
   --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
@@ -198,8 +198,8 @@ section { position: relative; }
 .feature-list p { color: var(--ink-soft); font-size: .98rem; margin: 0; }
 
 /* ---------------------------------------------------------------- Products */
-.products { background: var(--bg-soft); }
-.product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.6rem; }
+.products { background: var(--bg); }
+.product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; }
 .product-card {
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg);
   padding: 2rem; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;

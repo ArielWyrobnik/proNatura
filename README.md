@@ -18,7 +18,7 @@ python3 -m http.server 8000
 
 | Datei | Zweck |
 |---|---|
-| `index.html` | Startseite (Hero, Produkte, Über uns, Ablauf, Nachhaltigkeit, Kontakt) |
+| `index.html` | Startseite (Hero, Produkte: Lactrase/Fructaid/Oligase, Über uns, Ablauf, Nachhaltigkeit, Kontakt) |
 | `impressum.html` / `datenschutz.html` | Pflichtseiten (DE) – Platzhalter ⚠️ noch prüfen |
 | `css/styles.css` | Komplettes Designsystem |
 | `js/main.js` | Navigation, Scroll-Animationen, Kontaktformular |

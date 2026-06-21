@@ -41,7 +41,9 @@ Nahrungsergänzungsmittel**, mit denen Menschen mit **Nahrungsmittel­unverträg
 | **Lactrase®** | Laktoseintoleranz | „saure" Laktase, spaltet Milchzucker im Magen in Glucose + Galactose | Nr. 1 Laktasemarke in Apotheken seit 23+ Jahren. Varianten: 3.300 / 6.000 / 12.000 / 18.000 FCC. EFSA-Empfehlung: ≥ 4.500 FCC pro laktosehaltiger Mahlzeit |
 | **Fructaid®** | Fructoseintoleranz / Fructosemalabsorption | Glucose-Isomerase wandelt nicht resorbierte Fructose in resorbierbare Glucose um | Seit 2016. 1–4 Kapseln vor fructosehaltigen Speisen, bis 4×/Tag |
 | **Oligase® 600** | Blähende Hülsenfrüchte, Gemüse, Getreide (FODMAP-Oligosaccharide) | Alpha-Galactosidase + Saccharase + Cellulase + Hemicellulase spalten Raffinose/Stachyose/Verbascose | 600 GalU/Kapsel. 1–3 Kapseln pro Mahlzeit, max. 15/Tag |
-| **Pektinkapseln** | Ergänzungssortiment (Ballaststoff/Pektin) | Pektin als Nahrungsergänzung | Eigene Marke/Domain (pektinkapseln.de). Inhalte noch dünn → ausbauen |
+
+> ⚠️ **Pektinkapseln** wurden aus der Website entfernt – das Produkt wird **nicht mehr verkauft**
+> (Stand 2026, Info vom Auftraggeber). Nicht wieder aufnehmen.
 
 **Unternehmenswerte:** Innovation · Qualität · Nachhaltigkeit · natürliche, gesunde Produkte.
 
@@ -76,6 +78,14 @@ Produktbilder sind aktuell **stilisierte SVG-Icons** (echte Packshots fehlen, si
 ---
 
 ## 4. Offene Punkte / TODO (für die Zukunft)
+
+**⚠️ Blockiert durch Netzwerk-Egress (für nächste Session):**
+Der Nutzer möchte das **echte Logo, die Original-Farbtöne und echte Produktfotos** vom
+Original (`pro-natura-gmbh.de`, `lactrase.de`, `fructaid.de`, `oligase.de`). Diese Hosts
+sind in der Remote-Umgebung **nicht in der Egress-Allowlist** → ich kann sie nicht laden.
+Lösung: entweder Nutzer schaltet die Hosts in den Netzwerk-Egress-Einstellungen frei
+(dann Assets per `curl` ziehen, in `assets/` ablegen, einbinden), oder Nutzer lädt
+Logo + Packshots selbst ins Repo. Bis dahin: stilisierte SVGs als Platzhalter.
 
 **Inhalte & Recht (wichtig, vor Go-Live):**
 - [ ] **Echte Produktfotos / Packshots** der Präparate einbauen (`assets/products/`).
