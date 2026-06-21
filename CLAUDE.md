@@ -58,8 +58,9 @@ Tech-Stack bewusst **ohne Build-Schritt** (reines HTML/CSS/JS), weil:
 
 ```
 /
-├── index.html          # Startseite (Hero mit Produkt-Bühne, Produkte, Über uns, Ablauf, Nachhaltigkeit, Kontakt)
-├── lactrase.html       # Produkt-Detailseite Lactrase®
+├── index.html          # Startseite – STRUKTUR 1:1 wie Original: Hero → Unsere Mission → News → Zu unseren Marken → Distributor-CTA → Kontakt
+├── ueber-uns.html      # Über uns + Unsere Geschichte (Timeline 1994–2024 + Kennzahlen)
+├── lactrase.html       # Produkt-Detailseite Lactrase® (inkl. alle Stärken 1.500–32.000 FCC)
 ├── fructaid.html       # Produkt-Detailseite Fructaid®
 ├── oligase.html        # Produkt-Detailseite Oligase® 600
 ├── impressum.html      # Pflichtangaben (DE) – Platzhalter prüfen!
@@ -67,24 +68,31 @@ Tech-Stack bewusst **ohne Build-Schritt** (reines HTML/CSS/JS), weil:
 ├── css/styles.css      # Komplettes Designsystem (Tokens, Komponenten, Responsive)
 ├── js/main.js          # Navigation, Scroll-Reveal, Mobile-Menü, Formular, Jahr im Footer
 ├── assets/
-│   ├── logo-original.png   # Wortmarke „pronatura®" (dunkel) – Original
-│   ├── logo-white.png      # Wortmarke weiß (Footer)
+│   ├── logo-original.png   # Wortmarke „pronatura®" (hochauflösend); im Footer per CSS auf Weiß invertiert
 │   ├── favicon-32/180/192.png  # Favicons (Original)
-│   └── products/           # echte Packshots: lactrase.jpg, fructaid.png, oligase.png
+│   ├── img/                # hero-products, office, news-vitafoods, brand-{lactrase,oligase,fructaid}, lifestyle-*
+│   └── products/           # Packshots: lactrase.jpg, fructaid.png, oligase.png, lactrase-lineup.png
 ├── README.md           # Kurzanleitung (Hosting/Anpassen)
 └── CLAUDE.md           # diese Datei
 ```
 
-**Designsprache (Stand: neutral redesign):** **Bewusst neutrale Palette** – Anthrazit
-(`#1B1E22`) + Grautöne auf Weiß, KEINE durchgehende Markenfarbe. Buttons/Links sind
-anthrazitfarben. Farbe kommt ausschließlich von den **echten Produktfotos** und ihren
-dezenten Produkt-Akzenten (Lactrase blau, Fructaid grün, Oligase dunkelgrün) – nur auf der
-jeweiligen Produktkarte/-seite, nicht global. Display-Serif (Fraunces) + Sans (Plus Jakarta
-Sans). Der Hero zeigt die drei Packshots als „Produkt-Bühne" (kein abstraktes Blatt mehr).
-Produkte stehen im Fokus, jedes Präparat hat eine eigene Detailseite.
+**🚀 DEPLOYMENT (WICHTIG!):** Die Live-Seite (`arielwyrobnik.github.io`) deployt von Branch
+**`claude/clever-faraday-9e5sjw`**. Es gibt KEINEN `main`-Branch. Änderungen NUR sichtbar,
+wenn sie auf `clever-faraday` landen (per Merge). Auf `claude/optimistic-pasteur-xgqrhv`
+(System-Default) wird ebenfalls committet, dann nach `clever-faraday` gemerged + gepusht.
+→ Wenn der Nutzer „ich sehe nichts" sagt: prüfen, ob `clever-faraday` aktuell ist.
 
-> ⚠️ Nutzer-Vorgabe: **neutral halten, keine einzelne Farbe (z.B. Grün) die sich durch die
-> ganze Seite zieht. Professionell wirken, nicht „nach KI".** Kein Blatt/abstrakte Deko.
+**Designsprache:** Die **Seitenstruktur folgt 1:1 der Original-Website** (Nutzerwunsch),
+nur sauberer/moderner umgesetzt. Reihenfolge Startseite: Hero („Verträglich. Genussvoll.
+Gesund.") → Unsere Mission (Bild + Text) → News (3 Karten) → Zu unseren Marken (3
+Bild-Linkboxen → Produktseiten) → Distributor-CTA-Banner → Kontakt. **Bewusst neutrale
+Palette** – Anthrazit (`#1B1E22`) + Grautöne auf Weiß, KEINE durchgehende Markenfarbe;
+Buttons/Links anthrazit. Farbe kommt nur aus den Produktfotos. Display-Serif (Fraunces) +
+Sans (Plus Jakarta Sans). Bild-getrieben statt Deko-Icons.
+
+> ⚠️ Nutzer-Vorgaben (hart): **1:1 Original-Struktur, nur cleaner.** Neutral halten, keine
+> einzelne Farbe die sich durchzieht. Kein Blatt/abstrakte Deko. Keine riesigen Icons
+> (immer Container + `svg { width/height }`). Professionell, nicht „nach KI".
 
 ---
 
