@@ -79,13 +79,25 @@ Produktbilder sind aktuell **stilisierte SVG-Icons** (echte Packshots fehlen, si
 
 ## 4. Offene Punkte / TODO (für die Zukunft)
 
-**⚠️ Blockiert durch Netzwerk-Egress (für nächste Session):**
-Der Nutzer möchte das **echte Logo, die Original-Farbtöne und echte Produktfotos** vom
-Original (`pro-natura-gmbh.de`, `lactrase.de`, `fructaid.de`, `oligase.de`). Diese Hosts
-sind in der Remote-Umgebung **nicht in der Egress-Allowlist** → ich kann sie nicht laden.
-Lösung: entweder Nutzer schaltet die Hosts in den Netzwerk-Egress-Einstellungen frei
-(dann Assets per `curl` ziehen, in `assets/` ablegen, einbinden), oder Nutzer lädt
-Logo + Packshots selbst ins Repo. Bis dahin: stilisierte SVGs als Platzhalter.
+**🚩 NÄCHSTE AUFGABE (sofort, höchste Priorität):**
+Der Nutzer hat die Hosts `pro-natura-gmbh.de`, `lactrase.de`, `fructaid.de`, `oligase.de`
+in der **Egress-Allowlist freigeschaltet**. Sie sollten ab dieser Session per `curl`
+erreichbar sein (vorher kam „Host not in allowlist"). Zu tun, um die Seite näher ans
+Original zu bringen:
+1. **Zugriff testen:** `curl -sIL https://www.pro-natura-gmbh.de/` — wenn KEIN 403
+   „Host not in allowlist" mehr kommt, ist es frei. Sonst Nutzer bitten, eine NEUE
+   Session zu starten (Egress greift erst bei Container-Neustart).
+2. **Logo + Favicon** vom Original ziehen → `assets/logo.*` / `assets/favicon.*` ersetzen.
+   HTML-Einbindungen prüfen.
+3. **Original-Farbtöne** aus deren CSS/Markup auslesen (Hauptgrün, Akzent, Hintergrund) →
+   Tokens in `css/styles.css` (`:root`) angleichen. Nutzer will „die Farbtöne der
+   Original-Webseite".
+4. **Produktfotos / Packshots** für Lactrase®, Fructaid®, Oligase® 600 laden
+   (von lactrase.de / fructaid.de / oligase.de) → `assets/products/` → in die
+   Produktkarten (`.product-card`) statt der SVG-Icons einbauen.
+5. **Allgemein näher ans Original** angleichen (Aufbau/Texte/Anmutung), aber optisch
+   moderner halten. Hintergrund bleibt **blank/weiß** (so vom Nutzer gewünscht).
+6. ⚠️ **Pektinkapseln NICHT** wieder aufnehmen (wird nicht mehr verkauft).
 
 **Inhalte & Recht (wichtig, vor Go-Live):**
 - [ ] **Echte Produktfotos / Packshots** der Präparate einbauen (`assets/products/`).
