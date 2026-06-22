@@ -395,6 +395,9 @@ section { position: relative; }
 /* Rahmen-Ratio = Bild-Ratio (500x425) -> ganzes Tile sichtbar, kein Beschnitt (rausgezoomt) */
 .brand-card__img { aspect-ratio: 500 / 425; overflow: hidden; background: var(--bg-soft); }
 .brand-card__img img { width: 100%; height: 100%; object-fit: cover; }
+/* Oligase: Schachtel etwas anheben (steht sonst „auf dem Boden") */
+.brand-card.is-oligase .brand-card__img { background: #528656; }
+.brand-card.is-oligase .brand-card__img img { transform: translateY(-6%); }
 .brand-card__body { padding: 1.6rem 1.6rem 1.8rem; display: flex; flex-direction: column; flex: 1; }
 .brand-card h3 { font-size: 1.4rem; }
 .brand-card h3 sup { font-size: .55em; top: -.7em; }
