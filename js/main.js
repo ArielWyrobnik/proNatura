@@ -13,11 +13,9 @@
     var y = window.scrollY;
     if (y > 12) header.classList.add('scrolled');
     else header.classList.remove('scrolled');
-    // Hero füllt am Anfang den ganzen Bildschirm und schrumpft beim Scrollen
-    if (hero) {
-      if (y > 12) hero.classList.add('is-collapsed');
-      else hero.classList.remove('is-collapsed');
-    }
+    // Hero füllt nur beim Laden den ganzen Bildschirm und schrumpft beim
+    // ersten Scrollen EINMALIG auf normale Höhe (kein Wieder-Aufklappen oben).
+    if (hero && y > 12) hero.classList.add('is-collapsed');
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
