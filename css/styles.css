@@ -394,6 +394,13 @@ section { position: relative; }
 .brand-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: transparent; }
 .brand-card__img { aspect-ratio: 4 / 3; overflow: hidden; background: var(--bg-soft); }
 .brand-card__img img { width: 100%; height: 100%; object-fit: cover; }
+/* Lactrase & Oligase: Packshot zentriert mit Rand auf Signaturfarbe (wie Fructaid) */
+.brand-card.is-lactrase .brand-card__img,
+.brand-card.is-oligase .brand-card__img { display: grid; place-items: center; padding: 1.7rem; }
+.brand-card.is-lactrase .brand-card__img img,
+.brand-card.is-oligase .brand-card__img img { object-fit: contain; filter: drop-shadow(0 16px 26px rgba(0,0,0,.26)); }
+.brand-card.is-lactrase .brand-card__img { background: #6cc3e8; }
+.brand-card.is-oligase  .brand-card__img { background: #2f6b3a; }
 .brand-card__body { padding: 1.6rem 1.6rem 1.8rem; display: flex; flex-direction: column; flex: 1; }
 .brand-card h3 { font-size: 1.4rem; }
 .brand-card h3 sup { font-size: .55em; top: -.7em; }
