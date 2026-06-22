@@ -152,6 +152,11 @@
       var p = rays[k]; if (p._len != null) p.style.strokeDashoffset = (p._len * (1 - prog)).toFixed(1);
     });
     if (prog > 0.9) distrib.classList.add('is-lit'); else distrib.classList.remove('is-lit');
+    // Marken-Fotos einfärben, sobald ein Strahl die Karte erreicht (in den Viewport scrollt)
+    for (var i = 0; i < cards.length; i++) {
+      if (cards[i].getBoundingClientRect().top < window.innerHeight * 0.72) cards[i].classList.add('is-lit');
+      else cards[i].classList.remove('is-lit');
+    }
   }
 
   var ticking = false;
