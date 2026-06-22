@@ -58,23 +58,26 @@ Tech-Stack bewusst **ohne Build-Schritt** (reines HTML/CSS/JS), weil:
 
 ```
 /
-├── index.html          # Startseite – STRUKTUR 1:1 wie Original: Hero → Unsere Mission → News → Zu unseren Marken → Distributor-CTA → Kontakt
+├── index.html          # Startseite: Hero → Zu unseren Marken → Unsere Mission → Distributor-CTA → Kontakt
 ├── ueber-uns.html      # Über uns + Unsere Geschichte (Timeline 1994–2024 + Kennzahlen)
 ├── lactrase.html       # Produkt-Detailseite Lactrase® (inkl. alle Stärken 1.500–32.000 FCC)
 ├── fructaid.html       # Produkt-Detailseite Fructaid®
 ├── oligase.html        # Produkt-Detailseite Oligase® 600
 ├── impressum.html      # Pflichtangaben (DE) – Platzhalter prüfen!
 ├── datenschutz.html    # DSGVO-Datenschutzerklärung – Platzhalter prüfen!
-├── css/styles.css      # Komplettes Designsystem (Tokens, Komponenten, Responsive)
-├── js/main.js          # Navigation, Scroll-Reveal, Mobile-Menü, Formular, Jahr im Footer
+├── css/styles.css      # Komplettes Designsystem (Tokens, Komponenten, Responsive, Strahlen)
+├── js/main.js          # Nav/Mobile-Menü, Scroll-Reveal, Formular, Jahr · Hero-Vollbild-Collapse · Produkt-Strahlen-Engine
 ├── assets/
 │   ├── logo-original.png   # Wortmarke „pronatura®" (hochauflösend); im Footer per CSS auf Weiß invertiert
 │   ├── favicon-32/180/192.png  # Favicons (Original)
-│   ├── img/                # hero-products, office, news-vitafoods, brand-{lactrase,oligase,fructaid}, lifestyle-*
+│   ├── img/                # hero-products, office, brand-{lactrase,oligase,fructaid}, lifestyle-{milch,fructaid,oligase}
 │   └── products/           # Packshots: lactrase.jpg, fructaid.png, oligase.png, lactrase-lineup.png
 ├── README.md           # Kurzanleitung (Hosting/Anpassen)
 └── CLAUDE.md           # diese Datei
 ```
+
+> Hinweis: **News-Sektion entfernt** (war veraltet, Stand 2024). „Zu unseren Marken" steht
+> bewusst VOR „Unsere Mission". Die Firmengeschichte/Timeline liegt auf `ueber-uns.html`.
 
 **🚀 DEPLOYMENT (WICHTIG!):** Die Live-Seite (`arielwyrobnik.github.io`) deployt von Branch
 **`claude/clever-faraday-9e5sjw`**. Es gibt KEINEN `main`-Branch. Änderungen NUR sichtbar,
@@ -82,40 +85,59 @@ wenn sie auf `clever-faraday` landen (per Merge). Auf `claude/optimistic-pasteur
 (System-Default) wird ebenfalls committet, dann nach `clever-faraday` gemerged + gepusht.
 → Wenn der Nutzer „ich sehe nichts" sagt: prüfen, ob `clever-faraday` aktuell ist.
 
-**Designsprache:** Die **Seitenstruktur folgt 1:1 der Original-Website** (Nutzerwunsch),
-nur sauberer/moderner umgesetzt. Reihenfolge Startseite: Hero („Verträglich. Genussvoll.
-Gesund.") → Unsere Mission (Bild + Text) → News (3 Karten) → Zu unseren Marken (3
-Bild-Linkboxen → Produktseiten) → Distributor-CTA-Banner → Kontakt. **Bewusst neutrale
-Palette** – Anthrazit (`#1B1E22`) + Grautöne auf Weiß, KEINE durchgehende Markenfarbe;
-Buttons/Links anthrazit. Farbe kommt nur aus den Produktfotos. Display-Serif (Fraunces) +
-Sans (Plus Jakarta Sans). Bild-getrieben statt Deko-Icons.
+**Designsprache:** Struktur an der Original-Website orientiert, sauberer/moderner umgesetzt.
+**Bewusst neutrale Basis-Palette** – Anthrazit (`#1B1E22`) + Grautöne auf Weiß, KEINE
+durchgehende Markenfarbe; Buttons/Links anthrazit. Farbe kommt aus den Produktfotos und den
+**Produkt-Signaturfarben** (siehe unten). Display-Serif (Fraunces) + Sans (Plus Jakarta
+Sans). Bild-getrieben statt Deko-Icons. Hintergrund **weiß**.
 
-> ⚠️ Nutzer-Vorgaben (hart): **1:1 Original-Struktur, nur cleaner.** Neutral halten, keine
-> einzelne Farbe die sich durchzieht. Kein Blatt/abstrakte Deko. Keine riesigen Icons
-> (immer Container + `svg { width/height }`). Professionell, nicht „nach KI".
+**Produkt-Signaturfarben** (aus den echten Verpackungs-Tiles ausgelesen; überall konsistent
+verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
+- Lactrase = **Blau `#3AB3E0`** · Oligase = **Dunkelgrün `#407740`** · Fructaid = **Lime `#C1DB5E`**
+  (Strahl-Linie Fructaid minimal kräftiger `#B3D24A`, sonst auf Weiß zu blass).
+- Produkt-Detailseiten nutzen je einen kräftigeren Akzent (kontrastsicher für Text/Buttons):
+  Lactrase `#0A6AA1`, Fructaid `#5E9B1F`, Oligase `#2F6B3A`.
+
+**Interaktive Effekte (alle in `js/main.js`, neutral/dezent):**
+- **Hero-Vollbild:** Hero füllt beim Laden `100svh` und schrumpft beim ersten Scrollen
+  EINMALIG auf normale Höhe (`.hero.is-collapsed`, kein Wieder-Aufklappen oben).
+- **Produkt-Strahlen:** 3 SVG-Linien (`.rays`/`.ray--*`) sprießen aus den Hero-Produkten und
+  zeichnen sich beim Scrollen (stroke-dashoffset). Pfade werden per JS aus echten Element-
+  positionen berechnet (Hero → Marken-Karten → Distributor) und bei Resize/Hero-Collapse neu
+  gebaut. Die Strahlen liegen HINTER Karten/Text (z-index) → verschwinden hinter den
+  Marken-Karten und tauchen in den Zwischenräumen wieder auf. Hero-Bild bleibt dahinter
+  (Ursprung).
+- **Colorize/Fülleffekt:** Marken-Fotos starten entsättigt (`grayscale`) und färben sich,
+  sobald der Strahl/die Karte in den Viewport scrollt (`.brand-card.is-lit`). Der
+  **Distributor-Banner** (`.cta-banner--waves`) startet schwarz und blendet seine 3
+  Signaturfarben (vertikale Wellen) ein, sobald die Strahlen eintreffen (`.is-lit`).
+- **Footer-Welle:** einzelne Wellen-Silhouette (wie Etikett/Original) als Inline-Data-URI
+  oben am Footer. (Original-Wave-SVG rendert NICHT als CSS-Background → clipPath/Transforms.)
+
+> ⚠️ Nutzer-Vorgaben (hart): Neutrale Basis, keine einzelne Farbe die sich durchzieht; Farbe
+> nur kontextbezogen aus den Produkten. Kein Blatt/abstrakte Deko. Keine riesigen Icons
+> (immer Container + `svg { width/height }`). Professionell, nicht „nach KI". Bei
+> Marken-Tiles: Original-Bilder randlos zeigen (kein Beschnitt/keine Naht).
 
 ---
 
 ## 4. Offene Punkte / TODO (für die Zukunft)
 
-**✅ ERLEDIGT (diese Session): Angleichung ans Original.** Egress war frei
-(`pro-natura-gmbh.de` u.a. per `curl` erreichbar, kein „Host not in allowlist" mehr):
-1. **Logo + Favicon** vom Original geladen → `assets/logo-original.png` (dunkle Wortmarke
-   „pronatura®"), `assets/logo-white.png` (Footer), `assets/favicon-32/180/192.png`.
-   Alte SVG-Platzhalter entfernt, HTML-Einbindungen (index/impressum/datenschutz) aktualisiert.
-2. **Original-Farbtöne** aus `app/themes/pronatura/main.css` ausgelesen → Palette in
-   `css/styles.css` (`:root`) auf **Petrol/Teal** umgestellt: Primär `#0087A2`, dunkel
-   `#0D4554`, tiefstes Petrol `#06303B`, Soft-Fläche `#E3F3F8`; Akzent frisches Grün
-   `#4EA432` + Limegrün `#A3D109`. Text `#2E2E2E`. (Variablennamen `--forest-*`/`--green-*`
-   beibehalten, nur Werte geändert.)
-3. **Produktfotos** geladen → `assets/products/lactrase.jpg`, `fructaid.png`, `oligase.png`;
-   in die Produktkarten (`.product-card__media`) statt der SVG-Icons eingebaut. Accentfarben
-   je Karte an die echten Verpackungen angepasst.
-4. **Texte näher ans Original**: Hero-Claim „Verträglich. Genussvoll. Gesund.", Über-uns-Mission
-   (1994/Preis-Leistung), Produkttexte (Lactrase = meistverkauft seit 23 J., Fructaid =
-   patentiertes Medizinprodukt, Oligase = FODMAP-Enzymmischung), Footnote „Quelle: IQVIA".
-   Optik bleibt modern, Hintergrund **weiß**.
-5. ⚠️ **Pektinkapseln** weiterhin NICHT aufgenommen.
+**✅ ERLEDIGT (mehrere Sessions):**
+1. **Original-Assets** geladen: Logo (`assets/logo-original.png`, hochauflösend, Footer per
+   CSS auf Weiß invertiert), Favicons, echte Produktfotos/Tiles, Hero-Composite, Büro-Foto.
+2. **Palette:** zuerst auf Petrol/Teal (Original) umgestellt, dann auf **NEUTRAL** (Anthrazit
+   `#1B1E22` + Grau auf Weiß) umgebaut – auf ausdrücklichen Nutzerwunsch („keine Farbe die
+   sich durchzieht"). Farbe heute nur kontextbezogen aus den Produkten (siehe Signaturfarben).
+   Variablennamen `--forest-*`/`--green-*` historisch beibehalten, Werte = Neutraltöne.
+3. **Struktur neu** an Original angelehnt + Produktfokus: Marken-Linkboxen → eigene
+   Produkt-Detailseiten; eigene `ueber-uns.html` mit Geschichte/Timeline; News entfernt;
+   Reihenfolge Marken → Mission. Lactrase-Detailseite zeigt **alle Stärken** (1.500–32.000 FCC).
+4. **Texte** näher ans Original (Hero-Claim „Verträglich. Genussvoll. Gesund.", Mission 1994,
+   Produkttexte, „Quelle: IQVIA").
+5. **Interaktion** ergänzt: Hero-Vollbild-Collapse, Produkt-Strahlen, Colorize/Fülleffekt,
+   Footer-Welle, farbiger Distributor-Banner (siehe Abschnitt 3, „Interaktive Effekte").
+6. ⚠️ **Pektinkapseln** weiterhin NICHT aufgenommen.
 
 **Inhalte & Recht (wichtig, vor Go-Live):**
 - [x] **Echte Produktfotos / Packshots** der Präparate eingebaut (`assets/products/`).
