@@ -114,48 +114,102 @@
              cx: r.left - m.left + r.width / 2 };
   }
 
-  function mkPath(p1, p2, p3) {
-    var d1 = p2.y - p1.y, d2 = p3.y - p2.y;
-    function n(v) { return v.toFixed(1); }
-    return 'M' + n(p1.x) + ' ' + n(p1.y)
-      + ' C' + n(p1.x) + ' ' + n(p1.y + d1 * 0.45) + ' ' + n(p2.x) + ' ' + n(p2.y - d1 * 0.45) + ' ' + n(p2.x) + ' ' + n(p2.y)
-      + ' C' + n(p2.x) + ' ' + n(p2.y + d2 * 0.45) + ' ' + n(p3.x) + ' ' + n(p3.y - d2 * 0.45) + ' ' + n(p3.x) + ' ' + n(p3.y);
+  function fmt(v) { return v.toFixed(1); }
+
+  function mkPath(points) {
+    if (!points.length) return '';
+    var d = 'M' + fmt(points[0].x) + ' ' + fmt(points[0].y);
+    for (var i = 1; i < points.length; i++) {
+      var a = points[i - 1], b = points[i];
+      var dx = b.x - a.x, dy = b.y - a.y;
+      // Smooth vertical ribbons without forcing a straight drop through content.
+      d += ' C' + fmt(a.x + dx * 0.18) + ' ' + fmt(a.y + dy * 0.52)
+        + ' ' + fmt(b.x - dx * 0.18) + ' ' + fmt(b.y - dy * 0.52)
+        + ' ' + fmt(b.x) + ' ' + fmt(b.y);
+    }
+    return d;
   }
+
+  function progressAtY(startY, endY) {
+    return Math.min(1, Math.max(0, (window.scrollY - startY) / Math.max(1, endY - startY)));
+  }
+
+  var hasArrived = false;
 
   function build() {
     var m = main.getBoundingClientRect();
     svg.setAttribute('viewBox', '0 0 ' + Math.round(m.width) + ' ' + Math.round(m.height));
     var h = rel(heroImg), c0 = rel(cards[0]), c1 = rel(cards[1]), c2 = rel(cards[2]), d = rel(distrib);
-    var hy = h.y + h.h * 0.60;
-    var heroL = { x: h.x + h.w * 0.30, y: hy }; // Fructaid links
-    var heroC = { x: h.x + h.w * 0.50, y: hy }; // Lactrase mitte
-    var heroR = { x: h.x + h.w * 0.72, y: hy }; // Oligase rechts
-    function cardA(c) { return { x: c.cx, y: c.y + c.h * 0.20 }; }
-    var dy = d.y + d.h * 0.5;
+
+    // Startpunkte liegen sehr tief am Composite, damit keine Linie in den
+    // transparenten Zwischenräumen der Packshots wie „aus der Mitte” austritt.
+    var startY = h.y + h.h * 0.91;
+    var heroL = { x: h.x + h.w * 0.30, y: startY };
+    var heroC = { x: h.x + h.w * 0.53, y: startY };
+    var heroR = { x: h.x + h.w * 0.74, y: startY };
+    function cardA(c) { return { x: c.cx, y: c.y + c.h * 0.12 }; }
+    function below(c) { return { x: c.cx, y: c.y + c.h + Math.min(80, c.h * 0.18) }; }
+    var dy = d.y + d.h * 0.54;
     var dL = { x: d.x + d.w / 6, y: dy }, dM = { x: d.x + d.w / 2, y: dy }, dR = { x: d.x + d.w * 5 / 6, y: dy };
-    rays.lactrase.setAttribute('d', mkPath(heroC, cardA(c0), dL));
-    rays.oligase.setAttribute('d', mkPath(heroR, cardA(c1), dM));
-    rays.fructaid.setAttribute('d', mkPath(heroL, cardA(c2), dR));
+    var offLeft = -90;
+    var offRight = m.width + 90;
+    var reentryY = d.y - 34;
+
+    // Die Mission-Sektion bleibt frei: Nach den Karten werden die Strahlen in
+    // einem kurzen Bogen aus dem sichtbaren Bereich geführt und tauchen erst
+    // direkt über dem Distributor-Balken wieder auf.
+    rays.lactrase.setAttribute('d',
+      mkPath([heroC, cardA(c0), below(c0), { x: offLeft, y: below(c0).y + 110 }])
+      + ' ' + mkPath([{ x: offLeft, y: reentryY }, { x: dL.x, y: d.y + 6 }, dL]));
+    rays.oligase.setAttribute('d',
+      mkPath([heroR, cardA(c1), below(c1), { x: offLeft, y: below(c1).y + 170 }])
+      + ' ' + mkPath([{ x: offLeft, y: reentryY + 18 }, { x: dM.x, y: d.y + 6 }, dM]));
+    rays.fructaid.setAttribute('d',
+      mkPath([heroL, cardA(c2), below(c2), { x: offRight, y: below(c2).y + 120 }])
+      + ' ' + mkPath([{ x: offRight, y: reentryY }, { x: dR.x, y: d.y + 6 }, dR]));
     ['lactrase', 'oligase', 'fructaid'].forEach(function (k) {
       var p = rays[k], len = p.getTotalLength();
-      p._len = len; p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+      p._len = len; p.style.strokeDasharray = len; p.style.strokeDashoffset = hasArrived ? 0 : len;
     });
     update();
   }
 
   function update() {
     var mRect = main.getBoundingClientRect();
-    var distPageY = mRect.top + window.scrollY + rel(distrib).y;
-    var end = distPageY - window.innerHeight * 0.6;
-    var prog = end > 0 ? Math.min(1, Math.max(0, window.scrollY / end)) : 1;
+    var pageTop = mRect.top + window.scrollY;
+    var distPageY = pageTop + rel(distrib).y;
+    var start = pageTop + rel(heroImg).y - window.innerHeight * 0.15;
+    var end = distPageY - window.innerHeight * 0.62;
+    var prog = progressAtY(start, end);
+
+    if (hasArrived) {
+      wrap.classList.add('is-swallowed');
+      cards.forEach(function (card) { card.classList.add('is-lit'); });
+      distrib.classList.add('is-lit');
+      return;
+    }
+
     ['lactrase', 'oligase', 'fructaid'].forEach(function (k) {
       var p = rays[k]; if (p._len != null) p.style.strokeDashoffset = (p._len * (1 - prog)).toFixed(1);
     });
-    if (prog > 0.9) distrib.classList.add('is-lit'); else distrib.classList.remove('is-lit');
-    // Marken-Fotos einfärben, sobald ein Strahl die Karte erreicht (in den Viewport scrollt)
+
+    // Die Farbigkeit erscheint erst, wenn der gezeichnete Strahl seine jeweilige Karte erreicht.
     for (var i = 0; i < cards.length; i++) {
-      if (cards[i].getBoundingClientRect().top < window.innerHeight * 0.72) cards[i].classList.add('is-lit');
+      var cardPageY = pageTop + rel(cards[i]).y;
+      var cardProg = progressAtY(start, cardPageY - window.innerHeight * 0.62);
+      if (cardProg >= 0.98) cards[i].classList.add('is-lit');
       else cards[i].classList.remove('is-lit');
+    }
+
+    if (prog >= 0.985 || distrib.getBoundingClientRect().top < window.innerHeight * 0.64) {
+      hasArrived = true;
+      wrap.classList.add('is-swallowed');
+      cards.forEach(function (card) { card.classList.add('is-lit'); });
+      distrib.classList.add('is-lit');
+    } else if (prog > 0.92) {
+      distrib.classList.add('is-lit');
+    } else {
+      distrib.classList.remove('is-lit');
     }
   }
 

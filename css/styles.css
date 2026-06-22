@@ -371,6 +371,7 @@ main { position: relative; }
    Original-Struktur — saubere Komponenten (Hero-Image, Mission, News,
    Marken-Linkboxen, CTA-Banner). Bild-getrieben, neutral.
    ===================================================================== */
+.hero__image { position: relative; z-index: 6; }
 .hero__image img { width: 100%; height: auto; object-fit: contain; filter: drop-shadow(0 24px 40px rgba(20,23,26,.14)); }
 
 .media-split__img.is-wide { aspect-ratio: 4 / 3; }
@@ -425,13 +426,14 @@ main { position: relative; }
 /* ----------------------------------------------------- Produkt-Strahlen */
 .rays { position: absolute; inset: 0; z-index: 4; pointer-events: none; overflow: hidden; }
 .rays svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
-.ray { fill: none; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; opacity: .92; }
+.ray { fill: none; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; opacity: .92; transition: opacity .45s ease; }
 .ray--lactrase { stroke: #3ab3e0; }
 .ray--oligase  { stroke: #407740; }
 .ray--fructaid { stroke: #b3d24a; }
+.rays.is-swallowed .ray { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .rays { display: none; } }
 /* Strahlen (z-index 4) verschwinden HINTER Inhalten und tauchen in den
-   Zwischenräumen wieder auf. Hero-Bild bleibt unter den Strahlen (Ursprung). */
+   Zwischenräumen wieder auf. Hero-Bild liegt darüber, damit die Strahlen hinter den Packshots starten. */
 .brand-card, .section-head, .media-split, .hero__copy { position: relative; z-index: 6; }
 /* Marken-Fotos: starten entsättigt und färben sich, sobald die Strahlen eintreffen */
 .brand-card__img img { transition: filter .8s ease; }
