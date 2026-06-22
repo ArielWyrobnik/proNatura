@@ -78,6 +78,7 @@ ul { padding: 0; list-style: none; }
 /* ----------------------------------------------------------------- Layout */
 .container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: clamp(1.2rem, 4vw, 2.5rem); }
 section { position: relative; }
+main { position: relative; }
 .section-pad { padding-block: clamp(4.5rem, 9vw, 8rem); }
 
 .eyebrow {
@@ -413,9 +414,22 @@ section { position: relative; }
 .btn--light:hover { background: #f1f2f4; }
 
 /* Distributor-Bar: 3 Produkt-Signaturfarben, getrennt durch fließende vertikale Wellen */
-.cta-banner--waves { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Crect width='1200' height='300' fill='%236cc3e8'/%3E%3Cpath d='M400,0 C520,90 280,210 400,300 L1200,300 L1200,0 Z' fill='%232f6b3a'/%3E%3Cpath d='M800,0 C920,90 680,210 800,300 L1200,300 L1200,0 Z' fill='%2393c64a'/%3E%3C/svg%3E"); background-size: 100% 100%; background-repeat: no-repeat; }
-.cta-banner--waves h2 { text-shadow: 0 1px 2px rgba(8,12,16,.55), 0 3px 22px rgba(8,12,16,.45); }
-.cta-banner--waves p { color: #fff; text-shadow: 0 1px 2px rgba(8,12,16,.55), 0 3px 18px rgba(8,12,16,.45); }
+/* Standardmäßig schwarz; die Farben blenden ein (::after), sobald die Strahlen
+   eintreffen (Klasse .is-lit per JS). */
+.cta-banner--waves::after { content: ""; position: absolute; inset: 0; z-index: 0; border-radius: inherit; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Crect width='1200' height='300' fill='%236cc3e8'/%3E%3Cpath d='M400,0 C520,90 280,210 400,300 L1200,300 L1200,0 Z' fill='%232f6b3a'/%3E%3Cpath d='M800,0 C920,90 680,210 800,300 L1200,300 L1200,0 Z' fill='%2393c64a'/%3E%3C/svg%3E"); background-size: 100% 100%; background-repeat: no-repeat; opacity: 0; transition: opacity 1s ease; pointer-events: none; }
+.cta-banner--waves.is-lit::after { opacity: 1; }
+.cta-banner--waves .cta-banner__text, .cta-banner--waves .btn { position: relative; z-index: 1; }
+.cta-banner--waves.is-lit h2 { text-shadow: 0 1px 2px rgba(8,12,16,.55), 0 3px 22px rgba(8,12,16,.45); }
+.cta-banner--waves.is-lit p { text-shadow: 0 1px 2px rgba(8,12,16,.55), 0 3px 18px rgba(8,12,16,.45); }
+
+/* ----------------------------------------------------- Produkt-Strahlen */
+.rays { position: absolute; inset: 0; z-index: 4; pointer-events: none; overflow: hidden; }
+.rays svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
+.ray { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; opacity: .9; }
+.ray--lactrase { stroke: #3f9fd6; }
+.ray--oligase  { stroke: #3f8a45; }
+.ray--fructaid { stroke: #8cc63f; }
+@media (prefers-reduced-motion: reduce) { .rays { display: none; } }
 
 /* --------------------------------------------------------- Legal subpages */
 .legal { padding-top: clamp(7rem, 14vw, 10rem); }
