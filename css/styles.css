@@ -279,8 +279,8 @@ section { position: relative; }
 .form__status.is-ok { display: block; color: var(--forest-600); }
 
 /* ----------------------------------------------------------------- Footer */
-.site-footer { position: relative; background: linear-gradient(to bottom, transparent 60px, var(--forest-900) 60px); color: rgba(255,255,255,.72); padding-top: calc(70px + clamp(2.5rem, 5vw, 4rem)); padding-bottom: 2rem; }
-.site-footer::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 70px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'%3E%3Cpath d='M0,34 C260,34 420,2 680,4 C1000,7 1180,32 1440,32 L1440,70 L0,70 Z' fill='%233a4046'/%3E%3Cpath d='M0,42 C260,42 420,10 680,12 C1000,15 1180,40 1440,40 L1440,70 L0,70 Z' fill='%2315181b'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 50% bottom; background-size: 100% 100%; pointer-events: none; }
+.site-footer { position: relative; background: linear-gradient(to bottom, transparent 66px, var(--forest-900) 66px); color: rgba(255,255,255,.72); padding-top: calc(80px + clamp(2.5rem, 5vw, 4rem)); padding-bottom: 2rem; }
+.site-footer::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 78px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 78' preserveAspectRatio='none'%3E%3Cpath d='M0,33 C190,33 310,1 460,1 C820,5 1180,45 1440,55 L1440,78 L0,78 Z' fill='%233a4046'/%3E%3Cpath d='M0,40 C190,40 310,7 460,8 C820,12 1180,52 1440,62 L1440,78 L0,78 Z' fill='%2315181b'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 50% bottom; background-size: 100% 100%; pointer-events: none; }
 .footer__grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 2.5rem; }
 .footer__brand p { margin-top: 1.1rem; font-size: .95rem; max-width: 30ch; }
 .footer__logo img { height: 30px; width: auto; filter: brightness(0) invert(1); }
@@ -411,12 +411,10 @@ section { position: relative; }
 .btn--light { background: #fff; color: var(--ink); }
 .btn--light:hover { background: #f1f2f4; }
 
-/* Distributor-Bar: 3 Produkt-Signaturfarben, getrennt durch je EINE sanfte vertikale Welle */
-.cta-banner--waves { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Crect width='1200' height='300' fill='%236cc3e8'/%3E%3Cpath d='M400,0 C456,100 456,200 400,300 L1200,300 L1200,0 Z' fill='%232f6b3a'/%3E%3Cpath d='M800,0 C744,100 744,200 800,300 L1200,300 L1200,0 Z' fill='%2393c64a'/%3E%3C/svg%3E"); background-size: 100% 100%; background-repeat: no-repeat; }
-.cta-banner--waves::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(15,18,21,.6), rgba(15,18,21,.32) 45%, rgba(15,18,21,.08) 75%); z-index: 0; pointer-events: none; }
-.cta-banner--waves .cta-banner__text, .cta-banner--waves .btn { position: relative; z-index: 1; }
-.cta-banner--waves h2 { text-shadow: 0 2px 14px rgba(8,12,16,.5); }
-.cta-banner--waves p { color: #fff; text-shadow: 0 1px 10px rgba(8,12,16,.5); }
+/* Distributor-Bar: 3 Produkt-Signaturfarben, getrennt durch fließende vertikale Wellen */
+.cta-banner--waves { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Crect width='1200' height='300' fill='%236cc3e8'/%3E%3Cpath d='M400,0 C520,90 280,210 400,300 L1200,300 L1200,0 Z' fill='%232f6b3a'/%3E%3Cpath d='M800,0 C920,90 680,210 800,300 L1200,300 L1200,0 Z' fill='%2393c64a'/%3E%3C/svg%3E"); background-size: 100% 100%; background-repeat: no-repeat; }
+.cta-banner--waves h2 { text-shadow: 0 1px 2px rgba(8,12,16,.55), 0 3px 22px rgba(8,12,16,.45); }
+.cta-banner--waves p { color: #fff; text-shadow: 0 1px 2px rgba(8,12,16,.55), 0 3px 18px rgba(8,12,16,.45); }
 
 /* --------------------------------------------------------- Legal subpages */
 .legal { padding-top: clamp(7rem, 14vw, 10rem); }
