@@ -127,7 +127,7 @@
   --lh-tight:   1.08;
   --lh-snug:    1.22;
   --lh-body:    1.68;
-  --measure:    66ch;
+  --measure:    40rem;  /* ~72 Zeichen bei 17px – 'ch' ist in dieser Schrift sehr breit */
 
   /* --- Abstände: eine Skala für alle Sektionen und Raster. */
   --section-y:     clamp(4rem, 2.2rem + 6vw, 7.5rem);
@@ -761,7 +761,7 @@ body.is-locked .site-header {
 .field--check label a:hover { text-decoration-color: currentColor; }
 .field--check .field__error { margin-left: 0; }
 
-.form__note { font-size: var(--fs-xs); color: var(--ink-muted); margin-top: .9rem; line-height: 1.55; }
+.form__note { font-size: var(--fs-xs); color: var(--ink-muted); margin-top: .9rem; line-height: 1.55; max-width: 34rem; }
 .form__status {
   display: none; align-items: flex-start; gap: .6rem;
   margin-top: 1.1rem; padding: .85rem 1rem;
@@ -1000,11 +1000,19 @@ html.js [data-reveal][data-delay="3"] { transition-delay: .21s; }
   :root { --container: 1280px; }
 }
 
-/* Kleine Desktops / große Tablets */
+/* Kleine Desktops / große Tablets: Produkt-Kopf bleibt zweispaltig, solange
+   beide Spalten genug Breite haben – sonst steht der Packshot allein im Feld. */
 @media (max-width: 1100px) {
-  .pdp__hero, .pdp__split { grid-template-columns: 1fr; }
-  .pdp__media { max-width: 480px; }
+  .pdp__hero { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
+  .pdp__split { grid-template-columns: 1fr; }
   .pdp__copy .pdp__lead { max-width: none; }
+}
+@media (max-width: 900px) {
+  .pdp__hero { grid-template-columns: 1fr; }
+  /* Linksbündig, damit die Kante des Packshot-Panels auf der Textkante sitzt. */
+  .pdp__media { max-width: 460px; }
+  /* Einspaltig braucht der Vorspann wieder eine lesbare Zeilenlänge. */
+  .pdp__copy .pdp__lead { max-width: 42rem; }
 }
 
 /* Tablet: dreispaltige Raster brechen sauber, keine „2 + 1“-Waisen. */
@@ -1013,7 +1021,10 @@ html.js [data-reveal][data-delay="3"] { transition-delay: .21s; }
   .hero__image { max-width: 420px; margin-inline: auto; width: 100%; }
   .hero__lead { max-width: 46ch; }
 
-  .contact__grid, .media-split, .media-split--offset { grid-template-columns: 1fr; }
+  /* Einspaltig bekommt der Kontaktblock eine Breite, in der Eingabefelder
+     noch bedienbar und Zeilen noch lesbar sind. */
+  .contact__grid { grid-template-columns: 1fr; max-width: 42rem; margin-inline: auto; }
+  .media-split, .media-split--offset { grid-template-columns: 1fr; }
   .media-split__img { max-width: 560px; margin-inline: auto; width: 100%; }
 
   /* Marken-Karten werden zu breiten Zeilen – bewusst gestaltet, kein Restzustand.
