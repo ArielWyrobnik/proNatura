@@ -5,22 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pro Natura – Enzympräparate bei Nahrungsmittelunverträglichkeiten</title>
   <meta name="description" content="Pro Natura entwickelt seit 1994 hochwertige Enzympräparate für Menschen mit Laktose-, Fructose- und Oligosaccharid-Unverträglichkeit. Unbeschwert essen mit Lactrase®, Fructaid® und Oligase®." />
-  <meta name="theme-color" content="#1b1e22" />
+  <meta name="theme-color" content="#ffffff" />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png" />
   <link rel="apple-touch-icon" href="assets/favicon-180.png" />
   <link rel="canonical" href="https://www.pro-natura-gmbh.de/" />
 
-  <!-- Open Graph -->
+  <!-- Open Graph / Social -->
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.pro-natura-gmbh.de/" />
+  <meta property="og:site_name" content="Pro Natura" />
   <meta property="og:title" content="Pro Natura – Unbeschwert essen trotz Unverträglichkeit" />
   <meta property="og:description" content="Hochwertige Enzympräparate aus Bad Vilbel: Lactrase®, Fructaid® und Oligase®. Seit 1994." />
   <meta property="og:locale" content="de_DE" />
+  <meta property="og:image" content="https://www.pro-natura-gmbh.de/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Schriften lokal gehostet (DSGVO): kein externer Request. -->
+  <link rel="preload" href="assets/fonts/plus-jakarta-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/fraunces-normal-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="css/styles.css" />
+  <script>document.documentElement.classList.add('js');</script>
 
   <script type="application/ld+json">
   {
@@ -28,9 +35,11 @@
     "@type": "Organization",
     "name": "Pro Natura Gesellschaft für gesunde Ernährung mbH",
     "url": "https://www.pro-natura-gmbh.de",
+    "logo": "https://www.pro-natura-gmbh.de/assets/logo-original.png",
     "foundingDate": "1994",
     "email": "info@pro-natura-gmbh.de",
     "telephone": "+49 6101 80272910",
+    "faxNumber": "+49 6101 80272963",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Konrad-Adenauer-Allee 8-10",
@@ -43,44 +52,63 @@
 </head>
 <body>
 
+  <a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
+
   <!-- ============================================================ HEADER -->
   <header class="site-header" id="header">
-    <div class="container">
-      <nav class="nav" id="nav" aria-label="Hauptnavigation">
-        <a href="#top" class="nav__logo" aria-label="pronatura – Startseite">
-          <img src="assets/logo-original.png" alt="pronatura" width="141" height="30" />
-        </a>
-        <ul class="nav__links">
-          <li><a href="ueber-uns.html">Über uns</a></li>
-          <li><a href="#marken">Produkte</a></li>
-          <li><a href="#kontakt">Kontakt</a></li>
+    <div class="container site-header__inner">
+      <a href="index.html" class="brand" aria-label="pronatura – Startseite">
+        <img src="assets/logo-original.png" alt="pronatura" width="141" height="30" />
+      </a>
+
+      <nav class="primary-nav" id="primaryNav" aria-label="Hauptnavigation">
+        <ul class="primary-nav__list">
+          <li><a class="primary-nav__link" href="ueber-uns.html">Über uns</a></li>
+          <li>
+            <button type="button" class="primary-nav__trigger" id="brandsTrigger" aria-expanded="false" aria-controls="brandsMenu">
+              Produkte
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="brand-menu" id="brandsMenu" hidden>
+              <a class="brand-menu__item is-lactrase" href="lactrase.html">
+                <span class="brand-menu__dot" aria-hidden="true"></span>
+                <span><strong>Lactrase<sup>®</sup></strong><small>Bei Laktoseintoleranz</small></span>
+              </a>
+              <a class="brand-menu__item is-oligase" href="oligase.html">
+                <span class="brand-menu__dot" aria-hidden="true"></span>
+                <span><strong>Oligase<sup>®</sup> 600</strong><small>Bei blähenden Lebensmitteln</small></span>
+              </a>
+              <a class="brand-menu__item is-fructaid" href="fructaid.html">
+                <span class="brand-menu__dot" aria-hidden="true"></span>
+                <span><strong>Fructaid<sup>®</sup></strong><small>Bei Fructose-Malabsorption</small></span>
+              </a>
+            </div>
+          </li>
         </ul>
-        <div class="nav__actions">
-          <a href="#kontakt" class="btn btn--primary">Kontakt</a>
-          <button class="nav__toggle" id="navToggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="nav">
-            <span></span><span></span><span></span>
-          </button>
+        <div class="primary-nav__cta">
+          <a class="btn btn--primary btn--sm" href="#kontakt">Kontakt aufnehmen</a>
         </div>
       </nav>
+
+      <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="primaryNav" aria-label="Menü öffnen">
+        <span class="nav-toggle__bars" aria-hidden="true"><span></span><span></span></span>
+      </button>
     </div>
   </header>
+  <div class="nav-backdrop" aria-hidden="true"></div>
 
-  <main id="top">
+  <main id="inhalt">
 
-    <!-- Produkt-Strahlen (Scroll-Effekt); Pfade werden per JS berechnet -->
-    <div class="rays" aria-hidden="true">
-      <svg xmlns="http://www.w3.org/2000/svg">
-        <path class="ray ray--fructaid" d="" />
-        <path class="ray ray--oligase" d="" />
-        <path class="ray ray--lactrase" d="" />
-      </svg>
+    <!-- Produkt-Strahlen (Scroll-Erzählung); Geometrie kommt aus js/main.js -->
+    <div class="rays" aria-hidden="true" hidden>
+      <svg xmlns="http://www.w3.org/2000/svg"></svg>
     </div>
 
     <!-- ============================================================ HERO -->
     <section class="hero">
       <div class="container hero__grid">
         <div class="hero__copy">
-          <span class="hero__badge" data-reveal><b>Seit 1994</b> Apothekenqualität aus Bad Vilbel</span>
+          <span class="hero__badge" data-reveal><b>Seit 1994</b> Apothekenqualität aus Bad&nbsp;Vilbel</span>
           <h1 data-reveal data-delay="1">Verträglich.<br />Genussvoll.<br /><em>Gesund.</em></h1>
           <p class="hero__lead" data-reveal data-delay="2">
             Innovative Enzympräparate, mit denen Menschen mit Lebensmittel­unverträglichkeiten
@@ -92,51 +120,101 @@
           </div>
         </div>
         <div class="hero__image" data-reveal data-delay="2">
-          <img src="assets/img/hero-products.png" alt="Lactrase®, Fructaid® und Oligase® 600" width="760" height="760" />
+          <picture>
+            <source srcset="assets/img/hero-products.webp" type="image/webp" />
+            <img src="assets/img/hero-products.png" alt="Die Produkte Fructaid®, Lactrase® und Oligase® 600 nebeneinander" width="768" height="768" fetchpriority="high" decoding="async" />
+          </picture>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================== VERTRAUENSBAND -->
+    <section class="trust-bar" aria-label="Auf einen Blick">
+      <div class="container trust-bar__inner">
+        <div class="trust-bar__item">
+          <i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.3-2.9 8.1-7 9.3C7.9 19.1 5 15.3 5 11V6l7-3z"/><path d="M9.3 12.1l1.9 1.9 3.6-3.7"/></svg></i>
+          <div>
+            <strong>Seit 1994</strong>
+            <span>Apothekenqualität aus Bad Vilbel</span>
+          </div>
+        </div>
+        <div class="trust-bar__item">
+          <i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M4 12h16"/><circle cx="12" cy="12" r="9"/></svg></i>
+          <div>
+            <strong>In Apotheken erhältlich</strong>
+            <span>Für jede Unverträglichkeit das passende Präparat</span>
+          </div>
+        </div>
+        <div class="trust-bar__item">
+          <i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4"/><path d="M17 4H7v5a5 5 0 0010 0V4z"/><path d="M17 5h3v2a3 3 0 01-3 3M7 5H4v2a3 3 0 003 3"/></svg></i>
+          <div>
+            <strong>Nr. 1 bei Lactasepräparaten*</strong>
+            <span>Meistverkaufte Marke in der Apotheke. Quelle: IQVIA</span>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ========================================================== MARKEN -->
-    <section class="section-pad" id="marken">
+    <section class="section-pad" id="marken" aria-labelledby="marken-titel">
       <div class="container">
         <div class="section-head center" data-reveal>
           <span class="eyebrow">Unsere Marken</span>
-          <h2>Zu unseren Marken</h2>
+          <h2 id="marken-titel">Zu unseren Marken</h2>
           <p>Für jede Unverträglichkeit das passende Präparat – natürlich, gut verträglich und in
             Apotheken erhältlich.</p>
         </div>
         <div class="brand-grid">
-          <a class="brand-card" href="lactrase.html" data-reveal>
-            <div class="brand-card__img"><img src="assets/img/brand-lactrase.jpg" alt="Lactrase®" width="500" height="425" loading="lazy" /></div>
+          <a class="brand-card is-lactrase" href="lactrase.html" data-reveal>
+            <div class="brand-card__img">
+              <picture>
+                <source srcset="assets/img/brand-lactrase.webp" type="image/webp" />
+                <img src="assets/img/brand-lactrase.jpg" alt="Lactrase® Verpackungen" width="500" height="425" loading="lazy" decoding="async" />
+              </picture>
+            </div>
             <div class="brand-card__body">
               <h3>Lactrase<sup>®</sup></h3>
+              <p class="brand-card__claim">Bei Laktoseintoleranz</p>
               <p>Sind Sie laktoseintolerant? Seit über 23 Jahren die meistverkaufte Marke im Segment
                 Lactasepräparate in der Apotheke.*</p>
-              <span class="brand-card__more">Mehr erfahren
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <span class="link-arrow">Mehr erfahren
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               </span>
             </div>
           </a>
-          <a class="brand-card" href="oligase.html" data-reveal data-delay="1">
-            <div class="brand-card__img"><img src="assets/img/brand-oligase.jpg" alt="Oligase® 600" width="500" height="425" loading="lazy" /></div>
+
+          <a class="brand-card is-oligase" href="oligase.html" data-reveal data-delay="1">
+            <div class="brand-card__img">
+              <picture>
+                <source srcset="assets/img/brand-oligase.webp" type="image/webp" />
+                <img src="assets/img/brand-oligase.jpg" alt="Oligase® 600 Verpackungen" width="500" height="425" loading="lazy" decoding="async" />
+              </picture>
+            </div>
             <div class="brand-card__body">
               <h3>Oligase<sup>®</sup> 600</h3>
+              <p class="brand-card__claim">Bei blähenden Lebensmitteln</p>
               <p>Sie wollen Hülsenfrüchte, Gemüse und Vollkornprodukte genießen? Ihre Enzymmischung
                 zum Spalten unverdaulicher FODMAP Oligo- und Polysaccharide.</p>
-              <span class="brand-card__more">Mehr erfahren
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <span class="link-arrow">Mehr erfahren
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               </span>
             </div>
           </a>
-          <a class="brand-card" href="fructaid.html" data-reveal data-delay="2">
-            <div class="brand-card__img"><img src="assets/img/brand-fructaid.jpg" alt="Fructaid®" width="500" height="425" loading="lazy" /></div>
+
+          <a class="brand-card is-fructaid" href="fructaid.html" data-reveal data-delay="2">
+            <div class="brand-card__img">
+              <picture>
+                <source srcset="assets/img/brand-fructaid.webp" type="image/webp" />
+                <img src="assets/img/brand-fructaid.jpg" alt="Fructaid® Verpackungen" width="500" height="425" loading="lazy" decoding="async" />
+              </picture>
+            </div>
             <div class="brand-card__body">
               <h3>Fructaid<sup>®</sup></h3>
+              <p class="brand-card__claim">Bei Fructose-Malabsorption</p>
               <p>Zur Verhütung und Linderung von Fructose-bedingten Verdauungsbeschwerden. Das
                 patentierte Medizinprodukt bei intestinaler Fructose-Intoleranz.</p>
-              <span class="brand-card__more">Mehr erfahren
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <span class="link-arrow">Mehr erfahren
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               </span>
             </div>
           </a>
@@ -145,30 +223,33 @@
     </section>
 
     <!-- ========================================================= MISSION -->
-    <section class="section-pad" id="mission" style="padding-top:0">
-      <div class="container media-split">
+    <section class="section-pad section-pad--top-0" id="mission" aria-labelledby="mission-titel">
+      <div class="container media-split media-split--offset" data-rays-lead>
         <div class="media-split__img is-wide" data-reveal>
-          <img src="assets/img/office.jpg" alt="Firmensitz der Pro Natura in Bad Vilbel" width="1024" height="708" loading="lazy" />
+          <picture>
+            <source srcset="assets/img/office.webp" type="image/webp" />
+            <img src="assets/img/office.jpg" alt="Firmensitz der Pro Natura in Bad Vilbel" width="1024" height="708" loading="lazy" decoding="async" />
+          </picture>
         </div>
         <div class="prose" data-reveal data-delay="1">
           <span class="eyebrow">Unsere Mission</span>
-          <h2>Gesunde Ernährung für alle</h2>
+          <h2 id="mission-titel">Gesunde Ernährung für alle</h2>
           <p>Die Pro Natura Gesellschaft für gesunde Ernährung mbH wurde 1994 gegründet – mit dem
             Ziel, innovative Produkte zu entwickeln, die es Menschen mit Lebensmittel­unverträglichkeiten
             ermöglichen, sich dennoch gesund zu ernähren.</p>
           <p>Besonders wichtig ist es uns, die Produkte zu einem guten Preis-Leistungs-Verhältnis
             anzubieten, damit möglichst viele Menschen etwas für ihr Wohlbefinden tun können.</p>
-          <a href="ueber-uns.html" class="btn btn--primary" style="margin-top:.6rem">Mehr erfahren</a>
+          <a href="ueber-uns.html" class="btn btn--primary">Mehr erfahren</a>
         </div>
       </div>
     </section>
 
     <!-- ===================================================== DISTRIBUTOR -->
-    <section class="section-pad" style="padding-top:0">
+    <section class="section-pad" aria-labelledby="distributor-titel">
       <div class="container">
         <div class="cta-banner cta-banner--waves" data-reveal>
           <div class="cta-banner__text">
-            <h2>Sie sind Distributor und an einer Partnerschaft interessiert?</h2>
+            <h2 id="distributor-titel">Sie sind Distributor und an einer Partnerschaft interessiert?</h2>
             <p>Kontaktieren Sie uns gerne über das Formular – wir freuen uns auf Sie.</p>
           </div>
           <a href="#kontakt" class="btn btn--light">Jetzt Kontakt aufnehmen</a>
@@ -177,11 +258,11 @@
     </section>
 
     <!-- ========================================================= CONTACT -->
-    <section class="section-pad" id="kontakt" style="padding-top:0">
+    <section class="section-pad section-pad--top-0" id="kontakt" aria-labelledby="kontakt-titel">
       <div class="container">
         <div class="section-head center" data-reveal>
           <span class="eyebrow">Kontakt</span>
-          <h2>Sprechen Sie mit uns</h2>
+          <h2 id="kontakt-titel">Sprechen Sie mit uns</h2>
           <p>Fragen zu unseren Produkten, zur Anwendung oder zur Verfügbarkeit in Ihrer Apotheke?
             Wir sind gerne für Sie da.</p>
         </div>
@@ -189,46 +270,108 @@
         <div class="contact__grid">
           <div class="contact__cards">
             <div class="contact-card" data-reveal>
-              <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.4-7-10a7 7 0 0114 0c0 5.6-7 10-7 10z" stroke-linejoin="round"/><circle cx="12" cy="11" r="2.5"/></svg></i>
-              <div><span>Adresse</span><p>Konrad-Adenauer-Allee 8–10<br />61118 Bad Vilbel, Deutschland</p></div>
+              <i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.4-7-10a7 7 0 0114 0c0 5.6-7 10-7 10z" stroke-linejoin="round"/><circle cx="12" cy="11" r="2.5"/></svg></i>
+              <div>
+                <span>Adresse</span>
+                <p>Konrad-Adenauer-Allee 8–10<br />61118 Bad Vilbel, Deutschland</p>
+              </div>
             </div>
             <div class="contact-card" data-reveal data-delay="1">
-              <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h4l2 5-3 2c1 3 3 5 6 6l2-3 5 2v4a2 2 0 01-2 2C12 22 4 14 4 7a2 2 0 012-2z" stroke-linejoin="round"/></svg></i>
-              <div><span>Telefon</span><p><a href="tel:+49610180272910">+49 (0)6101 80272910</a><br />Telefax: +49 (0)6101 80272963</p></div>
+              <i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h4l2 5-3 2c1 3 3 5 6 6l2-3 5 2v4a2 2 0 01-2 2C12 22 4 14 4 7a2 2 0 012-2z" stroke-linejoin="round"/></svg></i>
+              <div>
+                <span>Telefon</span>
+                <p><a href="tel:+49610180272910">+49 (0)6101 80272910</a><br />Telefax: +49 (0)6101 80272963</p>
+              </div>
             </div>
             <div class="contact-card" data-reveal data-delay="2">
-              <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
-              <div><span>E-Mail</span><p><a href="mailto:info@pro-natura-gmbh.de">info@pro-natura-gmbh.de</a></p></div>
+              <i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
+              <div>
+                <span>E-Mail</span>
+                <p><a href="mailto:info@pro-natura-gmbh.de">info@pro-natura-gmbh.de</a></p>
+              </div>
             </div>
             <div class="contact-card" data-reveal data-delay="3">
-              <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
-              <div><span>Erreichbarkeit</span><p>Mo–Fr, 9:00–16:00 Uhr</p></div>
+              <i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
+              <div>
+                <span>Erreichbarkeit</span>
+                <p>Mo–Fr, 9:00–16:00 Uhr</p>
+              </div>
             </div>
           </div>
 
           <form class="form" id="contactForm" novalidate data-reveal data-delay="1">
             <div class="form__row">
               <div class="field">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" autocomplete="name" required placeholder="Ihr Name" />
+                <label for="name">Name <span class="req" aria-hidden="true">*</span></label>
+                <input type="text" id="name" name="name" autocomplete="name" required
+                       aria-required="true" aria-describedby="name-error" placeholder="Ihr Name" />
+                <p class="field__error" id="name-error" role="alert">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.01"/></svg>
+                  <span></span>
+                </p>
               </div>
               <div class="field">
-                <label for="email">E-Mail</label>
-                <input type="email" id="email" name="email" autocomplete="email" required placeholder="ihre@email.de" />
+                <label for="email">E-Mail <span class="req" aria-hidden="true">*</span></label>
+                <input type="email" id="email" name="email" autocomplete="email" inputmode="email"
+                       required aria-required="true" aria-describedby="email-error" placeholder="ihre@email.de" />
+                <p class="field__error" id="email-error" role="alert">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.01"/></svg>
+                  <span></span>
+                </p>
               </div>
             </div>
+
             <div class="field">
-              <label for="subject">Betreff</label>
+              <label for="topic">Ihr Anliegen <span class="opt">(optional)</span></label>
+              <select id="topic" name="topic">
+                <option value="">Bitte wählen …</option>
+                <option>Frage zu einem Produkt</option>
+                <option>Anwendung und Dosierung</option>
+                <option>Verfügbarkeit in der Apotheke</option>
+                <option>Distributor-Anfrage</option>
+                <option>Sonstiges</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="subject">Betreff <span class="opt">(optional)</span></label>
               <input type="text" id="subject" name="subject" placeholder="Worum geht es?" />
             </div>
+
             <div class="field">
-              <label for="message">Nachricht</label>
-              <textarea id="message" name="message" required placeholder="Ihre Nachricht an uns …"></textarea>
+              <label for="message">Nachricht <span class="req" aria-hidden="true">*</span></label>
+              <textarea id="message" name="message" required aria-required="true"
+                        aria-describedby="message-error" placeholder="Ihre Nachricht an uns …"></textarea>
+              <p class="field__error" id="message-error" role="alert">
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.01"/></svg>
+                <span></span>
+              </p>
             </div>
-            <button type="submit" class="btn btn--primary" style="width:100%">Nachricht senden</button>
-            <p class="form__note">Mit dem Absenden öffnet sich Ihr E-Mail-Programm. Es werden keine
-              Daten auf dieser Website gespeichert.</p>
-            <p class="form__status" id="formStatus">Vielen Dank! Ihr E-Mail-Programm wurde geöffnet.</p>
+
+            <div class="field field--check">
+              <input type="checkbox" id="privacy" name="privacy" required aria-required="true" aria-describedby="privacy-error" />
+              <div>
+                <label for="privacy">Ich habe die <a href="datenschutz.html">Datenschutzerklärung</a>
+                  gelesen und bin damit einverstanden, dass meine Angaben zur Bearbeitung meiner
+                  Anfrage verwendet werden.</label>
+                <p class="field__error" id="privacy-error" role="alert">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.01"/></svg>
+                  <span></span>
+                </p>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--block">Nachricht senden</button>
+
+            <p class="form__note">Mit <span aria-hidden="true">*</span> markierte Felder sind
+              Pflichtfelder. Beim Absenden öffnet sich Ihr E-Mail-Programm mit der fertigen
+              Nachricht – es werden keine Daten auf dieser Website gespeichert.</p>
+
+            <p class="form__status" id="formStatus" role="status" aria-live="polite">
+              <svg class="form__status-ok" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              <svg class="form__status-error" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.01"/></svg>
+              <span data-status-text></span>
+            </p>
           </form>
         </div>
       </div>
@@ -240,36 +383,46 @@
     <div class="container">
       <div class="footer__grid">
         <div class="footer__brand">
-          <div class="footer__logo">
-            <img src="assets/logo-original.png" alt="pronatura" width="141" height="30" />
-          </div>
+          <img src="assets/logo-original.png" alt="pronatura" width="141" height="30" loading="lazy" />
           <p>Gesellschaft für gesunde Ernährung mbH. Enzympräparate für ein unbeschwertes Leben –
             seit 1994 aus Bad Vilbel.</p>
+          <address class="footer__meta">
+            <span>Konrad-Adenauer-Allee 8–10, 61118 Bad Vilbel</span>
+            <a href="tel:+49610180272910">+49 (0)6101 80272910</a>
+            <a href="mailto:info@pro-natura-gmbh.de">info@pro-natura-gmbh.de</a>
+          </address>
         </div>
         <div class="footer__col">
-          <h5>Produkte</h5>
-          <a href="lactrase.html">Lactrase®</a>
-          <a href="fructaid.html">Fructaid®</a>
-          <a href="oligase.html">Oligase® 600</a>
+          <h2>Produkte</h2>
+          <ul>
+            <li><a href="lactrase.html">Lactrase<sup>®</sup></a></li>
+            <li><a href="oligase.html">Oligase<sup>®</sup> 600</a></li>
+            <li><a href="fructaid.html">Fructaid<sup>®</sup></a></li>
+          </ul>
         </div>
         <div class="footer__col">
-          <h5>Unternehmen</h5>
-          <a href="ueber-uns.html">Über uns</a>
-          <a href="#kontakt">Kontakt</a>
+          <h2>Unternehmen</h2>
+          <ul>
+            <li><a href="ueber-uns.html">Über uns</a></li>
+            <li><a href="ueber-uns.html#geschichte">Unsere Geschichte</a></li>
+            <li><a href="index.html#kontakt">Kontakt</a></li>
+          </ul>
         </div>
         <div class="footer__col">
-          <h5>Rechtliches</h5>
-          <a href="impressum.html">Impressum</a>
-          <a href="datenschutz.html">Datenschutz</a>
+          <h2>Rechtliches</h2>
+          <ul>
+            <li><a href="impressum.html">Impressum</a></li>
+            <li><a href="datenschutz.html">Datenschutz</a></li>
+          </ul>
         </div>
       </div>
       <div class="footer__bottom">
-        <span>© <span id="year">2026</span> Pro Natura Gesellschaft für gesunde Ernährung mbH. Alle Rechte vorbehalten.</span>
+        <span>© <span data-year>2026</span> Pro Natura Gesellschaft für gesunde Ernährung mbH. Alle Rechte vorbehalten.</span>
         <span>* Meistverkaufte Marke im Segment Lactasepräparate. Quelle: IQVIA.</span>
       </div>
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
+  <script src="js/main.js" defer></script>
 </body>
 </html>
