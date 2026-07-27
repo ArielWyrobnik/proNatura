@@ -65,16 +65,23 @@ Tech-Stack bewusst **ohne Build-Schritt** (reines HTML/CSS/JS), weil:
 ├── oligase.html        # Produkt-Detailseite Oligase® 600
 ├── impressum.html      # Pflichtangaben (DE) – Platzhalter prüfen!
 ├── datenschutz.html    # DSGVO-Datenschutzerklärung – Platzhalter prüfen!
-├── css/styles.css      # Komplettes Designsystem (Tokens, Komponenten, Responsive, Strahlen)
-├── js/main.js          # Nav/Mobile-Menü, Scroll-Reveal, Formular, Jahr · Hero-Vollbild-Collapse · Produkt-Strahlen-Engine
+├── css/styles.css      # Komplettes Designsystem (Fonts, Tokens, Komponenten, Responsive, Strahlen)
+├── js/main.js          # Kopfzeile · Navigation (Mobil-Panel + Marken-Dropdown) · Scroll-Reveal
+│                       # · Colorize (IntersectionObserver) · Produkt-Strahlen · Formular · Jahr
 ├── assets/
 │   ├── logo-original.png   # Wortmarke „pronatura®" (hochauflösend); im Footer per CSS auf Weiß invertiert
 │   ├── favicon-32/180/192.png  # Favicons (Original)
-│   ├── img/                # hero-products, office, brand-{lactrase,oligase,fructaid}, lifestyle-{milch,fructaid,oligase}
-│   └── products/           # Packshots: lactrase.jpg, fructaid.png, oligase.png, lactrase-lineup.png
+│   ├── og-image.png        # Social-Preview 1200×630 (aus Logo + Hero-Composite gerendert)
+│   ├── fonts/              # Fraunces + Plus Jakarta Sans als Variable Fonts (woff2, latin/latin-ext,
+│   │                       # normal + kursiv) — LOKAL, kein Google-Fonts-Request mehr
+│   ├── img/                # hero-products, office, brand-*, lifestyle-* — je Original + .webp
+│   └── products/           # Packshots: lactrase.jpg, fructaid.png, oligase.png, lactrase-lineup.png (+ .webp)
 ├── README.md           # Kurzanleitung (Hosting/Anpassen)
 └── CLAUDE.md           # diese Datei
 ```
+
+> Bilder immer als `<picture>` mit `.webp`-Quelle und Original als Fallback einbinden,
+> `width`/`height` gesetzt (kein Layout Shift). Die Originale NICHT löschen.
 
 > Hinweis: **News-Sektion entfernt** (war veraltet, Stand 2024). „Zu unseren Marken" steht
 > bewusst VOR „Unsere Mission". Die Firmengeschichte/Timeline liegt auf `ueber-uns.html`.
@@ -86,33 +93,55 @@ wenn sie auf `clever-faraday` landen (per Merge). Auf `claude/optimistic-pasteur
 → Wenn der Nutzer „ich sehe nichts" sagt: prüfen, ob `clever-faraday` aktuell ist.
 
 **Designsprache:** Struktur an der Original-Website orientiert, sauberer/moderner umgesetzt.
-**Bewusst neutrale Basis-Palette** – Anthrazit (`#1B1E22`) + Grautöne auf Weiß, KEINE
+**Bewusst neutrale Basis-Palette** – Anthrazit (`--ink #16191C`) + Grautöne auf Weiß, KEINE
 durchgehende Markenfarbe; Buttons/Links anthrazit. Farbe kommt aus den Produktfotos und den
 **Produkt-Signaturfarben** (siehe unten). Display-Serif (Fraunces) + Sans (Plus Jakarta
 Sans). Bild-getrieben statt Deko-Icons. Hintergrund **weiß**.
+
+**Designsystem = CSS Custom Properties in `:root`.** Alles nur über Tokens, nie Einzelwerte
+in Komponenten: Farben (`--ink`, `--ink-body`, `--ink-muted`, `--surface*`, `--line*`),
+Typo-Skala (`--fs-display` … `--fs-label`, fluide per `clamp()`), Abstände (`--sp-1…11`,
+`--section-y`, `--gutter`, `--grid-gap`, `--split-gap`), Radien (`--r-sm…xl`), Schatten
+(`--shadow-xs…lg`), Bewegung (`--dur-1…3`, `--ease`), Ebenen (`--z-*`) und `--header-h`
+(von JS gepflegt, speist `scroll-padding-top` für Sprungmarken).
 
 **Produkt-Signaturfarben** (aus den echten Verpackungs-Tiles ausgelesen; überall konsistent
 verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
 - Lactrase = **Blau `#3AB3E0`** · Oligase = **Dunkelgrün `#407740`** · Fructaid = **Lime `#C1DB5E`**
   (Strahl-Linie Fructaid minimal kräftiger `#B3D24A`, sonst auf Weiß zu blass).
-- Produkt-Detailseiten nutzen je einen kräftigeren Akzent (kontrastsicher für Text/Buttons):
-  Lactrase `#0A6AA1`, Fructaid `#5E9B1F`, Oligase `#2F6B3A`.
+- Für **Text/Buttons** gibt es kontrastgeprüfte `*-ink`-Varianten (WCAG AA, auch auf dem
+  eigenen `*-tint`): Lactrase `#0A6AA1`, Oligase `#2F6B3A`, Fructaid `#4A6F14`.
+  ⚠️ Fructaid-Ink ist absichtlich dunkler als die Verpackung – `#5E9B1F` fiel auf dem
+  Lime-Tint unter 4,5:1 durch.
 
 **Interaktive Effekte (alle in `js/main.js`, neutral/dezent):**
-- **Hero-Vollbild:** Hero füllt beim Laden `100svh` und schrumpft beim ersten Scrollen
-  EINMALIG auf normale Höhe (`.hero.is-collapsed`, kein Wieder-Aufklappen oben).
-- **Produkt-Strahlen:** 3 SVG-Linien (`.rays`/`.ray--*`) sprießen aus den Hero-Produkten und
-  zeichnen sich beim Scrollen (stroke-dashoffset). Pfade werden per JS aus echten Element-
-  positionen berechnet (Hero → Marken-Karten → Distributor) und bei Resize/Hero-Collapse neu
-  gebaut. Die Strahlen liegen HINTER Karten/Text (z-index) → verschwinden hinter den
-  Marken-Karten und tauchen in den Zwischenräumen wieder auf. Hero-Bild bleibt dahinter
-  (Ursprung).
-- **Colorize/Fülleffekt:** Marken-Fotos starten entsättigt (`grayscale`) und färben sich,
-  sobald der Strahl/die Karte in den Viewport scrollt (`.brand-card.is-lit`). Der
-  **Distributor-Banner** (`.cta-banner--waves`) startet schwarz und blendet seine 3
-  Signaturfarben (vertikale Wellen) ein, sobald die Strahlen eintreffen (`.is-lit`).
+- **Produkt-Strahlen — zwei bewusst gesetzte Momente, beide AUSSCHLIESSLICH in garantiert
+  freiem Raum** (die frühere Variante lief quer über Überschriften und Karten und brach
+  mitten in der Luft ab – nicht wieder einführen):
+  1. Drei feine Fäden treten hinter den Hero-Packshots hervor, fließen nach unten und werden
+     vom **Vertrauensband** (`.trust-bar`, deckend, `z-index: var(--z-content)`) geschluckt.
+  2. Im Freiraum über dem **Distributor-Band** steigen sie wieder auf, laufen zusammen und
+     tauchen in das Band ein.
+  Technik: SVG-Pfade, `stroke-dashoffset` am Scroll-Fortschritt; jedes Ende läuft über einen
+  `linearGradient` weich aus (kein harter Abriss). Nur ab **1000 px** Breite; darunter
+  entfallen sie. Geometrie wird gebündelt in `build()` gemessen, `update()` schreibt pro
+  Frame nur noch Styles (kein Layout-Thrashing). Neu gebaut bei Resize, `load`,
+  `fonts.ready` und via `ResizeObserver` auf `body`. Zu wenig Platz → Moment entfällt.
+- **Colorize/Fülleffekt** hängt NICHT an den Strahlen, sondern an einem eigenen
+  `IntersectionObserver`: Marken-Fotos starten entsättigt (`html.rays-on` + `grayscale`) und
+  färben sich bei `.brand-card.is-lit`; der **Distributor-Banner** (`.cta-banner--waves`)
+  startet schwarz und blendet seine 3 Signaturfarben ein. So funktioniert es auf jedem
+  Viewport, mit `prefers-reduced-motion` und ohne Strahlen-Geometrie.
+  ⚠️ Früherer Bug: bei `prefers-reduced-motion` brach die Strahlen-Engine früh ab, dadurch
+  blieben alle Marken-Fotos dauerhaft grau. Nicht wieder koppeln.
+- **Progressive Enhancement:** `<html>` bekommt per Inline-Skript im `<head>` die Klasse
+  `js`. Nur `html.js [data-reveal]` startet unsichtbar – ohne JS ist alles sofort sichtbar.
+  Ebenso `html.rays-on` für die Entsättigung.
 - **Footer-Welle:** einzelne Wellen-Silhouette (wie Etikett/Original) als Inline-Data-URI
   oben am Footer. (Original-Wave-SVG rendert NICHT als CSS-Background → clipPath/Transforms.)
+- **Kein Hero-Vollbild-Collapse mehr.** Der frühere `100svh`→`is-collapsed`-Effekt hat den
+  Packshot auf Tablet/Mobil abgeschnitten und beim ersten Scrollen einen Layout-Sprung
+  erzeugt. Der Hero ist jetzt inhaltsgetrieben und ruhig.
 
 > ⚠️ Nutzer-Vorgaben (hart): Neutrale Basis, keine einzelne Farbe die sich durchzieht; Farbe
 > nur kontextbezogen aus den Produkten. Kein Blatt/abstrakte Deko. Keine riesigen Icons
@@ -135,33 +164,57 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
    Reihenfolge Marken → Mission. Lactrase-Detailseite zeigt **alle Stärken** (1.500–32.000 FCC).
 4. **Texte** näher ans Original (Hero-Claim „Verträglich. Genussvoll. Gesund.", Mission 1994,
    Produkttexte, „Quelle: IQVIA").
-5. **Interaktion** ergänzt: Hero-Vollbild-Collapse, Produkt-Strahlen, Colorize/Fülleffekt,
-   Footer-Welle, farbiger Distributor-Banner (siehe Abschnitt 3, „Interaktive Effekte").
+5. **Interaktion** ergänzt: Produkt-Strahlen, Colorize/Fülleffekt, Footer-Welle, farbiger
+   Distributor-Banner (siehe Abschnitt 3, „Interaktive Effekte").
 6. ⚠️ **Pektinkapseln** weiterhin NICHT aufgenommen.
+
+**✅ ERLEDIGT (Design- und Qualitätsüberarbeitung):**
+7. **Designsystem** konsolidiert: eine Typo-Skala (fluide `clamp()`), ein 8px-Abstandsraster,
+   je eine Skala für Radien/Schatten/Bewegung/Z-Index – alles als Tokens in `:root`.
+8. **Kopfzeile neu gebaut:** Marken-Dropdown (Maus, Tastatur inkl. Pfeiltasten/Home/End,
+   Escape, Klick daneben), Mobil-Panel mit Backdrop, Fokusfalle, Scroll-Lock und
+   Fokusrückgabe. Skip-Link. `--header-h` wird gemessen → Sprungmarken landen nicht mehr
+   unter der fixierten Kopfzeile.
+9. **Strahlen komplett neu** (siehe Abschnitt 3) – laufen nie mehr über Inhalte.
+10. **Schriften lokal** (`assets/fonts/`), Google-Fonts-Einbindung entfernt → DSGVO + Tempo.
+11. **Bilder** als `<picture>` mit WebP-Quelle: 3,4 MB → 0,8 MB. `assets/og-image.png` ergänzt.
+12. **Formular** mit Pflichtfeld-Kennzeichnung, Feld-Fehlermeldungen (`aria-invalid`,
+    `role="alert"`), Datenschutz-Checkbox mit Link, Erfolgs-/Fehlerstatus, `role="status"`.
+13. **Tablet-Bereich (768–1000 px)** eigens gestaltet: Marken-Karten werden dort zu breiten
+    Zeilen statt „2 + 1"-Waisen; Footer stapelt in 3 Spalten unter dem Markenblock.
+14. **Barrierefreiheit:** Kontraste auf WCAG AA geprüft (automatisiert über alle Seiten),
+    Tap-Ziele ≥ 24 px, eine `h1` pro Seite, lückenlose Überschriftenhierarchie,
+    `prefers-reduced-motion`, vollständige Bedienbarkeit ohne JS.
 
 **Inhalte & Recht (wichtig, vor Go-Live):**
 - [x] **Echte Produktfotos / Packshots** der Präparate eingebaut (`assets/products/`).
 - [ ] **Impressum verifizieren:** Geschäftsführer, vollständige USt-IdNr., genaue
       Register-/Aufsichtsangaben, ggf. Verantwortlicher i.S.d. § 18 MStV.
-- [ ] **Datenschutzerklärung** mit echtem Hosting-/Tool-Setup abgleichen (Google Fonts
-      werden derzeit extern geladen → ggf. lokal hosten für DSGVO; Cookie/Analytics?).
+- [x] **Google Fonts** entfernt, Schriften lokal gehostet. ⚠️ `datenschutz.html` §5 wurde
+      entsprechend umgeschrieben („keine Verbindung zu Dritten") – **muss rechtlich
+      freigegeben werden**, ebenso der weiterhin offene Hosting-Absatz (§4).
 - [ ] **Kontaktformular** an echtes Backend/Mail anbinden (aktuell nur Client-seitig,
       `mailto:`-Fallback). Optionen: Formspree, eigenes PHP, Netlify Forms.
+      ⚠️ Die Auswahlliste „Ihr Anliegen" ist neu und rein funktional – Wortlaut der Optionen
+      bitte vom Auftraggeber bestätigen lassen.
 - [ ] Health-Claims juristisch prüfen (HCVO/LMIV): Wir sagen bewusst nichts Heilendes,
       Produkte sind Nahrungsergänzung/Medizinprodukt – Formulierungen konservativ halten.
 
 **Funktionen / Ausbau (nice to have):**
 - [ ] Echte Unterseiten je Produkt (Detail, Studien, FAQ) statt nur Sektionen.
-- [ ] Englische Sprachversion (`/en/`) – die alte Seite hatte EN.
+- [ ] Englische Sprachversion (`/en/`) – die alte Seite hatte EN. Existiert bislang NICHT;
+      erst dann sind `hreflang` und eine Sprachumschaltung sinnvoll.
 - [ ] Händler-/Apothekenfinder oder „Wo kaufen?" mit Shop-Links (Shop-Apotheke etc.).
 - [ ] Logo durch echtes Marken-Logo ersetzen, falls vorhanden (CI/Farben abgleichen).
-- [ ] OG-/Social-Preview-Bild (`assets/og-image.png`) erstellen.
+- [x] OG-/Social-Preview-Bild (`assets/og-image.png`) erstellt.
 - [ ] Cookie-Banner nur falls Tracking eingeführt wird.
 
 **Technik:**
 - [ ] Hosting festlegen und deployen (Domain ist vorhanden).
 - [ ] Lighthouse-Check (Performance/SEO/Best Practices/Accessibility) vor Go-Live.
-- [ ] Sitemap.xml + robots.txt ergänzen.
+      (Bisher geprüft: kein horizontaler Überlauf und keine Konsolenfehler auf allen
+      7 Seiten × 7 Viewports; Kontraste, Tap-Ziele und Semantik automatisiert.)
+- [x] `sitemap.xml` (alle 5 öffentlichen Seiten) + `robots.txt` vorhanden.
 
 ---
 
@@ -169,8 +222,16 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
 
 - **Sprache der Website:** Deutsch (primär). Inhalte konservativ/seriös formulieren.
 - **Branch:** Entwicklung auf `claude/clever-faraday-9e5sjw`. Nicht auf andere Branches pushen.
+  (Ausnahme: wenn der Auftrag ausdrücklich einen anderen Feature-Branch vorgibt.)
 - **Kein Build nötig:** Änderungen direkt in den Dateien. Lokal testen:
   `python3 -m http.server 8000` und `http://localhost:8000` öffnen.
-- **Keine externen Abhängigkeiten** ohne guten Grund (Egress kann blockiert sein).
+- **Keine externen Abhängigkeiten** ohne guten Grund (Egress kann blockiert sein) – und
+  **zur Laufzeit gar keine**: die Seite lädt nichts von fremden Servern.
+- **Neue Komponenten** immer über die Tokens aus `:root` bauen; kein zweites Styling-System,
+  keine Einzelwerte in Komponenten. Icons immer in einen Container mit fester Größe legen
+  UND per CSS auf `width`/`height` begrenzen (sonst rendern sie riesig).
+- **Prüfroutine vor dem Abschluss:** alle Seiten in 375/390/768/1024/1280/1440/1728 rendern,
+  auf horizontalen Überlauf und Konsolenfehler prüfen; zusätzlich Mobil-Menü, Dropdown,
+  Tastatur, Formularfehler, `prefers-reduced-motion` und Darstellung ohne JS.
 - Quellen der Inhaltsrecherche: oligase.de, lactrase.de, fructaid.de, gelbe-liste.de,
   apomio.de, Creditreform/Northdata (Firmendaten). Bei Änderungen Fakten gegenprüfen.

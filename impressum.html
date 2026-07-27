@@ -6,42 +6,76 @@
   <title>Impressum – Pro Natura</title>
   <meta name="description" content="Impressum der Pro Natura Gesellschaft für gesunde Ernährung mbH, Bad Vilbel." />
   <meta name="robots" content="noindex" />
-  <meta name="theme-color" content="#1b1e22" />
+  <meta name="theme-color" content="#ffffff" />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png" />
   <link rel="apple-touch-icon" href="assets/favicon-180.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="canonical" href="https://www.pro-natura-gmbh.de/impressum.html" />
+
+  <link rel="preload" href="assets/fonts/plus-jakarta-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/fraunces-normal-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="css/styles.css" />
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
-  <header class="site-header scrolled" id="header">
-    <div class="container">
-      <nav class="nav" aria-label="Hauptnavigation">
-        <a href="index.html" class="nav__logo" aria-label="pronatura – Startseite">
-          <img src="assets/logo-original.png" alt="pronatura" width="141" height="30" />
-        </a>
-        <div class="nav__actions">
-          <a href="index.html" class="btn btn--ghost">Zur Startseite</a>
+
+  <a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="site-header is-solid" id="header">
+    <div class="container site-header__inner">
+      <a href="index.html" class="brand" aria-label="pronatura – Startseite">
+        <img src="assets/logo-original.png" alt="pronatura" width="141" height="30" />
+      </a>
+
+      <nav class="primary-nav" id="primaryNav" aria-label="Hauptnavigation">
+        <ul class="primary-nav__list">
+          <li><a class="primary-nav__link" href="ueber-uns.html">Über uns</a></li>
+          <li>
+            <button type="button" class="primary-nav__trigger" id="brandsTrigger" aria-expanded="false" aria-controls="brandsMenu">
+              Produkte
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="brand-menu" id="brandsMenu" hidden>
+              <a class="brand-menu__item is-lactrase" href="lactrase.html">
+                <span class="brand-menu__dot" aria-hidden="true"></span>
+                <span><strong>Lactrase<sup>®</sup></strong><small>Bei Laktoseintoleranz</small></span>
+              </a>
+              <a class="brand-menu__item is-oligase" href="oligase.html">
+                <span class="brand-menu__dot" aria-hidden="true"></span>
+                <span><strong>Oligase<sup>®</sup> 600</strong><small>Bei blähenden Lebensmitteln</small></span>
+              </a>
+              <a class="brand-menu__item is-fructaid" href="fructaid.html">
+                <span class="brand-menu__dot" aria-hidden="true"></span>
+                <span><strong>Fructaid<sup>®</sup></strong><small>Bei Fructose-Malabsorption</small></span>
+              </a>
+            </div>
+          </li>
+        </ul>
+        <div class="primary-nav__cta">
+          <a class="btn btn--primary btn--sm" href="index.html#kontakt">Kontakt aufnehmen</a>
         </div>
       </nav>
+
+      <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="primaryNav" aria-label="Menü öffnen">
+        <span class="nav-toggle__bars" aria-hidden="true"><span></span><span></span></span>
+      </button>
     </div>
   </header>
+  <div class="nav-backdrop" aria-hidden="true"></div>
 
-  <main class="legal section-pad">
-    <div class="container">
+  <main class="legal" id="inhalt">
+    <div class="container section-pad section-pad--top-0">
       <div class="legal__doc">
         <a href="index.html" class="legal__back">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
           Zurück zur Startseite
         </a>
         <h1>Impressum</h1>
 
         <div class="note-box">
-          <strong>Hinweis zur Pflege:</strong> Bitte die mit ⚠️ markierten Angaben
-          (Geschäftsführung, USt-IdNr., Registerdaten) final prüfen und bestätigen, bevor die
-          Seite online geht.
+          <p><strong>Hinweis zur Pflege:</strong> Bitte die mit ⚠️ markierten Angaben
+            (Geschäftsführung, USt-IdNr., Registerdaten) final prüfen und bestätigen, bevor die
+            Seite online geht.</p>
         </div>
 
         <h2>Angaben gemäß § 5 DDG</h2>
@@ -104,13 +138,48 @@
 
   <footer class="site-footer">
     <div class="container">
-      <div class="footer__bottom" style="border:0; margin:0; justify-content:center; gap:1.5rem">
-        <a href="index.html">Startseite</a>
-        <a href="datenschutz.html">Datenschutz</a>
-        <span>© <span id="year">2026</span> Pro Natura GmbH</span>
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <img src="assets/logo-original.png" alt="pronatura" width="141" height="30" loading="lazy" />
+          <p>Gesellschaft für gesunde Ernährung mbH. Enzympräparate für ein unbeschwertes Leben –
+            seit 1994 aus Bad Vilbel.</p>
+          <address class="footer__meta">
+            <span>Konrad-Adenauer-Allee 8–10, 61118 Bad Vilbel</span>
+            <a href="tel:+49610180272910">+49 (0)6101 80272910</a>
+            <a href="mailto:info@pro-natura-gmbh.de">info@pro-natura-gmbh.de</a>
+          </address>
+        </div>
+        <div class="footer__col">
+          <h2>Produkte</h2>
+          <ul>
+            <li><a href="lactrase.html">Lactrase<sup>®</sup></a></li>
+            <li><a href="oligase.html">Oligase<sup>®</sup> 600</a></li>
+            <li><a href="fructaid.html">Fructaid<sup>®</sup></a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h2>Unternehmen</h2>
+          <ul>
+            <li><a href="ueber-uns.html">Über uns</a></li>
+            <li><a href="ueber-uns.html#geschichte">Unsere Geschichte</a></li>
+            <li><a href="index.html#kontakt">Kontakt</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h2>Rechtliches</h2>
+          <ul>
+            <li><a href="impressum.html" aria-current="page">Impressum</a></li>
+            <li><a href="datenschutz.html">Datenschutz</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span data-year>2026</span> Pro Natura Gesellschaft für gesunde Ernährung mbH. Alle Rechte vorbehalten.</span>
+        <span>* Meistverkaufte Marke im Segment Lactasepräparate. Quelle: IQVIA.</span>
       </div>
     </div>
   </footer>
-  <script src="js/main.js"></script>
+
+  <script src="js/main.js" defer></script>
 </body>
 </html>
