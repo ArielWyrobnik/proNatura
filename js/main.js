@@ -256,7 +256,7 @@
      Gemessen wird gebündelt in build(); update() schreibt nur noch. */
   var raysApi = (function () {
     var wrap = document.querySelector('.rays');
-    var host = document.getElementById('top');
+    var host = wrap && wrap.closest('main');
     if (!wrap || !host) return null;
 
     var svg = wrap.querySelector('svg');

@@ -79,13 +79,11 @@
   --ink:          #16191c;  /* Überschriften, stärkster Text            */
   --ink-body:     #4a5057;  /* Fließtext         – 8.4:1 auf Weiß       */
   --ink-muted:    #6a7178;  /* sekundär          – 5.1:1 auf Weiß (AA)  */
-  --ink-invert:   #ffffff;
 
   --surface:      #ffffff;  /* Karten, Formular                        */
   --surface-2:    #f7f8f9;  /* zarte Flächen                           */
   --surface-3:    #eef0f2;  /* Bild-Platzhalter, Chips                 */
   --surface-dark: #14171a;  /* Footer / dunkle Bänder                  */
-  --surface-dark-2: #1e2226;
 
   --line:         #e5e8eb;
   --line-strong:  #d2d7dc;
@@ -131,16 +129,10 @@
   --lh-body:    1.68;
   --measure:    66ch;
 
-  /* --- Abstände (8px-Raster) */
-  --sp-1: .25rem;  --sp-2: .5rem;   --sp-3: .75rem;  --sp-4: 1rem;
-  --sp-5: 1.5rem;  --sp-6: 2rem;    --sp-7: 2.5rem;  --sp-8: 3rem;
-  --sp-9: 4rem;    --sp-10: 5rem;   --sp-11: 6rem;
-
+  /* --- Abstände: eine Skala für alle Sektionen und Raster. */
   --section-y:     clamp(4rem, 2.2rem + 6vw, 7.5rem);
-  --section-y-sm:  clamp(2.75rem, 1.8rem + 3.4vw, 4.5rem);
   --gutter:        clamp(1.25rem, 0.6rem + 2.4vw, 2.5rem);
   --container:     1200px;
-  --container-narrow: 820px;
   --grid-gap:      clamp(1.25rem, 0.6rem + 1.6vw, 2rem);
   --split-gap:     clamp(2rem, 1rem + 4vw, 4.5rem);
 
@@ -224,12 +216,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .skip-link:focus-visible { transform: translate(-50%, 0); outline-offset: -4px; }
 
-.visually-hidden {
-  position: absolute !important; width: 1px; height: 1px;
-  padding: 0; margin: -1px; overflow: hidden;
-  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
-}
-
 /* -------------------------------------------------------------- Typografie */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
@@ -277,14 +263,11 @@ a { color: inherit; text-decoration: none; }
   width: 100%; max-width: var(--container);
   margin-inline: auto; padding-inline: var(--gutter);
 }
-.container--narrow { max-width: var(--container-narrow); }
 section { position: relative; }
 main { position: relative; }
 
 .section-pad     { padding-block: var(--section-y); }
-.section-pad--sm { padding-block: var(--section-y-sm); }
 .section-pad--top-0 { padding-top: 0; }
-.section-tinted { background: var(--surface-2); }
 
 /* Seitentitel über einem zweispaltigen Einstieg */
 .page-head { max-width: 40rem; margin-bottom: clamp(2rem, 1.2rem + 2vw, 3rem); }
@@ -324,9 +307,6 @@ main { position: relative; }
 
 .btn--primary { background: var(--ink); color: #fff; }
 .btn--primary:hover { background: #2b3138; }
-
-.btn--accent { background: var(--accent); color: #fff; }
-.btn--accent:hover { filter: brightness(1.08); }
 
 .btn--ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
 .btn--ghost:hover { background: var(--surface-2); border-color: var(--ink); box-shadow: none; transform: translateY(-1px); }
@@ -787,9 +767,11 @@ body.is-locked .site-header {
   margin-top: 1.1rem; padding: .85rem 1rem;
   border-radius: var(--r-sm); font-size: var(--fs-sm); font-weight: 600;
 }
-.form__status svg { width: 18px; height: 18px; flex: none; margin-top: .12rem; }
+.form__status svg { width: 18px; height: 18px; flex: none; margin-top: .12rem; display: none; }
 .form__status.is-ok { display: flex; background: #eef4ef; border: 1px solid #cfe0d4; color: #1f5130; }
 .form__status.is-error { display: flex; background: #fdeeed; border: 1px solid #f3cdca; color: #8c1d18; }
+.form__status.is-ok .form__status-ok,
+.form__status.is-error .form__status-error { display: block; }
 
 /* ------------------------------------------------------------------ Footer */
 .site-footer {
@@ -991,9 +973,6 @@ body.is-locked .site-header {
   stroke-linecap: round; stroke-linejoin: round;
   opacity: .9;
 }
-.ray--lactrase { stroke: var(--lactrase); }
-.ray--oligase  { stroke: var(--oligase); }
-.ray--fructaid { stroke: #b3d24a; } /* minimal kräftiger – sonst auf Weiß zu blass */
 
 /* Ohne JS bleiben die Strahlen unsichtbar; nichts hängt von ihnen ab. */
 html:not(.js) .rays { display: none; }

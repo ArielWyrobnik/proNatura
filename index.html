@@ -97,8 +97,7 @@
   </header>
   <div class="nav-backdrop" aria-hidden="true"></div>
 
-  <main id="top">
-    <span id="inhalt" tabindex="-1"></span>
+  <main id="inhalt">
 
     <!-- Produkt-Strahlen (Scroll-Erzählung); Geometrie kommt aus js/main.js -->
     <div class="rays" aria-hidden="true" hidden>
@@ -369,7 +368,8 @@
               Nachricht – es werden keine Daten auf dieser Website gespeichert.</p>
 
             <p class="form__status" id="formStatus" role="status" aria-live="polite">
-              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              <svg class="form__status-ok" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              <svg class="form__status-error" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.01"/></svg>
               <span data-status-text></span>
             </p>
           </form>
