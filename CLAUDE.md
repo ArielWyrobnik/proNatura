@@ -67,7 +67,7 @@ Tech-Stack bewusst **ohne Build-Schritt** (reines HTML/CSS/JS), weil:
 ├── datenschutz.html    # DSGVO-Datenschutzerklärung – Platzhalter prüfen!
 ├── css/styles.css      # Komplettes Designsystem (Fonts, Tokens, Komponenten, Responsive, Strahlen)
 ├── js/main.js          # Kopfzeile · Navigation (Mobil-Panel + Marken-Dropdown) · Scroll-Reveal
-│                       # · Colorize (IntersectionObserver) · Produkt-Strahlen · Formular · Jahr
+│                       # · Farbaufbruch (Paint-Spill) · Produkt-Strahlen · Formular · Jahr
 ├── assets/
 │   ├── logo-original.png   # Wortmarke „pronatura®" (hochauflösend); im Footer per CSS auf Weiß invertiert
 │   ├── favicon-32/180/192.png  # Favicons (Original)
@@ -100,8 +100,8 @@ Sans). Bild-getrieben statt Deko-Icons. Hintergrund **weiß**.
 
 **Designsystem = CSS Custom Properties in `:root`.** Alles nur über Tokens, nie Einzelwerte
 in Komponenten: Farben (`--ink`, `--ink-body`, `--ink-muted`, `--surface*`, `--line*`),
-Typo-Skala (`--fs-display` … `--fs-label`, fluide per `clamp()`), Abstände (`--sp-1…11`,
-`--section-y`, `--gutter`, `--grid-gap`, `--split-gap`), Radien (`--r-sm…xl`), Schatten
+Typo-Skala (`--fs-display` … `--fs-label`, fluide per `clamp()`), Abstände (`--section-y`,
+`--gutter`, `--grid-gap`, `--split-gap`, `--measure`), Radien (`--r-sm…xl`), Schatten
 (`--shadow-xs…lg`), Bewegung (`--dur-1…3`, `--ease`), Ebenen (`--z-*`) und `--header-h`
 (von JS gepflegt, speist `scroll-padding-top` für Sprungmarken).
 
@@ -115,25 +115,50 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
   Lime-Tint unter 4,5:1 durch.
 
 **Interaktive Effekte (alle in `js/main.js`, neutral/dezent):**
-- **Produkt-Strahlen — zwei bewusst gesetzte Momente, beide AUSSCHLIESSLICH in garantiert
-  freiem Raum** (die frühere Variante lief quer über Überschriften und Karten und brach
-  mitten in der Luft ab – nicht wieder einführen):
-  1. Drei feine Fäden treten hinter den Hero-Packshots hervor, fließen nach unten und werden
-     vom **Vertrauensband** (`.trust-bar`, deckend, `z-index: var(--z-content)`) geschluckt.
-  2. Im Freiraum über dem **Distributor-Band** steigen sie wieder auf, laufen zusammen und
-     tauchen in das Band ein.
-  Technik: SVG-Pfade, `stroke-dashoffset` am Scroll-Fortschritt; jedes Ende läuft über einen
-  `linearGradient` weich aus (kein harter Abriss). Nur ab **1000 px** Breite; darunter
-  entfallen sie. Geometrie wird gebündelt in `build()` gemessen, `update()` schreibt pro
-  Frame nur noch Styles (kein Layout-Thrashing). Neu gebaut bei Resize, `load`,
-  `fonts.ready` und via `ResizeObserver` auf `body`. Zu wenig Platz → Moment entfällt.
-- **Colorize/Fülleffekt** hängt NICHT an den Strahlen, sondern an einem eigenen
-  `IntersectionObserver`: Marken-Fotos starten entsättigt (`html.rays-on` + `grayscale`) und
-  färben sich bei `.brand-card.is-lit`; der **Distributor-Banner** (`.cta-banner--waves`)
-  startet schwarz und blendet seine 3 Signaturfarben ein. So funktioniert es auf jedem
-  Viewport, mit `prefers-reduced-motion` und ohne Strahlen-Geometrie.
-  ⚠️ Früherer Bug: bei `prefers-reduced-motion` brach die Strahlen-Engine früh ab, dadurch
-  blieben alle Marken-Fotos dauerhaft grau. Nicht wieder koppeln.
+- **Produkt-Strahlen — EIN durchgehender Faden je Produkt**, vom Hero bis ins
+  Distributor-Band. Der Faden endet nie im Nichts; unsichtbar ist er nur dort, wo er
+  hinter einem deckenden Element durchläuft. Wegführung (`build()` in `js/main.js`):
+
+  1. Hinter dem Packshot hervor, **senkrecht** nach unten – dabei driftet er noch
+     innerhalb der Bildspalte zur Zielseite. Der Hero-Text wird nie berührt.
+  2. Der **große Schwenk quer über die Seite** liegt in der Mitte hinter dem deckenden
+     **Vertrauensband** (`.trust-bar`, `z-index: var(--z-content)`). Genau dafür ist das
+     Band da – vorher lief der Schwenk über den Hero-Text.
+  3. **Geflochten am zentrierten Abschnittskopf vorbei.** Frei sind nur die Zonen links
+     von `head.x` und rechts von `head.right`; dort schwingen die beiden rechten Fäden
+     gegenläufig (Phase 0 und π) und kreuzen sich mehrfach.
+  4. **Einschlag auf der Marken-Karte** → dort bricht die Farbe auf (siehe unten).
+     Der mittlere Faden nimmt den **Spalt zwischen zwei Karten** und trifft seitlich auf;
+     sonst entstünde ein flacher Querstrich unter der Überschrift.
+  5. Hinter der Karte hindurch, dann zusammen durch die **Spalte zwischen Missionsbild
+     und Missionstext** (dort erneut geflochten).
+  6. Gebündelt ins **Distributor-Band** eintauchen, das daraufhin farbig aufbricht.
+
+  Technik: ein SVG-Pfad je Faden, weiche Enden über `linearGradient`. Der Zeichen-
+  Fortschritt hängt an einer **Ziel-Y-Position im Viewport** (76 % Höhe), nicht an der
+  Bogenlänge – dafür gibt es je Pfad eine Nachschlagetabelle Länge↔y. Die Spitze bleibt
+  so immer auf Höhe des Lesepunkts und bleibt nirgends stehen. Nur ab **1001 px** Breite.
+  Geometrie gebündelt in `build()`, `update()` schreibt pro Frame nur Styles. Neu gebaut
+  bei Resize, Media-Query-Wechsel, `load`, `fonts.ready` und via `ResizeObserver`.
+
+  ⚠️ **Regressionstest:** `raytext.mjs` rendert die Seite mit magenta, 7 px breiten
+  Strahlen und prüft pixelweise, dass keine Textbox getroffen wird (1001–1728 px).
+  Vor jeder Änderung an der Wegführung erneut laufen lassen.
+
+- **Farbaufbruch statt Überblendung.** Die Marken-Fotos starten entsättigt
+  (`html.paint-on` + `grayscale` auf dem Basisbild). Trifft der Faden auf die Karte,
+  bricht die Farbe **von genau diesem Punkt** auf und läuft über die Kachel – wie ein
+  umgekippter Farbeimer. Zwei absolut positionierte Ebenen mit `clip-path: circle()`:
+  `.brand-card__front` (Signaturfarbe, schnellere Kurve) und `.brand-card__spill` (Klon
+  des `<picture>`, etwas langsamer). Der Versatz ergibt den nassen Rand an der Front.
+  Ursprung `--sx`/`--sy` setzt JS auf den Einschlagpunkt. Das **Distributor-Band** nutzt
+  dasselbe Prinzip über `::before` (Wellen) und `::after` (Scrim, läuft leicht voraus,
+  damit der weiße Text nie auf blanker Lime-Fläche steht).
+  ⚠️ Kein Fade mehr – „einfach von blass zu bunt" war ausdrücklich unerwünscht.
+  ⚠️ Der Farbaufbruch hängt NICHT an der Strahlen-Geometrie: ohne Strahlen (< 1001 px,
+  `prefers-reduced-motion`, kein Observer) übernimmt ein `IntersectionObserver` und die
+  Farbe bricht aus der Kachelmitte auf. Nicht wieder koppeln – früher blieben die Fotos
+  bei reduzierter Bewegung dauerhaft grau.
 - **Progressive Enhancement:** `<html>` bekommt per Inline-Skript im `<head>` die Klasse
   `js`. Nur `html.js [data-reveal]` startet unsichtbar – ohne JS ist alles sofort sichtbar.
   Ebenso `html.rays-on` für die Entsättigung.
