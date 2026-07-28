@@ -524,7 +524,8 @@
 
         /* 3. Geflochten am Abschnittskopf vorbei: die beiden rechten Fäden
               schwingen gegenläufig und kreuzen sich mehrfach. */
-        var laneEnd = headBox.bottom + Math.max(20, (card.y - headBox.bottom) * 0.3);
+        var corridor = card.y - headBox.bottom;
+        var laneEnd = headBox.bottom + Math.max(12, corridor * (cfg.viaGap ? 0.14 : 0.34));
         braid(pts, lane.c, lane.a, laneTop, laneEnd, cfg.phase,
               Math.max(2, Math.round((laneEnd - laneTop) / 150)));
 

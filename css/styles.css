@@ -278,6 +278,9 @@ main { position: relative; }
   position: relative; z-index: var(--z-content);
   max-width: 46rem; margin-bottom: clamp(2.5rem, 1.4rem + 3vw, 4.5rem);
 }
+/* Mehr Luft vor dem Markenraster – gibt dem Abschnitt Ruhe und dem
+   mittleren Faden den nötigen Korridor für einen Bogen statt Querstrich. */
+.section-head--airy { margin-bottom: clamp(3.5rem, 2rem + 5vw, 6.5rem); }
 .section-head .eyebrow { margin-bottom: .9rem; }
 .section-head h2 { font-size: var(--fs-h2); }
 .section-head p { color: var(--ink-muted); font-size: var(--fs-lead); margin-top: 1rem; max-width: 60ch; }
