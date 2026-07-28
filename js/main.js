@@ -231,6 +231,8 @@
     var cards = document.querySelectorAll('.brand-card');
     var banner = document.querySelector('.cta-banner--waves');
     if (!cards.length && !banner) return null;
+    /* Die drei Abteile des Distributor-Bands, in Marken-Reihenfolge. */
+    var zones = banner ? banner.querySelectorAll('.cta-banner__zone') : [];
 
     function setOrigin(el, xPercent, yPercent) {
       el.style.setProperty('--sx', xPercent.toFixed(1) + '%');
@@ -269,17 +271,28 @@
 
     /* Ohne Strahlen (schmale Viewports, reduzierte Bewegung, kein Observer)
        muss die Farbe trotzdem ankommen. */
+    /* Ohne Strahlen gibt es keinen Eintauchpunkt – dann bricht jedes Abteil
+       aus seiner eigenen Mitte auf, damit das Band trotzdem farbig wird. */
+    function lightAllZones() {
+      for (var i = 0; i < zones.length; i++) {
+        setOrigin(zones[i], (i * 33.3 + 16.7), 50);
+        light(zones[i]);
+      }
+    }
+
     var io = null;
     function observeFallback() {
       if (reduceMotion.matches || !('IntersectionObserver' in window)) {
         cards.forEach(light);
         light(banner);
+        lightAllZones();
         return;
       }
       io = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
           if (!entry.isIntersecting) return;
           light(entry.target);
+          if (entry.target === banner) lightAllZones();
           io.unobserve(entry.target);
         });
       }, { threshold: 0.4 });
@@ -301,6 +314,12 @@
       setBannerOrigin: function (xPercent) {
         if (banner) banner.style.setProperty('--sx', xPercent.toFixed(1) + '%');
       },
+      zones: zones,
+      setZoneOrigin: function (i, xPercent, yPercent) {
+        if (zones[i]) setOrigin(zones[i], xPercent, yPercent);
+      },
+      lightZone: function (i) { if (zones[i]) light(zones[i]); },
+      lightAllZones: lightAllZones,
       observeFallback: observeFallback,
       stopFallback: stopFallback
     };
@@ -342,9 +361,9 @@
        side  = Randkanal, über den der Faden nach unten läuft.
        hitX  = Einschlagpunkt auf der Karte (Anteil der Kartenbreite). */
     var THREADS = [
-      { key: 'lactrase', heroX: 0.50, lane: 'left',  phase: 0.35,     hitX: 0.26 },
-      { key: 'oligase',  heroX: 0.73, lane: 'inner', phase: 0.0,      hitX: 1.0, hitY: 0.46, viaGap: true },
-      { key: 'fructaid', heroX: 0.29, lane: 'outer', phase: Math.PI,  hitX: 0.70 }
+      { key: 'lactrase', heroX: 0.50, lane: 'left',  phase: 0.35,     hitX: 0.26, zone: 0.16 },
+      { key: 'oligase',  heroX: 0.73, lane: 'inner', phase: 0.0,      hitX: 1.0, hitY: 0.18, viaGap: true, zone: 0.50 },
+      { key: 'fructaid', heroX: 0.29, lane: 'outer', phase: Math.PI,  hitX: 0.70, zone: 0.84 }
     ];
     var wideQuery = window.matchMedia('(min-width: 1001px)');
 
@@ -369,32 +388,56 @@
       return g;
     }
 
-    /* Pfad aus Wegpunkten. Jeder Punkt darf die Steuerpunkt-Länge vorgeben
-       (t = Anteil des vertikalen Abstands), sonst wird weich abgerundet. */
+    /* Weicher Spline durch alle Wegpunkte (zentripetales Catmull-Rom).
+       Die Tangente folgt der tatsächlichen Laufrichtung. Vorher wurde sie an
+       jedem Wegpunkt senkrecht gestellt – daher die eckigen Treppenstufen. */
+    function dist(a, b) {
+      var dx = b.x - a.x, dy = b.y - a.y;
+      return Math.sqrt(Math.sqrt(dx * dx + dy * dy));   /* |Δ|^0.5 = zentripetal */
+    }
     function toPath(pts) {
+      var n = pts.length;
+      if (n < 2) return '';
+      /* Hilfspunkte davor und dahinter: der Faden tritt senkrecht aus dem
+         Packshot aus und taucht senkrecht ins Band ein. */
+      var pre = { x: pts[0].x, y: pts[0].y - 70 };
+      var post = { x: pts[n - 1].x, y: pts[n - 1].y + 70 };
       var d = 'M' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
-      for (var i = 1; i < pts.length; i++) {
-        var a = pts[i - 1], b = pts[i];
-        var dy = b.y - a.y;
-        var t1 = a.out != null ? a.out : 0.5;
-        var t2 = b.in != null ? b.in : 0.5;
-        d += ' C' + a.x.toFixed(1) + ' ' + (a.y + dy * t1).toFixed(1) +
-             ' ' + b.x.toFixed(1) + ' ' + (b.y - dy * t2).toFixed(1) +
-             ' ' + b.x.toFixed(1) + ' ' + b.y.toFixed(1);
+      for (var i = 0; i < n - 1; i++) {
+        var p0 = i === 0 ? pre : pts[i - 1];
+        var p1 = pts[i], p2 = pts[i + 1];
+        var p3 = i + 2 < n ? pts[i + 2] : post;
+        var d1 = dist(p0, p1), d2 = dist(p1, p2), d3 = dist(p2, p3);
+        var c1x, c1y, c2x, c2y, k;
+        if (d1 < 1e-4) { c1x = p1.x; c1y = p1.y; } else {
+          k = 3 * d1 * (d1 + d2);
+          c1x = (d1 * d1 * p2.x - d2 * d2 * p0.x + (2 * d1 * d1 + 3 * d1 * d2 + d2 * d2) * p1.x) / k;
+          c1y = (d1 * d1 * p2.y - d2 * d2 * p0.y + (2 * d1 * d1 + 3 * d1 * d2 + d2 * d2) * p1.y) / k;
+        }
+        if (d3 < 1e-4) { c2x = p2.x; c2y = p2.y; } else {
+          k = 3 * d3 * (d3 + d2);
+          c2x = (d3 * d3 * p1.x - d2 * d2 * p3.x + (2 * d3 * d3 + 3 * d3 * d2 + d2 * d2) * p2.x) / k;
+          c2y = (d3 * d3 * p1.y - d2 * d2 * p3.y + (2 * d3 * d3 + 3 * d3 * d2 + d2 * d2) * p2.y) / k;
+        }
+        d += ' C' + c1x.toFixed(1) + ' ' + c1y.toFixed(1) +
+             ' ' + c2x.toFixed(1) + ' ' + c2y.toFixed(1) +
+             ' ' + p2.x.toFixed(1) + ' ' + p2.y.toFixed(1);
       }
       return d;
     }
 
-    /* Geflochtener Lauf durch einen schmalen Kanal: die Fäden schwingen um
-       die Kanalmitte und kreuzen sich dabei mehrfach. */
-    function braid(pts, cx, amp, y0, y1, phase, steps) {
+    /* Geflochtener Lauf durch einen Kanal: die Fäden schwingen um die
+       Kanalmitte und kreuzen sich dabei. Die Auslenkung hängt an der Länge
+       des Kanals – auf kurzer Strecke wird sonst aus dem Schwung ein Zickzack.
+       Eine knappe Halbwelle je Kanal reicht; mehr wirkt hektisch. */
+    function braid(pts, cx, amp, y0, y1, phase) {
+      var span = y1 - y0;
+      if (span < 40) return;
+      var a = Math.min(amp, span * 0.20);
+      var steps = Math.max(2, Math.round(span / 190));
       for (var i = 1; i <= steps; i++) {
         var t = i / steps;
-        pts.push({
-          x: cx + Math.sin(phase + t * Math.PI * 2.1) * amp,
-          y: y0 + (y1 - y0) * t,
-          in: 0.42, out: 0.42
-        });
+        pts.push({ x: cx + Math.sin(phase + t * Math.PI * 1.15) * a, y: y0 + span * t });
       }
     }
 
@@ -499,8 +542,7 @@
 
       var css = getComputedStyle(root);
       var frag = document.createDocumentFragment();
-      var yStart = hero.y + hero.h * 0.62;
-      var bannerX = bannerBox.x + bannerBox.w * 0.2;
+      var yStart = hero.y + hero.h * 0.74;
 
       THREADS.forEach(function (cfg, i) {
         var card = cardBox[i];
@@ -510,69 +552,76 @@
         /* 1. Hinter dem Packshot hervor und senkrecht nach unten – solange
               in der Bildspalte, also niemals über dem Hero-Text. */
         var anchorX = hero.x + hero.w * cfg.heroX;
-        pts.push({ x: anchorX, y: yStart, out: 0.5 });
+        pts.push({ x: anchorX, y: yStart });
         /* Noch innerhalb der Bildspalte zur Zielseite driften – das verkürzt
            den späteren Schwenk deutlich und hält den Hero-Text frei. */
         var driftX = lane.c < W / 2 ? hero.x + 16 : hero.right - 16;
         var dropY = Math.max(copyBox ? copyBox.bottom : 0, hero.bottom) + 14;
-        pts.push({ x: driftX, y: dropY, in: 0.5, out: 0.42 });
+        pts.push({ x: driftX, y: dropY });
 
         /* 2. Der große Schwenk quer über die Seite. Er liegt in der Mitte
               hinter dem deckenden Vertrauensband und ist dort verdeckt. */
         var laneTop = headBox.y - 22;
-        pts.push({ x: lane.c + Math.sin(cfg.phase) * lane.a, y: laneTop, in: 0.52, out: 0.4 });
+        pts.push({ x: lane.c + Math.sin(cfg.phase) * lane.a, y: laneTop });
 
         /* 3. Geflochten am Abschnittskopf vorbei: die beiden rechten Fäden
-              schwingen gegenläufig und kreuzen sich mehrfach. */
+              schwingen gegenläufig und kreuzen sich. */
         var corridor = card.y - headBox.bottom;
         var laneEnd = headBox.bottom + Math.max(12, corridor * (cfg.viaGap ? 0.14 : 0.34));
-        braid(pts, lane.c, lane.a, laneTop, laneEnd, cfg.phase,
-              Math.max(2, Math.round((laneEnd - laneTop) / 150)));
+        braid(pts, lane.c, lane.a, laneTop, laneEnd, cfg.phase);
 
         /* 4. Einschwenken auf den Einschlagpunkt. Der mittlere Faden nimmt
               den Spalt zwischen zwei Karten und trifft seitlich auf – so
-              entsteht kein flacher Querstrich unter der Überschrift. */
+              entsteht kein flacher Querstrich unter der Überschrift. Er
+              trifft dabei fast so weit oben auf wie die anderen beiden,
+              damit alle drei Karten praktisch gleichzeitig aufbrechen. */
         var hitX, hitY;
         if (cfg.viaGap && cardBox[i + 1]) {
           var gapMid = (card.right + cardBox[i + 1].x) / 2;
-          pts.push({ x: gapMid, y: card.y + 4, in: 0.55, out: 0.4 });
+          pts.push({ x: gapMid, y: card.y + 4 });
           hitX = card.right - 1;
           hitY = card.y + card.h * cfg.hitY;
-          pts.push({ x: hitX, y: hitY, in: 0.75, out: 0.5 });
+          pts.push({ x: hitX, y: hitY });
         } else {
           hitX = card.x + card.w * cfg.hitX;
           hitY = card.y + 1;
-          pts.push({ x: hitX, y: hitY, in: 0.62, out: 0.5 });
+          pts.push({ x: hitX, y: hitY });
         }
 
         /* 5. Hinter der Karte hindurch. */
-        pts.push({ x: card.x + card.w * 0.5, y: card.bottom - 1, in: 0.5, out: 0.5 });
+        pts.push({ x: card.x + card.w * 0.5, y: card.bottom - 1 });
 
         /* 6. Zusammenlaufen in die Spalte des Missionsblocks. */
         var mTop = leadBox ? leadBox.y + 8 : gridBox.bottom + runway * 0.35;
         var mBot = leadBox ? leadBox.bottom - 8 : bannerBox.y - runway * 0.35;
-        pts.push({ x: midX + (i - 1) * midAmp * 0.9, y: mTop, in: 0.5, out: 0.45 });
-        braid(pts, midX, midAmp, mTop, mBot, cfg.phase + i * 0.7,
-              Math.max(2, Math.round((mBot - mTop) / 150)));
+        pts.push({ x: midX + (i - 1) * midAmp * 0.9, y: mTop });
+        braid(pts, midX, midAmp, mTop, mBot, cfg.phase + i * 0.7);
 
-        /* 7. Gebündelt ins Band eintauchen. */
-        pts.push({ x: bannerX + (i - 1) * 6, y: bannerBox.y + 30, in: 0.5 });
+        /* 7. Auffächern: das Bündel teilt sich wieder auf, jeder Faden läuft
+              in sein eigenes Abteil des Bands und bricht dort auf. */
+        var zoneX = bannerBox.x + bannerBox.w * cfg.zone;
+        pts.push({ x: zoneX + (midX - zoneX) * 0.42, y: mBot + (bannerBox.y - mBot) * 0.62 });
+        pts.push({ x: zoneX, y: bannerBox.y + bannerBox.h * 0.34 });
 
         var color = css.getPropertyValue('--ray-' + cfg.key).trim() ||
           ({ lactrase: '#3ab3e0', oligase: '#407740', fructaid: '#b3d24a' })[cfg.key];
-        defs.appendChild(gradient('ray-' + cfg.key, color, yStart, bannerBox.y + 30));
+        defs.appendChild(gradient('ray-' + cfg.key, color, yStart, bannerBox.y + bannerBox.h * 0.34));
 
         var p = el('path', { class: 'ray', d: toPath(pts) });
         p.style.stroke = 'url(#ray-' + cfg.key + ')';
         frag.appendChild(p);
-        threads.push({ el: p, hitY: hitY, cardIndex: i });
+        threads.push({ el: p, hitY: hitY, cardIndex: i, zoneIndex: i });
 
         /* Der Farbaufbruch startet dort, wo der Faden die Kachel trifft. */
         paintApi.setCardOrigin(i, cfg.hitX * 100, cfg.viaGap ? cfg.hitY * 100 : 0);
+        /* Im Band bricht das Abteil dort auf, wo der Faden die Oberkante
+           durchstößt. */
+        paintApi.setZoneOrigin(i, cfg.zone * 100, 0);
       });
 
       svg.appendChild(frag);
-      paintApi.setBannerOrigin(((bannerX - bannerBox.x) / bannerBox.w) * 100);
+      /* Der Scrim, der den weißen Text trägt, läuft vom linken Faden aus los. */
+      paintApi.setBannerOrigin(THREADS[0].zone * 100);
 
       threads.forEach(function (t) {
         t.len = t.el.getTotalLength();
@@ -586,26 +635,42 @@
       /* Fortschritt: Ziel-Y = Lesepunkt im Viewport, in Host-Koordinaten. */
       ready = true;
       pageTop = hostBox.top + window.scrollY;
+      /* Beim Laden steht die Spitze genau am Anfang des Pfades: ungescrollt
+         ist noch kein Millimeter gezeichnet. */
+      revealY = yStart;
 
       if (reduceMotion.matches) {
         cards.forEach(paintApi.light);
         paintApi.light(banner);
+        paintApi.lightAllZones();
       } else {
         update();
       }
     }
 
     var pageTop = 0;
+    var revealY = 0;
 
     function update() {
       if (!ready || reduceMotion.matches) return;
-      var targetY = window.scrollY + window.innerHeight * 0.76 - pageTop;
+      var vh = window.innerHeight;
+      var read = window.scrollY + vh * 0.76 - pageTop;
+      /* Beim Laden soll die Spitze noch hinter dem Packshot stecken. Sonst
+         ist der Faden schon ein gutes Stück gezeichnet, bevor überhaupt
+         gescrollt wurde. Der Vorsprung wird über die erste Bildschirmhöhe
+         abgebaut, danach gilt wieder der reine Lesepunkt. */
+      var headStart = Math.max(0, vh * 0.76 - revealY);
+      var ease = Math.max(0, 1 - window.scrollY / (vh * 0.75));
+      var targetY = read - headStart * ease * ease;
       for (var i = 0; i < threads.length; i++) {
         var t = threads[i];
         var l = lengthAtY(t.table, targetY);
         t.el.style.strokeDashoffset = (t.len - l).toFixed(1);
         if (l >= t.hit) paintApi.light(cards[t.cardIndex]);
-        if (l >= t.bannerL) paintApi.light(banner);
+        if (l >= t.bannerL) {
+          paintApi.light(banner);
+          paintApi.lightZone(t.zoneIndex);
+        }
       }
     }
 
