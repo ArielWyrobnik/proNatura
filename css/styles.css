@@ -162,8 +162,14 @@
   --z-overlay: 120;
   --z-skip: 200;
 
-  /* Höhe der fixierten Kopfzeile – von JS gepflegt, für scroll-margin. */
-  --header-h: 76px;
+  /* --header-base = Entwurfshöhe der Kopfzeile (bestimmt das Layout).
+     --header-h    = tatsächlich gemessene Höhe, von JS gepflegt, nur für
+                     scroll-padding und Abstände darunter.
+     Die beiden müssen getrennt bleiben: früher speiste die gemessene Höhe
+     die min-height der Kopfzeile – jedes Neumessen konnte sie dadurch nur
+     weiter aufblähen. */
+  --header-base: 62px;
+  --header-h: 62px;
 }
 
 /* ------------------------------------------------------------------- Base */
@@ -343,7 +349,7 @@ main { position: relative; }
 }
 .site-header__inner {
   display: flex; align-items: center; justify-content: space-between; gap: 1.25rem;
-  min-height: var(--header-h);
+  min-height: var(--header-base);
 }
 .site-header.is-stuck,
 .site-header.is-solid {
@@ -362,27 +368,35 @@ body.is-locked .site-header {
   border-bottom-color: var(--line);
 }
 
-.brand { display: inline-flex; align-items: center; flex: none; border-radius: 6px; }
-.brand img { height: 28px; width: auto; }
+/* Das Logo ist bewusst klein; der Link behält trotzdem ein Tap-Ziel ≥ 24 px. */
+.brand {
+  display: inline-flex; align-items: center; flex: none; border-radius: 6px;
+  min-height: 32px;
+}
+.brand img { height: 22px; width: auto; }
 
 /* --- Primärnavigation (Desktop) */
-.primary-nav { display: flex; align-items: center; gap: 1.5rem; }
-.primary-nav__list { display: flex; align-items: center; gap: .15rem; }
+.primary-nav { display: flex; align-items: center; gap: 1rem; }
+.primary-nav__list { display: flex; align-items: center; gap: .1rem; }
 .primary-nav__link,
 .primary-nav__trigger {
   position: relative;
-  display: inline-flex; align-items: center; gap: .35rem;
-  padding: .55rem .8rem; border: 0; border-radius: var(--r-pill);
+  display: inline-flex; align-items: center; gap: .3rem;
+  padding: .4rem .7rem; border: 0; border-radius: var(--r-pill);
   background: transparent; cursor: pointer;
-  font-weight: 600; font-size: var(--fs-sm); color: var(--ink-body);
+  font-weight: 500; font-size: .9375rem; color: var(--ink-body);
   transition: color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
   white-space: nowrap;
+}
+/* Die Kopfzeile soll leicht wirken: kleinerer Knopf, weniger Gewicht. */
+.primary-nav__cta .btn {
+  min-height: 36px; padding: .38rem 1rem; font-size: .875rem; font-weight: 600;
 }
 .primary-nav__link:hover, .primary-nav__trigger:hover,
 .primary-nav__trigger[aria-expanded="true"] { color: var(--ink); background: var(--surface-3); }
 .primary-nav__link[aria-current="page"] { color: var(--ink); }
 .primary-nav__link[aria-current="page"]::after {
-  content: ""; position: absolute; left: .8rem; right: .8rem; bottom: .18rem;
+  content: ""; position: absolute; left: .7rem; right: .7rem; bottom: .1rem;
   height: 2px; border-radius: 2px; background: var(--ink);
 }
 .primary-nav__list > li { position: relative; }
@@ -615,17 +629,31 @@ body.is-locked .site-header {
 .cta-banner p { color: rgba(255, 255, 255, .82); margin-top: .65rem; font-size: var(--fs-sm); }
 .cta-banner .btn { position: relative; z-index: 1; }
 
-/* Distributor-Band: die Farbe bricht genau dort auf, wo die drei Fäden
-   eintauchen (--sx wird von js/main.js gesetzt), und flutet das Band.
-   ::before = Wellen, ::after = Scrim – die Reihenfolge ist wichtig, damit
-   der Scrim über den Farben liegt und den weißen Text trägt. */
-.cta-banner--waves::before {
-  content: ""; position: absolute; inset: 0; z-index: 0; border-radius: inherit;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Crect width='1200' height='300' fill='%233ab3e0'/%3E%3Cpath d='M400,0 C520,90 280,210 400,300 L1200,300 L1200,0 Z' fill='%23407740'/%3E%3Cpath d='M800,0 C920,90 680,210 800,300 L1200,300 L1200,0 Z' fill='%23c1db5e'/%3E%3C/svg%3E");
+/* Distributor-Band: das Band ist in drei Abteile geteilt, getrennt von den
+   Wellen des Etiketts. Jeder Faden taucht in sein eigenes Abteil ein und
+   bricht dort auf – die Farbe läuft also nicht über das ganze Band, sondern
+   füllt genau das Feld der jeweiligen Marke. Ursprung je Abteil (--sx/--sy)
+   setzt js/main.js auf den Eintauchpunkt.
+   Reihenfolge: Abteile (z 0) → Scrim (::after, z 0, danach gemalt) → Text. */
+.cta-banner__paint {
+  position: absolute; inset: 0; z-index: 0; border-radius: inherit;
+  overflow: hidden; pointer-events: none;
+}
+.cta-banner__zone {
+  position: absolute; inset: 0;
   background-size: 100% 100%; background-repeat: no-repeat;
-  clip-path: circle(0% at var(--sx, 20%) 0%);
-  transition: clip-path 1.4s cubic-bezier(.22, .7, .3, 1) .07s;
-  pointer-events: none;
+  clip-path: circle(0% at var(--sx, 50%) var(--sy, 0%));
+  transition: clip-path 1.15s cubic-bezier(.2, .74, .28, 1);
+}
+.cta-banner__zone.is-lit { clip-path: circle(165% at var(--sx, 50%) var(--sy, 0%)); }
+.cta-banner__zone--lactrase {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L400,0 C520,90 280,210 400,300 L0,300 Z' fill='%233ab3e0'/%3E%3C/svg%3E");
+}
+.cta-banner__zone--oligase {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Cpath d='M400,0 C520,90 280,210 400,300 L800,300 C680,210 920,90 800,0 Z' fill='%23407740'/%3E%3C/svg%3E");
+}
+.cta-banner__zone--fructaid {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Cpath d='M800,0 C920,90 680,210 800,300 L1200,300 L1200,0 Z' fill='%23c1db5e'/%3E%3C/svg%3E");
 }
 .cta-banner--waves::after {
   content: ""; position: absolute; inset: 0; z-index: 0; border-radius: inherit;
@@ -646,7 +674,6 @@ body.is-locked .site-header {
       rgba(8, 12, 16, .06) 100%);
   }
 }
-.cta-banner--waves.is-lit::before,
 .cta-banner--waves.is-lit::after { clip-path: circle(165% at var(--sx, 20%) 0%); }
 
 /* ------------------------------------------------------------ Kennzahlen */
@@ -716,11 +743,10 @@ body.is-locked .site-header {
   display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
   gap: var(--split-gap); align-items: start;
 }
+/* Beide Spalten scrollen gleich. Vorher klebte diese Spalte unter der
+   Kopfzeile fest, während das Formular daneben normal weiterlief – das
+   ließ die zwei Hälften beim Scrollen auseinanderlaufen. */
 .contact__cards { display: grid; gap: .75rem; }
-@media (min-width: 1001px) {
-  /* Die Kontaktdaten bleiben neben dem langen Formular im Blick. */
-  .contact__cards { position: sticky; top: calc(var(--header-h) + 1.5rem); }
-}
 .contact-card {
   display: flex; gap: 1rem; padding: 1.15rem 1.25rem;
   background: var(--surface); border: 1px solid var(--line);
@@ -1115,7 +1141,7 @@ html.js [data-reveal][data-delay="3"] { transition-delay: .21s; }
 
 /* Telefon */
 @media (max-width: 760px) {
-  :root { --header-h: 66px; }
+  :root { --header-base: 56px; }
 
   .hero { padding-bottom: clamp(2.5rem, 8vw, 4rem); }
   .hero__copy { position: relative; z-index: var(--z-content); }

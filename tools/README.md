@@ -31,7 +31,8 @@ Ausgaben dort ab.
 | `shoot.mjs <ordner>` | Alle 7 Seiten × 7 Viewports × 3 Scrollpositionen. Meldet horizontalen Überlauf (inkl. der verursachenden Elemente) und Konsolenfehler. |
 | `raytext.mjs` | **Die wichtigste Regression für die Produkt-Strahlen.** Rendert die Startseite mit magenta, 7 px breiten Strahlen (fast dreifache Normalbreite) und schießt die ganze Seite ab. Danach `analyze.py` laufen lassen – es prüft pixelweise, ob ein Strahl in der Box eines Textelements landet. |
 | `analyze.py [ordner]` | Wertet die Aufnahmen von `raytext.mjs` aus. Erwartete Ausgabe: `KEIN Strahl über einer Textbox`. |
-| `interact.mjs` | Mobil-Menü (Fokusfalle, Escape, Scroll-Lock, Backdrop), Marken-Dropdown (Maus + Tastatur), Skip-Link, Sprungmarken unter der Kopfzeile, Formular-Validierung, `prefers-reduced-motion`, Darstellung ohne JS, Deep-Link, schnelles Scrollen mit Resize, Farbaufbruch-Ursprünge. |
+| `interact.mjs` | Mobil-Menü (Fokusfalle, Escape, Scroll-Lock, Backdrop), Marken-Dropdown (Maus + Tastatur), Skip-Link, Sprungmarken unter der Kopfzeile, Formular-Validierung, `prefers-reduced-motion`, Darstellung ohne JS, Deep-Link, schnelles Scrollen mit Resize, Farbaufbruch-Ursprünge, Strahlen-Startzustand, Höhenstabilität der Kopfzeile, Gleichlauf der Kontaktspalten, Abteile des Distributor-Bands. |
+| `measure.mjs` | Gibt die echte Geometrie der Startseite aus (Hero, Vertrauensband, Abschnittskopf, Karten, Missionsspalte, Band). Grundlage für jede Änderung an der Strahlen-Wegführung – die Kanäle werden aus genau diesen Kästen berechnet. |
 | `a11y.mjs` | Kontrast aller Textknoten gegen WCAG 2.1 AA (nur bei deckendem Hintergrund; Verläufe und Bilder müssen von Hand geprüft werden). |
 | `touch.mjs` | Tap-Ziele ≥ 24 px bei 390 px Breite (Inline-Links im Fließtext sind laut WCAG 2.5.8 ausgenommen). |
 | `svgcheck.mjs` | Übergroße Icons, fehlende `alt`-Texte, Sprünge in der Überschriftenhierarchie, genau eine `h1` je Seite, Formularfelder ohne Label. |

@@ -274,6 +274,94 @@ const ok = (c, m) => { console.log((c ? '  ok   ' : '  FAIL ') + m); if (!c) fai
   await ctx.close();
 }
 
+/* --- Strahlen: beim Laden noch nichts gezeichnet -------------------------- */
+{
+  for (const vp of [{ width: 1440, height: 900 }, { width: 1280, height: 800 }, { width: 1680, height: 1050 }]) {
+    const ctx = await browser.newContext({ viewport: vp });
+    const page = await ctx.newPage();
+    await page.goto(BASE + '/index.html', { waitUntil: 'load' });
+    await page.waitForTimeout(500);
+    const drawn = await page.evaluate(() => [...document.querySelectorAll('.ray')].map(el => {
+      const len = el.getTotalLength();
+      return +(len - parseFloat(el.style.strokeDashoffset || len)).toFixed(1);
+    }));
+    ok(drawn.length === 3 && drawn.every(v => v <= 2),
+       `rays: bei scroll 0 noch nichts gezeichnet @${vp.width} (${drawn.join(', ')})`);
+    await ctx.close();
+  }
+}
+
+/* --- Kopfzeile darf sich nicht selbst aufblähen --------------------------- */
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(BASE + '/index.html', { waitUntil: 'load' });
+  await page.waitForTimeout(300);
+  const h = () => page.evaluate(() => document.getElementById('header').offsetHeight);
+  const start = await h();
+  for (let i = 0; i < 5; i++) {
+    await page.setViewportSize({ width: 1120 + i * 90, height: 900 });
+    await page.waitForTimeout(260);
+  }
+  await page.evaluate(() => window.scrollTo(0, 1500));
+  await page.waitForTimeout(300);
+  const end = await h();
+  ok(end === start && start <= 72,
+     `header: Höhe bleibt nach Resize + Scroll stabil (${start} → ${end})`);
+  await ctx.close();
+}
+
+/* --- Kontaktspalten laufen beim Scrollen nicht auseinander ---------------- */
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(BASE + '/index.html', { waitUntil: 'load' });
+  await page.addStyleTag({ content: 'html{scroll-behavior:auto !important}' });
+  const pos = () => page.evaluate(() => {
+    const a = document.querySelector('.contact__cards').getBoundingClientRect();
+    const b = document.querySelector('.form').getBoundingClientRect();
+    return { a: Math.round(a.top), b: Math.round(b.top) };
+  });
+  await page.evaluate(() => document.querySelector('#kontakt').scrollIntoView());
+  await page.waitForTimeout(400);
+  const p1 = await pos();
+  await page.evaluate(() => window.scrollBy(0, 260));
+  await page.waitForTimeout(400);
+  const p2 = await pos();
+  ok(Math.abs((p1.a - p2.a) - (p1.b - p2.b)) < 2,
+     `contact: beide Spalten scrollen gleich (Δ links ${p1.a - p2.a}, Δ rechts ${p1.b - p2.b})`);
+  const stickyPos = await page.evaluate(() =>
+    getComputedStyle(document.querySelector('.contact__cards')).position);
+  ok(stickyPos !== 'sticky', `contact: linke Spalte klebt nicht (${stickyPos})`);
+  await ctx.close();
+}
+
+/* --- Distributor-Band: jedes Abteil bricht einzeln auf -------------------- */
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(BASE + '/index.html', { waitUntil: 'load' });
+  await page.addStyleTag({ content: 'html{scroll-behavior:auto !important}' });
+  await page.waitForTimeout(400);
+  const zonesBefore = await page.evaluate(() =>
+    [...document.querySelectorAll('.cta-banner__zone')].map(z => z.classList.contains('is-lit')));
+  ok(zonesBefore.length === 3 && zonesBefore.every(v => !v), 'band: Abteile starten unbeleuchtet');
+
+  await page.evaluate(() => document.querySelector('.cta-banner').scrollIntoView({ block: 'center' }));
+  await page.waitForTimeout(1800);
+  const zones = await page.evaluate(() =>
+    [...document.querySelectorAll('.cta-banner__zone')].map(z => ({
+      lit: z.classList.contains('is-lit'),
+      sx: z.style.getPropertyValue('--sx')
+    })));
+  ok(zones.every(z => z.lit), 'band: alle drei Abteile beleuchtet');
+  const xs = zones.map(z => parseFloat(z.sx));
+  ok(xs.every(v => !isNaN(v)) && xs[0] < xs[1] && xs[1] < xs[2],
+     `band: jeder Faden trifft sein eigenes Abteil (${zones.map(z => z.sx).join(', ')})`);
+  await page.screenshot({ path: path.join(OUT, 'band-zones.png') });
+  await ctx.close();
+}
+
 await browser.close();
 console.log(fail.length ? `\n${fail.length} FAILURE(S)` : '\nALL INTERACTION CHECKS PASSED');
 process.exit(fail.length ? 1 : 0);

@@ -129,15 +129,29 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
      gegenläufig (Phase 0 und π) und kreuzen sich mehrfach.
   4. **Einschlag auf der Marken-Karte** → dort bricht die Farbe auf (siehe unten).
      Der mittlere Faden nimmt den **Spalt zwischen zwei Karten** und trifft seitlich auf;
-     sonst entstünde ein flacher Querstrich unter der Überschrift.
+     sonst entstünde ein flacher Querstrich unter der Überschrift. Er trifft dabei
+     fast so weit oben auf wie die anderen (`hitY: 0.18`), damit alle drei Karten
+     praktisch **gleichzeitig** aufbrechen – vorher blieb Oligase lange grau.
   5. Hinter der Karte hindurch, dann zusammen durch die **Spalte zwischen Missionsbild
      und Missionstext** (dort erneut geflochten).
-  6. Gebündelt ins **Distributor-Band** eintauchen, das daraufhin farbig aufbricht.
+  6. **Wieder auffächern**: das Bündel teilt sich auf, jeder Faden läuft in **sein
+     eigenes Abteil** des Distributor-Bands und bricht dort auf (siehe unten).
 
   Technik: ein SVG-Pfad je Faden, weiche Enden über `linearGradient`. Der Zeichen-
   Fortschritt hängt an einer **Ziel-Y-Position im Viewport** (76 % Höhe), nicht an der
   Bogenlänge – dafür gibt es je Pfad eine Nachschlagetabelle Länge↔y. Die Spitze bleibt
   so immer auf Höhe des Lesepunkts und bleibt nirgends stehen. Nur ab **1001 px** Breite.
+
+  ⚠️ **Beim Laden ist noch nichts gezeichnet** (`revealY = yStart`): der Lesepunkt liegt
+  bei 76 % Höhe, der Pfad beginnt aber erst unter dem Packshot. Der Vorsprung wird über
+  die erste Bildschirmhöhe quadratisch abgebaut. Ohne das war der Faden schon weit
+  gelaufen, bevor überhaupt gescrollt wurde. Nicht wieder an `scrollY` allein hängen.
+
+  ⚠️ **Kurvenform:** `toPath()` legt einen **zentripetalen Catmull-Rom-Spline** durch die
+  Wegpunkte. Die frühere Variante stellte die Tangente an jedem Wegpunkt senkrecht –
+  daraus wurden sichtbare Treppenstufen. `braid()` deckelt die Auslenkung zusätzlich auf
+  20 % der Kanallänge und macht nur eine knappe Halbwelle (`1.15π`) je Kanal; mehr wirkt
+  hektisch.
   Geometrie gebündelt in `build()`, `update()` schreibt pro Frame nur Styles. Neu gebaut
   bei Resize, Media-Query-Wechsel, `load`, `fonts.ready` und via `ResizeObserver`.
 
@@ -152,9 +166,13 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
   umgekippter Farbeimer. Zwei absolut positionierte Ebenen mit `clip-path: circle()`:
   `.brand-card__front` (Signaturfarbe, schnellere Kurve) und `.brand-card__spill` (Klon
   des `<picture>`, etwas langsamer). Der Versatz ergibt den nassen Rand an der Front.
-  Ursprung `--sx`/`--sy` setzt JS auf den Einschlagpunkt. Das **Distributor-Band** nutzt
-  dasselbe Prinzip über `::before` (Wellen) und `::after` (Scrim, läuft leicht voraus,
-  damit der weiße Text nie auf blanker Lime-Fläche steht).
+  Ursprung `--sx`/`--sy` setzt JS auf den Einschlagpunkt. Das **Distributor-Band** ist in
+  **drei Abteile** geteilt (`.cta-banner__zone`, getrennt von den Wellen des Etiketts);
+  jeder Faden taucht in sein eigenes ein und bricht nur dort auf – Lactrase links,
+  Oligase Mitte, Fructaid rechts. Der Scrim (`::after`) trägt den weißen Text und läuft
+  vom linken Faden aus los.
+  ⚠️ Kein gemeinsamer Eintrittspunkt mehr: „alle an einer Seite rein und das ganze Band
+  verblasst" war ausdrücklich unerwünscht.
   ⚠️ Kein Fade mehr – „einfach von blass zu bunt" war ausdrücklich unerwünscht.
   ⚠️ Der Farbaufbruch hängt NICHT an der Strahlen-Geometrie: ohne Strahlen (< 1001 px,
   `prefers-reduced-motion`, kein Observer) übernimmt ein `IntersectionObserver` und die
@@ -165,6 +183,14 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
   Ebenso `html.rays-on` für die Entsättigung.
 - **Footer-Welle:** einzelne Wellen-Silhouette (wie Etikett/Original) als Inline-Data-URI
   oben am Footer. (Original-Wave-SVG rendert NICHT als CSS-Background → clipPath/Transforms.)
+- **Kopfzeile:** `--header-base` bestimmt das Layout (`min-height`), `--header-h` ist die
+  von JS **gemessene** Höhe und speist nur `scroll-padding` und Abstände darunter.
+  ⚠️ Die beiden müssen getrennt bleiben. Früher las `min-height` dieselbe Variable, die
+  JS aus `offsetHeight` schrieb – bei jedem Neumessen konnte die Kopfzeile dadurch nur
+  wachsen (gemessen: 62 → 93 px). Nicht wieder zusammenlegen.
+- **Kontaktbereich:** beide Spalten scrollen gleich. Die Datenspalte war `position: sticky`
+  und die vier Karten blendeten einzeln ein, während das Formular daneben als Block kam –
+  die zwei Hälften liefen beim Scrollen sichtbar auseinander.
 - **Kein Hero-Vollbild-Collapse mehr.** Der frühere `100svh`→`is-collapsed`-Effekt hat den
   Packshot auf Tablet/Mobil abgeschnitten und beim ersten Scrollen einen Layout-Sprung
   erzeugt. Der Hero ist jetzt inhaltsgetrieben und ruhig.
