@@ -124,34 +124,42 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
   2. Der **große Schwenk quer über die Seite** liegt in der Mitte hinter dem deckenden
      **Vertrauensband** (`.trust-bar`, `z-index: var(--z-content)`). Genau dafür ist das
      Band da – vorher lief der Schwenk über den Hero-Text.
-  3. **Geflochten am zentrierten Abschnittskopf vorbei.** Frei sind nur die Zonen links
-     von `head.x` und rechts von `head.right`; dort schwingen die beiden rechten Fäden
-     gegenläufig (Phase 0 und π) und kreuzen sich mehrfach.
+  3. Ruhig am zentrierten Abschnittskopf vorbei, durch die freien Randkanäle links von
+     `head.x` und rechts von `head.right` – **ein Wegpunkt je Kanal**, den Bogen legt der
+     Spline.
   4. **Einschlag auf der Marken-Karte** → dort bricht die Farbe auf (siehe unten).
-     Der mittlere Faden nimmt den **Spalt zwischen zwei Karten** und trifft seitlich auf;
-     sonst entstünde ein flacher Querstrich unter der Überschrift. Er trifft dabei
-     fast so weit oben auf wie die anderen (`hitY: 0.18`), damit alle drei Karten
-     praktisch **gleichzeitig** aufbrechen – vorher blieb Oligase lange grau.
+     Der mittlere Faden nimmt den **Spalt zwischen zwei Karten** und trifft seitlich auf
+     (`hitY: 0.10`); sonst entstünde ein flacher Querstrich unter der Überschrift.
   5. Hinter der Karte hindurch, dann zusammen durch die **Spalte zwischen Missionsbild
-     und Missionstext** (dort erneut geflochten).
+     und Missionstext** – ein einziger flacher Bogen, kein Geflecht.
   6. **Wieder auffächern**: das Bündel teilt sich auf, jeder Faden läuft in **sein
      eigenes Abteil** des Distributor-Bands und bricht dort auf (siehe unten).
 
   Technik: ein SVG-Pfad je Faden, weiche Enden über `linearGradient`. Der Zeichen-
   Fortschritt hängt an einer **Ziel-Y-Position im Viewport** (76 % Höhe), nicht an der
   Bogenlänge – dafür gibt es je Pfad eine Nachschlagetabelle Länge↔y. Die Spitze bleibt
-  so immer auf Höhe des Lesepunkts und bleibt nirgends stehen. Nur ab **1001 px** Breite.
+  so immer auf Höhe des Lesepunkts. Nur ab **1001 px** Breite.
+
+  ⚠️ **Kopf UND Ende laufen ausschließlich vorwärts** (`Math.max` in `update()`). Beim
+  Zurückscrollen bewegt sich nichts – ausdrücklicher Nutzerwunsch: „sodass man sich die
+  Seite in Ruhe anschauen kann". Nicht wieder an die momentane Scrollposition hängen.
+
+  ⚠️ **Das Band verschluckt den Faden.** Läuft die Leseposition am Pfadende vorbei,
+  wandert das Ende nach (`stroke-dasharray: 0 <verschluckt> <sichtbar> <rest>`), bis
+  nichts mehr übrig ist. Beides – Kopf wie Ende – wird **allein aus der Leseposition**
+  abgeleitet, ohne Scroll-Historie. Genau deshalb stimmt es auch bei Deep-Link und bei
+  Reload auf halber Höhe, wo der Browser die Position erst nachträglich herstellt.
+  Ein früherer Versuch mit Sprungerkennung über Zeit und Distanz war fragil.
 
   ⚠️ **Beim Laden ist noch nichts gezeichnet** (`revealY = yStart`): der Lesepunkt liegt
   bei 76 % Höhe, der Pfad beginnt aber erst unter dem Packshot. Der Vorsprung wird über
-  die erste Bildschirmhöhe quadratisch abgebaut. Ohne das war der Faden schon weit
-  gelaufen, bevor überhaupt gescrollt wurde. Nicht wieder an `scrollY` allein hängen.
+  die erste Bildschirmhöhe quadratisch abgebaut.
 
   ⚠️ **Kurvenform:** `toPath()` legt einen **zentripetalen Catmull-Rom-Spline** durch die
   Wegpunkte. Die frühere Variante stellte die Tangente an jedem Wegpunkt senkrecht –
-  daraus wurden sichtbare Treppenstufen. `braid()` deckelt die Auslenkung zusätzlich auf
-  20 % der Kanallänge und macht nur eine knappe Halbwelle (`1.15π`) je Kanal; mehr wirkt
-  hektisch.
+  daraus wurden sichtbare Treppenstufen. Es gibt **kein `braid()` mehr**: die
+  geflochtenen Kanäle wirkten hektisch und zogen zu viel Aufmerksamkeit. Weniger
+  Wegpunkte, `stroke-width: 1.9`, `opacity: .62`.
   Geometrie gebündelt in `build()`, `update()` schreibt pro Frame nur Styles. Neu gebaut
   bei Resize, Media-Query-Wechsel, `load`, `fonts.ready` und via `ResizeObserver`.
 
@@ -164,20 +172,36 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
   (`html.paint-on` + `grayscale` auf dem Basisbild). Trifft der Faden auf die Karte,
   bricht die Farbe **von genau diesem Punkt** auf und läuft über die Kachel – wie ein
   umgekippter Farbeimer. Zwei absolut positionierte Ebenen mit `clip-path: circle()`:
-  `.brand-card__front` (Signaturfarbe, schnellere Kurve) und `.brand-card__spill` (Klon
-  des `<picture>`, etwas langsamer). Der Versatz ergibt den nassen Rand an der Front.
-  Ursprung `--sx`/`--sy` setzt JS auf den Einschlagpunkt. Das **Distributor-Band** ist in
-  **drei Abteile** geteilt (`.cta-banner__zone`, getrennt von den Wellen des Etiketts);
-  jeder Faden taucht in sein eigenes ein und bricht nur dort auf – Lactrase links,
-  Oligase Mitte, Fructaid rechts. Der Scrim (`::after`) trägt den weißen Text und läuft
-  vom linken Faden aus los.
-  ⚠️ Kein gemeinsamer Eintrittspunkt mehr: „alle an einer Seite rein und das ganze Band
+  `.brand-card__front` (Signaturfarbe) und `.brand-card__spill` (Klon des `<picture>`,
+  etwas kleinerer Radius). Der Versatz ergibt den nassen Rand an der Front.
+
+  ⚠️ **Der Radius kommt aus dem Scrollfortschritt, nicht aus einer Zeitkurve.**
+  JS schreibt `--rf`/`--rs` (Karten) bzw. `--rz` (Bandabteile); CSS hat nur noch
+  `transition: clip-path 140ms linear`, um die Sprünge zwischen zwei Mausrad-Rasten zu
+  glätten. Ausdrücklicher Nutzerwunsch: die Farbe soll sich **proportional zum Scrollen**
+  ausbreiten, nicht nach dem Einschlag von selbst durchrauschen. Nicht wieder auf eine
+  lange CSS-Transition umstellen.
+  Alle drei Kacheln sind an **derselben Seitenposition** fertig
+  (`paintSpan = cardTop + 0.6vh − hitY`), obwohl der mittlere Faden tiefer aufschlägt.
+
+  Das **Distributor-Band** ist in **drei Abteile** geteilt (`.cta-banner__zone`, getrennt
+  von den Wellen des Etiketts); jeder Faden taucht in sein eigenes ein und bricht nur
+  dort auf.
+  ⚠️ Reihenfolge im Band ist **dunkel → hell**: Oligase-Grün links, Lactrase-Blau Mitte,
+  Fructaid-Lime rechts – NICHT die Kartenreihenfolge. Grund: der weiße Text liegt links,
+  und Weiß auf `#407740` sind 5,3:1 (AA), auf Blau oder Lime wäre es unlesbar. Dadurch
+  braucht das Band **keinen abdunkelnden Scrim** mehr und die Signaturfarben bleiben
+  kräftig. Der frühere Scrim über der ganzen Fläche ließ die Farben ausgewaschen wirken.
+  ⚠️ `.cta-banner__text` ist ab 900 px auf `43 %` begrenzt, damit der Text nicht in ein
+  helles Abteil rutscht (Wellenkante bei 50 %). `tools/banner.mjs` prüft das über acht
+  Breiten. Unter 900 px läuft der Text über die volle Breite – dort zeigt deshalb nur
+  **ein** Feld in Oligase-Grün.
+  ⚠️ Kein gemeinsamer Eintrittspunkt: „alle an einer Seite rein und das ganze Band
   verblasst" war ausdrücklich unerwünscht.
-  ⚠️ Kein Fade mehr – „einfach von blass zu bunt" war ausdrücklich unerwünscht.
   ⚠️ Der Farbaufbruch hängt NICHT an der Strahlen-Geometrie: ohne Strahlen (< 1001 px,
   `prefers-reduced-motion`, kein Observer) übernimmt ein `IntersectionObserver` und die
-  Farbe bricht aus der Kachelmitte auf. Nicht wieder koppeln – früher blieben die Fotos
-  bei reduzierter Bewegung dauerhaft grau.
+  Klasse `.is-lit`. Nicht wieder koppeln – früher blieben die Fotos bei reduzierter
+  Bewegung dauerhaft grau.
 - **Progressive Enhancement:** `<html>` bekommt per Inline-Skript im `<head>` die Klasse
   `js`. Nur `html.js [data-reveal]` startet unsichtbar – ohne JS ist alles sofort sichtbar.
   Ebenso `html.rays-on` für die Entsättigung.
