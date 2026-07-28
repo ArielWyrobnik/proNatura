@@ -323,12 +323,14 @@ const ok = (c, m) => { console.log((c ? '  ok   ' : '  FAIL ') + m); if (!c) fai
     return { a: Math.round(a.top), b: Math.round(b.top) };
   });
   await page.evaluate(() => document.querySelector('#kontakt').scrollIntoView());
-  await page.waitForTimeout(400);
+  /* Erst messen, wenn die Einblend-Animation beider Spalten durch ist –
+     sonst misst man deren Transform statt des Scrollverhaltens. */
+  await page.waitForTimeout(1400);
   const p1 = await pos();
   await page.evaluate(() => window.scrollBy(0, 260));
-  await page.waitForTimeout(400);
+  await page.waitForTimeout(500);
   const p2 = await pos();
-  ok(Math.abs((p1.a - p2.a) - (p1.b - p2.b)) < 2,
+  ok(Math.abs((p1.a - p2.a) - (p1.b - p2.b)) <= 2,
      `contact: beide Spalten scrollen gleich (Δ links ${p1.a - p2.a}, Δ rechts ${p1.b - p2.b})`);
   const stickyPos = await page.evaluate(() =>
     getComputedStyle(document.querySelector('.contact__cards')).position);

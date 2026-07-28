@@ -37,6 +37,7 @@ Ausgaben dort ab.
 | `touch.mjs` | Tap-Ziele ≥ 24 px bei 390 px Breite (Inline-Links im Fließtext sind laut WCAG 2.5.8 ausgenommen). |
 | `svgcheck.mjs` | Übergroße Icons, fehlende `alt`-Texte, Sprünge in der Überschriftenhierarchie, genau eine `h1` je Seite, Formularfelder ohne Label. |
 | `perf.mjs` | Requests, Übertragungsgröße, LCP, CLS und ob ein externer Request rausgeht (muss `keine` sein). |
+| `lines.mjs` | Blöcke mit festen `<br>`-Zeilen (Adresse, Telefon) dürfen nicht auf Kante sitzen. Sitzt eine Zeile exakt auf der Boxbreite, bricht sie in einer anderen Engine mitten im Wort um – in Chromium sieht man davon nichts. |
 
 ## Vor jeder Änderung an der Strahlen-Wegführung
 
@@ -53,6 +54,6 @@ Verschiebt sich das Layout, kann diese Annahme kippen — dieser Test merkt es.
 
 ```bash
 node shoot.mjs out && node interact.mjs && node a11y.mjs \
-  && node touch.mjs && node svgcheck.mjs && node perf.mjs \
+  && node touch.mjs && node svgcheck.mjs && node lines.mjs && node perf.mjs \
   && node raytext.mjs && python3 analyze.py
 ```

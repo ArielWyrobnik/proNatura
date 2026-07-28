@@ -758,7 +758,10 @@ body.is-locked .site-header {
   background: var(--surface-2); border: 1px solid var(--line); color: var(--ink);
 }
 .contact-card i svg { width: 20px; height: 20px; }
-.contact-card > div { min-width: 0; }
+/* Die Textfläche nimmt den freien Platz der Karte ein, statt auf ihre
+   Inhaltsbreite zu schrumpfen. Sonst sitzt die Adresse exakt auf Kante und
+   bricht in anderen Browsern mitten im Straßennamen um. */
+.contact-card > div { flex: 1 1 auto; min-width: 0; }
 .contact-card span {
   display: block; font-size: var(--fs-label); font-weight: 700;
   letter-spacing: .09em; text-transform: uppercase; color: var(--ink-muted);
