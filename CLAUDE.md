@@ -141,9 +141,10 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
   Geometrie gebündelt in `build()`, `update()` schreibt pro Frame nur Styles. Neu gebaut
   bei Resize, Media-Query-Wechsel, `load`, `fonts.ready` und via `ResizeObserver`.
 
-  ⚠️ **Regressionstest:** `raytext.mjs` rendert die Seite mit magenta, 7 px breiten
-  Strahlen und prüft pixelweise, dass keine Textbox getroffen wird (1001–1728 px).
-  Vor jeder Änderung an der Wegführung erneut laufen lassen.
+  ⚠️ **Regressionstest:** `tools/raytext.mjs` + `tools/analyze.py` rendern die Seite mit
+  magenta, 7 px breiten Strahlen und prüfen pixelweise, dass keine Textbox getroffen wird
+  (1001–1728 px). Vor jeder Änderung an der Wegführung erneut laufen lassen.
+  Alle Prüfskripte liegen in `tools/` – siehe `tools/README.md`.
 
 - **Farbaufbruch statt Überblendung.** Die Marken-Fotos starten entsättigt
   (`html.paint-on` + `grayscale` auf dem Basisbild). Trifft der Faden auf die Karte,
