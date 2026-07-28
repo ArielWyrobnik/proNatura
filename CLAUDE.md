@@ -193,9 +193,12 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
   braucht das Band **keinen abdunkelnden Scrim** mehr und die Signaturfarben bleiben
   kräftig. Der frühere Scrim über der ganzen Fläche ließ die Farben ausgewaschen wirken.
   ⚠️ `.cta-banner__text` ist ab 900 px auf `43 %` begrenzt, damit der Text nicht in ein
-  helles Abteil rutscht (Wellenkante bei 50 %). `tools/banner.mjs` prüft das über acht
-  Breiten. Unter 900 px läuft der Text über die volle Breite – dort zeigt deshalb nur
-  **ein** Feld in Oligase-Grün.
+  helles Abteil rutscht (Wellenkante bei 50 %). **Unter 900 px greift diese Fessel nicht**,
+  der Text läuft über die volle Breite – dort zeigt deshalb nur **ein** Feld in
+  Oligase-Grün (`@media (max-width: 899.98px)`). Diese Grenze muss die exakte
+  Gegengleiche zu `min-width: 900px` bleiben: lag sie versehentlich bei 760 px, stand
+  zwischen 761 und 899 px weißer Text auf Lactrase-Blau (2,5:1).
+  `tools/banner.mjs` prüft beide Zustände über 15 Breiten.
   ⚠️ Kein gemeinsamer Eintrittspunkt: „alle an einer Seite rein und das ganze Band
   verblasst" war ausdrücklich unerwünscht.
   ⚠️ Der Farbaufbruch hängt NICHT an der Strahlen-Geometrie: ohne Strahlen (< 1001 px,

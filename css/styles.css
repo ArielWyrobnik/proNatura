@@ -672,6 +672,15 @@ body.is-locked .site-header {
 .cta-banner__zone--fructaid {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Cpath d='M940,0 C1005,90 875,210 940,300 L1200,300 L1200,0 Z' fill='%23c1db5e'/%3E%3C/svg%3E");
 }
+/* Unter 900 px greift die 43%-Fessel des Textblocks nicht mehr: der Text
+   läuft über die volle Breite und damit über alle drei Abteile. Weiß auf
+   Lactrase-Blau (2,5:1) oder Fructaid-Lime wäre unlesbar – deshalb trägt
+   das Band dort ein einziges Feld in der dunklen Signaturfarbe.
+   Die Grenze muss exakt die Gegengleiche zu `min-width: 900px` bleiben. */
+@media (max-width: 899.98px) {
+  .cta-banner__zone--lactrase, .cta-banner__zone--fructaid { display: none; }
+  .cta-banner__zone--oligase { background-image: linear-gradient(#407740, #407740); }
+}
 
 /* ------------------------------------------------------------ Kennzahlen */
 .stat-band {
@@ -1168,11 +1177,6 @@ html.js [data-reveal][data-delay="3"] { transition-delay: .21s; }
   .form__row { grid-template-columns: 1fr; }
   .cta-banner { padding: 1.75rem 1.5rem; }
   .cta-banner .btn { width: 100%; }
-  /* Gestapelt läuft der Text über die volle Breite und damit über alle drei
-     Abteile. Weiß auf Lime wäre unlesbar, deshalb trägt hier ein einziges
-     Feld in der dunklen Signaturfarbe. */
-  .cta-banner__zone--lactrase, .cta-banner__zone--fructaid { display: none; }
-  .cta-banner__zone--oligase { background-image: linear-gradient(#407740, #407740); }
 
   .footer__grid { grid-template-columns: 1fr 1fr; gap: 2rem 1.5rem; }
   .footer__brand { grid-column: 1 / -1; }
