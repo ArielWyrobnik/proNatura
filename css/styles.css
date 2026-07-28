@@ -274,13 +274,20 @@ main { position: relative; }
 .page-head .eyebrow { margin-bottom: .9rem; }
 .page-head h1 { font-size: clamp(1.9rem, 1.1rem + 2.6vw, 2.9rem); }
 
-.section-head { max-width: 46rem; margin-bottom: clamp(2.25rem, 1.2rem + 2.6vw, 3.5rem); }
+.section-head {
+  position: relative; z-index: var(--z-content);
+  max-width: 46rem; margin-bottom: clamp(2.5rem, 1.4rem + 3vw, 4.5rem);
+}
+/* Mehr Luft vor dem Markenraster – gibt dem Abschnitt Ruhe und dem
+   mittleren Faden den nötigen Korridor für einen Bogen statt Querstrich. */
+.section-head--airy { margin-bottom: clamp(3.5rem, 2rem + 5vw, 6.5rem); }
 .section-head .eyebrow { margin-bottom: .9rem; }
 .section-head h2 { font-size: var(--fs-h2); }
 .section-head p { color: var(--ink-muted); font-size: var(--fs-lead); margin-top: 1rem; max-width: 60ch; }
 .section-head.center { margin-inline: auto; text-align: center; }
 .section-head.center p { margin-inline: auto; }
 
+.prose { position: relative; z-index: var(--z-content); }
 .prose > * + * { margin-top: 1.05rem; }
 .prose .eyebrow + h1, .prose .eyebrow + h2 { margin-top: .9rem; }
 .prose p { color: var(--ink-body); max-width: var(--measure); }
@@ -451,6 +458,7 @@ body.is-locked .site-header {
   gap: var(--split-gap);
   align-items: center;
 }
+.hero__copy { position: relative; z-index: var(--z-content); }
 .hero__badge {
   display: inline-flex; align-items: center; gap: .6rem;
   margin-bottom: 1.5rem; padding: .3rem .95rem .3rem .3rem;
@@ -489,7 +497,9 @@ body.is-locked .site-header {
 }
 
 /* --------------------------------------------------------- Vertrauensband */
-/* Undurchsichtig und über den Strahlen: das Band „schluckt“ die Linien. */
+/* Deckend und über den Strahlen: die Fäden tauchen hier ab und wechseln
+   verdeckt die Seite – der lange Schwenk quer über die Seite passiert
+   genau hinter diesem Band. */
 .trust-bar {
   position: relative; z-index: var(--z-content);
   border-block: 1px solid var(--line); background: var(--surface-2);
@@ -531,8 +541,29 @@ body.is-locked .site-header {
 .brand-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--line-strong); }
 .brand-card:focus-visible { outline-offset: 4px; }
 /* Rahmen-Ratio = Bild-Ratio (500×425) → Tile randlos, kein Beschnitt. */
-.brand-card__img { aspect-ratio: 500 / 425; overflow: hidden; background: var(--surface-3); }
+.brand-card__img {
+  position: relative; aspect-ratio: 500 / 425;
+  overflow: hidden; background: var(--surface-3);
+}
 .brand-card__img img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Farbaufbruch: vorn die Signaturfarbe (schnellere Kurve), dahinter das
+   Farbfoto. Der Versatz zwischen beiden ergibt den nassen Rand an der Front.
+   Ursprung --sx/--sy setzt js/main.js auf den Einschlagpunkt des Fadens. */
+.brand-card__front,
+.brand-card__spill {
+  position: absolute; inset: 0; pointer-events: none;
+  clip-path: circle(0% at var(--sx, 50%) var(--sy, 0%));
+}
+.brand-card__front {
+  background: var(--accent); opacity: .88;
+  transition: clip-path 1.1s cubic-bezier(.18, .86, .3, 1);
+}
+.brand-card__spill { transition: clip-path 1.3s cubic-bezier(.3, .72, .26, 1) .06s; }
+.brand-card.is-lit .brand-card__front,
+.brand-card.is-lit .brand-card__spill {
+  clip-path: circle(165% at var(--sx, 50%) var(--sy, 0%));
+}
 .brand-card__body {
   display: flex; flex-direction: column; flex: 1;
   padding: clamp(1.25rem, .9rem + 1vw, 1.75rem);
@@ -584,25 +615,29 @@ body.is-locked .site-header {
 .cta-banner p { color: rgba(255, 255, 255, .82); margin-top: .65rem; font-size: var(--fs-sm); }
 .cta-banner .btn { position: relative; z-index: 1; }
 
-/* Distributor-Band: die drei Signaturfarben blenden ein, sobald die
-   Strahlen eintreffen (Klasse .is-lit per JS). */
-.cta-banner--waves::after {
+/* Distributor-Band: die Farbe bricht genau dort auf, wo die drei Fäden
+   eintauchen (--sx wird von js/main.js gesetzt), und flutet das Band.
+   ::before = Wellen, ::after = Scrim – die Reihenfolge ist wichtig, damit
+   der Scrim über den Farben liegt und den weißen Text trägt. */
+.cta-banner--waves::before {
   content: ""; position: absolute; inset: 0; z-index: 0; border-radius: inherit;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Crect width='1200' height='300' fill='%233ab3e0'/%3E%3Cpath d='M400,0 C520,90 280,210 400,300 L1200,300 L1200,0 Z' fill='%23407740'/%3E%3Cpath d='M800,0 C920,90 680,210 800,300 L1200,300 L1200,0 Z' fill='%23c1db5e'/%3E%3C/svg%3E");
   background-size: 100% 100%; background-repeat: no-repeat;
-  opacity: 0; transition: opacity 1.1s var(--ease-soft); pointer-events: none;
+  clip-path: circle(0% at var(--sx, 20%) 0%);
+  transition: clip-path 1.4s cubic-bezier(.22, .7, .3, 1) .07s;
+  pointer-events: none;
 }
-.cta-banner--waves.is-lit::after { opacity: 1; }
-/* Scrim sichert die Lesbarkeit des weißen Textes über den Wellen. */
-.cta-banner--waves::before {
+.cta-banner--waves::after {
   content: ""; position: absolute; inset: 0; z-index: 0; border-radius: inherit;
   background: rgba(8, 12, 16, .62);
-  opacity: 0; transition: opacity 1.1s var(--ease-soft); pointer-events: none;
+  clip-path: circle(0% at var(--sx, 20%) 0%);
+  transition: clip-path 1.25s cubic-bezier(.22, .82, .3, 1);
+  pointer-events: none;
 }
 @media (min-width: 900px) {
   /* Nebeneinander-Layout: links dunkel genug für AA, rechts bleiben die
      Signaturfarben kräftig – dort steht nur der helle Button. */
-  .cta-banner--waves::before {
+  .cta-banner--waves::after {
     background: linear-gradient(96deg,
       rgba(8, 12, 16, .70) 0%,
       rgba(8, 12, 16, .64) 42%,
@@ -611,7 +646,8 @@ body.is-locked .site-header {
       rgba(8, 12, 16, .06) 100%);
   }
 }
-.cta-banner--waves.is-lit::before { opacity: 1; }
+.cta-banner--waves.is-lit::before,
+.cta-banner--waves.is-lit::after { clip-path: circle(165% at var(--sx, 20%) 0%); }
 
 /* ------------------------------------------------------------ Kennzahlen */
 .stat-band {
@@ -977,9 +1013,9 @@ body.is-locked .site-header {
 /* Ohne JS bleiben die Strahlen unsichtbar; nichts hängt von ihnen ab. */
 html:not(.js) .rays { display: none; }
 
-/* Marken-Fotos entsättigen sich NUR, wenn die Strahlen-Engine aktiv ist. */
-html.rays-on .brand-card__img img { filter: grayscale(1) brightness(1.04); transition: filter 1s var(--ease-soft); }
-html.rays-on .brand-card.is-lit .brand-card__img img { filter: none; }
+/* Nur das Basisbild ist entsättigt – die Farbebene darüber bleibt bunt und
+   wird vom Farbaufbruch freigelegt. Ohne JS greift die Klasse nicht. */
+html.paint-on .brand-card__img > picture img { filter: grayscale(1) brightness(1.04); }
 
 /* --------------------------------------------------------- Scroll-Reveal */
 /* Nur wenn JS läuft – ohne JS ist alles sofort sichtbar. */
@@ -1033,6 +1069,7 @@ html.js [data-reveal][data-delay="3"] { transition-delay: .21s; }
   .brand-card { flex-direction: row; align-items: center; }
   .brand-card__img { flex: none; width: 38%; max-width: 300px; align-self: center; background: transparent; }
   .brand-card__img img { object-fit: contain; }
+  .brand-card__front { display: none; }
   .brand-card__body { justify-content: center; padding: clamp(1.25rem, 3vw, 2rem); }
   .brand-card p { max-width: 60ch; }
 
@@ -1081,13 +1118,15 @@ html.js [data-reveal][data-delay="3"] { transition-delay: .21s; }
   :root { --header-h: 66px; }
 
   .hero { padding-bottom: clamp(2.5rem, 8vw, 4rem); }
-  .hero__badge { padding-right: .8rem; }
+  .hero__copy { position: relative; z-index: var(--z-content); }
+.hero__badge { padding-right: .8rem; }
   .hero__image { max-width: 340px; }
 
   .trust-bar__inner { grid-template-columns: 1fr; gap: 1rem; }
 
   .brand-card { flex-direction: column; }
   .brand-card__img { width: 100%; max-width: none; aspect-ratio: 500 / 425; }
+  .brand-card__front { display: block; }
 
   .steps { grid-template-columns: 1fr; }
   .stat-band { grid-template-columns: 1fr; gap: .75rem; }
@@ -1114,7 +1153,8 @@ html.js [data-reveal][data-delay="3"] { transition-delay: .21s; }
 
 @media (max-width: 379px) {
   .footer__grid { grid-template-columns: 1fr; }
-  .hero__badge { flex-wrap: wrap; row-gap: .35rem; }
+  .hero__copy { position: relative; z-index: var(--z-content); }
+.hero__badge { flex-wrap: wrap; row-gap: .35rem; }
 }
 
 /* --------------------------------------------------- Reduzierte Bewegung */
