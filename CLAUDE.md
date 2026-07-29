@@ -65,6 +65,9 @@ Tech-Stack bewusst **ohne Build-Schritt** (reines HTML/CSS/JS), weil:
 ├── oligase.html        # Produkt-Detailseite Oligase® 600
 ├── impressum.html      # Pflichtangaben (DE) – Platzhalter prüfen!
 ├── datenschutz.html    # DSGVO-Datenschutzerklärung – Platzhalter prüfen!
+├── en/                 # Englische Fassung, 1:1 dieselbe Struktur
+│   ├── index.html · about.html · lactrase.html · fructaid.html · oligase.html
+│   └── imprint.html · privacy.html   # nur Informationsübersetzung, DE ist maßgeblich
 ├── css/styles.css      # Komplettes Designsystem (Fonts, Tokens, Komponenten, Responsive, Strahlen)
 ├── js/main.js          # Kopfzeile · Navigation (Mobil-Panel + Marken-Dropdown) · Scroll-Reveal
 │                       # · Farbaufbruch (Paint-Spill) · Produkt-Strahlen · Formular · Jahr
@@ -210,6 +213,18 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
   Ebenso `html.rays-on` für die Entsättigung.
 - **Footer-Welle:** einzelne Wellen-Silhouette (wie Etikett/Original) als Inline-Data-URI
   oben am Footer. (Original-Wave-SVG rendert NICHT als CSS-Background → clipPath/Transforms.)
+- **Vertrauensleiste:** Symbol und Text sind **getrennt** ausgerichtet
+  (`i { align-self: center }`, `div { align-self: start }`). Alle Symbole liegen dadurch
+  auf einer Höhe und mittig, alle Überschriften auf einer Linie – egal ob ein Text zwei
+  oder drei Zeilen braucht. Vorher klebte das Symbol an der ersten Zeile und wirkte bei
+  dreizeiligem Text zu weit oben. Reihenfolge: **„Nr. 1" zuerst**.
+- **Auslauf über dem Distributor-Band:** der doppelte Abstand ist der Platz, den das
+  aufgefächerte Bündel braucht. Sind alle drei Fäden verschluckt, setzt JS
+  `html.rays-parked` und der Abstand fällt auf das normale Abschnittsmaß.
+  ⚠️ Die Scrollposition wird dabei um genau denselben Betrag nachgezogen, sonst springt
+  die Seite. Gemessen wird **das Band**, nicht die Sektion: deren eigenes `padding-top`
+  zu entfernen verschiebt ihre Oberkante nicht, sondern nur alles darunter.
+  Ohne Strahlen (< 1001 px, `prefers-reduced-motion`) gibt es den Auslauf gar nicht.
 - **Kopfzeile:** `--header-base` bestimmt das Layout (`min-height`), `--header-h` ist die
   von JS **gemessene** Höhe und speist nur `scroll-padding` und Abstände darunter.
   ⚠️ Die beiden müssen getrennt bleiben. Früher las `min-height` dieselbe Variable, die
@@ -299,7 +314,19 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
 
 ## 5. Arbeitskonventionen (für mein zukünftiges Ich)
 
-- **Sprache der Website:** Deutsch (primär). Inhalte konservativ/seriös formulieren.
+- **Sprache der Website:** Deutsch ist die Standardfassung (Wurzel), Englisch liegt unter
+  `/en/`. Inhalte konservativ/seriös formulieren.
+  ⚠️ **Beide Fassungen immer gemeinsam ändern.** Der Sprachumschalter sitzt in der Kopfzeile
+  (`.lang-switch`), jede Seite trägt drei `hreflang`-Verweise (de, en, x-default) und ein
+  eigenes `canonical`. Dateinamen unterscheiden sich: `ueber-uns` → `about`,
+  `impressum` → `imprint`, `datenschutz` → `privacy`; ebenso die Sprungmarken
+  (`#marken` → `#brands`, `#kontakt` → `#contact`, `#geschichte` → `#history`).
+  `tools/parity.mjs` vergleicht das Gerüst beider Fassungen und schlägt an, sobald sie
+  auseinanderlaufen.
+  ⚠️ Sichtbare Texte aus JS stehen in der Tabelle `STRINGS` in `js/main.js` und hängen an
+  `<html lang>`; Deutsch ist der Rückfall. Keine deutschen Strings mehr direkt im Code.
+  ⚠️ Impressum und Datenschutz sind auf Englisch **nur eine Informationsübersetzung** – beide
+  tragen oben den Hinweis, dass die deutsche Fassung maßgeblich ist. Rechtlich freigeben lassen.
 - **Branch:** Entwicklung auf `claude/clever-faraday-9e5sjw`. Nicht auf andere Branches pushen.
   (Ausnahme: wenn der Auftrag ausdrücklich einen anderen Feature-Branch vorgibt.)
 - **Kein Build nötig:** Änderungen direkt in den Dateien. Lokal testen:

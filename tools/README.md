@@ -28,8 +28,8 @@ Ausgaben dort ab.
 
 | Skript | Prüft |
 |---|---|
-| `shoot.mjs <ordner>` | Alle 7 Seiten × 7 Viewports × 3 Scrollpositionen. Meldet horizontalen Überlauf (inkl. der verursachenden Elemente) und Konsolenfehler. |
-| `raytext.mjs` | **Die wichtigste Regression für die Produkt-Strahlen.** Rendert die Startseite mit magenta, 7 px breiten Strahlen (fast dreifache Normalbreite) und schießt die ganze Seite ab. Danach `analyze.py` laufen lassen – es prüft pixelweise, ob ein Strahl in der Box eines Textelements landet. |
+| `shoot.mjs <ordner>` | Alle 14 Seiten (7 deutsch, 7 englisch) × 7 Viewports × 3 Scrollpositionen. Meldet horizontalen Überlauf (inkl. der verursachenden Elemente) und Konsolenfehler. |
+| `raytext.mjs` | **Die wichtigste Regression für die Produkt-Strahlen.** Rendert **beide** Startseiten (deutsch und englisch) mit magenta, 7 px breiten Strahlen (fast dreifache Normalbreite) und schießt die ganze Seite ab. Danach `analyze.py` laufen lassen – es prüft pixelweise, ob ein Strahl in der Box eines Textelements landet. |
 | `analyze.py [ordner]` | Wertet die Aufnahmen von `raytext.mjs` aus. Erwartete Ausgabe: `KEIN Strahl über einer Textbox`. |
 | `interact.mjs` | Mobil-Menü (Fokusfalle, Escape, Scroll-Lock, Backdrop), Marken-Dropdown (Maus + Tastatur), Skip-Link, Sprungmarken unter der Kopfzeile, Formular-Validierung, `prefers-reduced-motion`, Darstellung ohne JS, Deep-Link, schnelles Scrollen mit Resize, Farbaufbruch-Ursprünge, Strahlen-Startzustand, Höhenstabilität der Kopfzeile, Gleichlauf der Kontaktspalten, Abteile des Distributor-Bands. |
 | `look.mjs` | Fährt die Startseite in kleinen Schritten durch und schießt an festen Punkten ab, danach wieder ganz nach oben. Zum Ansehen von Strahlenlauf, Farbaufbruch und Rückweg – kein Test, sondern Augenschein. |
@@ -38,6 +38,7 @@ Ausgaben dort ab.
 | `touch.mjs` | Tap-Ziele ≥ 24 px bei 390 px Breite (Inline-Links im Fließtext sind laut WCAG 2.5.8 ausgenommen). |
 | `svgcheck.mjs` | Übergroße Icons, fehlende `alt`-Texte, Sprünge in der Überschriftenhierarchie, genau eine `h1` je Seite, Formularfelder ohne Label. |
 | `perf.mjs` | Requests, Übertragungsgröße, LCP, CLS und ob ein externer Request rausgeht (muss `keine` sein). |
+| `parity.mjs` | **Deutsche und englische Fassung dürfen nicht auseinanderlaufen.** Vergleicht das Gerüst beider Fassungen (Abschnitte, Überschriftenfolge, Bilder, Formularfelder, Navigations- und Fußzeilenlinks), prüft `lang`, canonical, die drei `hreflang`-Verweise und dass der Sprachumschalter auf beiden Seiten zum jeweiligen Gegenstück führt. |
 | `banner.mjs` | Der weiße Text im Distributor-Band muss über acht Breiten im dunklen Oligase-Abteil bleiben. Rutscht er ins blaue oder lime Abteil, ist er unlesbar. |
 | `lines.mjs` | Blöcke mit festen `<br>`-Zeilen (Adresse, Telefon) dürfen nicht auf Kante sitzen. Sitzt eine Zeile exakt auf der Boxbreite, bricht sie in einer anderen Engine mitten im Wort um – in Chromium sieht man davon nichts. |
 
@@ -57,6 +58,7 @@ Verschiebt sich das Layout, kann diese Annahme kippen — dieser Test merkt es.
 ```bash
 node shoot.mjs out && node interact.mjs && node a11y.mjs \
   && node touch.mjs && node svgcheck.mjs && node lines.mjs && node banner.mjs \
+  && node parity.mjs \
   && node perf.mjs \
   && node raytext.mjs && python3 analyze.py
 ```

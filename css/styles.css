@@ -275,6 +275,17 @@ main { position: relative; }
 .section-pad     { padding-block: var(--section-y); }
 .section-pad--top-0 { padding-top: 0; }
 
+/* Der doppelte Abstand über dem Distributor-Band ist der Auslauf, den das
+   aufgefächerte Bündel braucht: die drei Fäden müssen auf kurzer Strecke weit
+   nach außen wandern. Er hat nur Sinn, solange die Fäden laufen.
+   Sind sie im Band verschluckt, setzt JS `html.rays-parked` und der Abstand
+   fällt auf das normale Abschnittsmaß zurück – sonst klafft mitten auf der
+   Seite eine Lücke, die doppelt so groß ist wie alle anderen.
+   Ohne Strahlen (schmal, reduzierte Bewegung) gibt es den Auslauf gar nicht. */
+html.rays-parked .section-pad--runway { padding-top: 0; }
+@media (max-width: 1000.98px) { .section-pad--runway { padding-top: 0; } }
+@media (prefers-reduced-motion: reduce) { .section-pad--runway { padding-top: 0; } }
+
 /* Seitentitel über einem zweispaltigen Einstieg */
 .page-head { max-width: 40rem; margin-bottom: clamp(2rem, 1.2rem + 2vw, 3rem); }
 .page-head .eyebrow { margin-bottom: .9rem; }
@@ -428,7 +439,30 @@ body.is-locked .site-header {
 .brand-menu__item small { display: block; font-size: var(--fs-xs); color: var(--ink-muted); line-height: 1.4; }
 .brand-menu__item.is-lactrase { --accent: var(--lactrase); }
 .brand-menu__item.is-oligase  { --accent: var(--oligase); }
-.brand-menu__item.is-fructaid { --accent: var(--fructaid-ink); }
+/* Signaturfarbe der Verpackung, nicht die für Text abgedunkelte Variante –
+   der Punkt ist rein dekorativ (aria-hidden), Kontrast ist hier keine Vorgabe. */
+.brand-menu__item.is-fructaid { --accent: var(--fructaid); }
+
+/* --- Sprachumschalter
+   Deutsch ist die Standardfassung (Wurzel), Englisch liegt unter /en/.
+   Die aktive Sprache bleibt ein Link auf die eigene Seite – so ist die
+   Gruppe auch mit der Tastatur vollständig erreichbar. */
+.lang-switch {
+  display: inline-flex; align-items: center; flex: none;
+  border: 1px solid var(--line-strong); border-radius: var(--r-pill);
+  overflow: hidden;
+}
+.lang-switch a {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 34px; min-height: 26px; padding: .18rem .42rem;
+  font-size: .75rem; font-weight: 700; letter-spacing: .06em;
+  color: var(--ink-muted);
+  transition: background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+.lang-switch a:hover { background: var(--surface-2); color: var(--ink); }
+.lang-switch a[aria-current="true"] { background: var(--ink); color: #fff; }
+.lang-switch a + a { border-left: 1px solid var(--line); }
+.lang-switch a[aria-current="true"] + a { border-left-color: transparent; }
 
 /* --- Hamburger */
 .nav-toggle {
@@ -522,7 +556,14 @@ body.is-locked .site-header {
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(1rem, 3vw, 3rem); padding-block: clamp(1.4rem, 2.5vw, 2rem);
 }
-.trust-bar__item { display: flex; align-items: flex-start; gap: .8rem; }
+/* Symbol und Text werden getrennt ausgerichtet: das Symbol sitzt mittig in
+   der Leiste (vorher klebte es an der ersten Zeile und wirkte bei drei-
+   zeiligem Text zu weit oben), der Textblock bleibt oben bündig. Dadurch
+   liegen alle Symbole auf einer Höhe UND alle Überschriften auf einer Linie –
+   der Text rutscht dem Symbol nicht hinterher. */
+.trust-bar__item { display: flex; align-items: stretch; gap: .8rem; }
+.trust-bar__item i { align-self: center; }
+.trust-bar__item > div { align-self: start; }
 .trust-bar__item i {
   flex: none; display: grid; place-items: center;
   width: 38px; height: 38px; border-radius: 11px;
@@ -1115,6 +1156,7 @@ html.js [data-reveal][data-delay="3"] { transition-delay: .21s; }
 /* Navigations-Umbruch */
 @media (max-width: 900px) {
   .nav-toggle { display: inline-flex; }
+  .lang-switch { align-self: flex-start; }
 
   /* Footer: Markenblock über die volle Breite, Linkspalten darunter. */
   .footer__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem 1.5rem; }

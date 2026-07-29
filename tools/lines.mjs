@@ -1,7 +1,8 @@
 /* Blöcke mit festen <br>-Zeilen (Adressen, Telefonblöcke) dürfen nicht auf
    Kante sitzen: sonst brechen sie in anderen Browsern mitten im Wort um. */
 import { chromium } from 'playwright';
-const PAGES = ['index','ueber-uns','lactrase','fructaid','oligase','impressum','datenschutz'];
+const PAGES = ['index','ueber-uns','lactrase','fructaid','oligase','impressum','datenschutz',
+  'en/index','en/about','en/lactrase','en/fructaid','en/oligase','en/imprint','en/privacy'];
 const b = await chromium.launch();
 const bad = [];
 for (const name of PAGES) {

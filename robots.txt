@@ -2,5 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /impressum.html
 Disallow: /datenschutz.html
+Disallow: /en/imprint.html
+Disallow: /en/privacy.html
 
 Sitemap: https://www.pro-natura-gmbh.de/sitemap.xml

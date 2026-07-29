@@ -19,6 +19,44 @@
   var root = document.documentElement;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+  /* ------------------------------------------------------- Oberflächentexte
+     Die Seite gibt es auf Deutsch (Wurzel) und Englisch (/en/). Alles, was
+     JS an sichtbarem Text erzeugt, hängt an <html lang>. Deutsch ist der
+     Rückfall – eine unbekannte Sprache liefert also nie leere Meldungen. */
+  var STRINGS = {
+    de: {
+      navOpen: 'Menü öffnen',
+      navClose: 'Menü schließen',
+      needConsent: 'Bitte stimmen Sie der Verarbeitung zu.',
+      needValue: 'Bitte füllen Sie dieses Feld aus.',
+      needEmail: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+      needMore: 'Bitte geben Sie etwas mehr Text ein.',
+      needCheck: 'Bitte prüfen Sie diese Eingabe.',
+      fixFields: 'Bitte prüfen Sie die markierten Felder.',
+      mailSubject: 'Anfrage über die Website',
+      mailName: 'Name: ',
+      mailEmail: '\nE-Mail: ',
+      mailTopic: '\nAnliegen: ',
+      sent: 'Vielen Dank! Ihr E-Mail-Programm wurde mit der Nachricht geöffnet.'
+    },
+    en: {
+      navOpen: 'Open menu',
+      navClose: 'Close menu',
+      needConsent: 'Please agree to the processing of your data.',
+      needValue: 'Please fill in this field.',
+      needEmail: 'Please enter a valid email address.',
+      needMore: 'Please enter a little more text.',
+      needCheck: 'Please check this entry.',
+      fixFields: 'Please check the highlighted fields.',
+      mailSubject: 'Enquiry via the website',
+      mailName: 'Name: ',
+      mailEmail: '\nEmail: ',
+      mailTopic: '\nSubject: ',
+      sent: 'Thank you! Your email program has been opened with the message.'
+    }
+  };
+  var T = STRINGS[(root.lang || 'de').slice(0, 2).toLowerCase()] || STRINGS.de;
+
   /* Hilfsfunktionen ------------------------------------------------------ */
   function on(el, type, fn, opts) { if (el) el.addEventListener(type, fn, opts); }
   function debounce(fn, wait) {
@@ -131,7 +169,7 @@
     lastFocused = document.activeElement;
     nav.classList.add('is-open');
     navToggle.setAttribute('aria-expanded', 'true');
-    navToggle.setAttribute('aria-label', 'Menü schließen');
+    navToggle.setAttribute('aria-label', T.navClose);
     if (backdrop) backdrop.classList.add('is-visible');
     document.body.classList.add('is-locked');
   }
@@ -140,7 +178,7 @@
     if (!nav || !navToggle || !isNavOpen()) return;
     nav.classList.remove('is-open');
     navToggle.setAttribute('aria-expanded', 'false');
-    navToggle.setAttribute('aria-label', 'Menü öffnen');
+    navToggle.setAttribute('aria-label', T.navOpen);
     if (backdrop) backdrop.classList.remove('is-visible');
     document.body.classList.remove('is-locked');
     closeBrands(false);
@@ -688,6 +726,7 @@
       var ease = Math.max(0, 1 - sy / (vh * 0.75));
       var targetY = sy + vh * 0.76 - pageTop - headStart * ease * ease;
 
+      var swallowed = true;
       for (var i = 0; i < threads.length; i++) {
         var t = threads[i], st = state(t.key);
 
@@ -711,7 +750,40 @@
         st.zone = Math.max(st.zone, clamp01((targetY - t.zoneY) / t.zoneSpan));
         paintApi.setZonePaint(t.zoneIndex, st.zone);
         if (st.zone > 0) paintApi.light(banner);
+
+        if (st.tail < 1) swallowed = false;
       }
+      if (swallowed) park();
+    }
+
+    /* Der große Abstand über dem Distributor-Band ist der Auslauf, den das
+       aufgefächerte Bündel braucht. Sind alle drei Fäden im Band verschluckt,
+       hat er keinen Zweck mehr und wird auf das normale Abschnittsmaß
+       eingezogen – sonst klafft mitten auf der Seite eine doppelt so große
+       Lücke wie zwischen allen anderen Abschnitten. */
+    var parked = false;
+    function park() {
+      if (parked) return;
+      /* Nur einziehen, wenn der Auslauf wirklich aus dem Bild ist. */
+      if (banner.getBoundingClientRect().top >= 0) return;
+      parked = true;
+
+      /* Gemessen wird das Band, nicht die Sektion: deren eigenes padding-top
+         zu entfernen verschiebt ihre Oberkante nicht, sondern nur alles
+         darin und darunter. */
+      var before = banner.getBoundingClientRect().top;
+      root.classList.add('rays-parked');
+      var delta = before - banner.getBoundingClientRect().top;
+      if (delta) {
+        /* Die Scrollposition wandert um genau denselben Betrag mit, damit vor
+           den Augen des Nutzers nichts springt. `scroll-behavior: smooth` muss
+           dafür kurz aus sein, sonst wird daraus eine sichtbare Fahrt. */
+        var prev = root.style.scrollBehavior;
+        root.style.scrollBehavior = 'auto';
+        window.scrollTo(0, window.scrollY - delta);
+        root.style.scrollBehavior = prev;
+      }
+      build();
     }
 
     return { build: build, update: update, media: wideQuery };
@@ -757,12 +829,12 @@
 
     function messageFor(input) {
       if (input.validity.valueMissing) {
-        if (input.type === 'checkbox') return 'Bitte stimmen Sie der Verarbeitung zu.';
-        return 'Bitte füllen Sie dieses Feld aus.';
+        if (input.type === 'checkbox') return T.needConsent;
+        return T.needValue;
       }
-      if (input.validity.typeMismatch && input.type === 'email') return 'Bitte geben Sie eine gültige E-Mail-Adresse ein.';
-      if (input.validity.tooShort) return 'Bitte geben Sie etwas mehr Text ein.';
-      return 'Bitte prüfen Sie diese Eingabe.';
+      if (input.validity.typeMismatch && input.type === 'email') return T.needEmail;
+      if (input.validity.tooShort) return T.needMore;
+      return T.needCheck;
     }
 
     function setError(input, message) {
@@ -808,7 +880,7 @@
       });
 
       if (firstInvalid) {
-        showStatus('error', 'Bitte prüfen Sie die markierten Felder.');
+        showStatus('error', T.fixFields);
         firstInvalid.focus();
         return;
       }
@@ -818,17 +890,17 @@
         return el ? String(el.value || '').trim() : '';
       };
       var topic = get('topic');
-      var subject = get('subject') || (topic ? topic : 'Anfrage über die Website');
-      var body = 'Name: ' + get('name') +
-        '\nE-Mail: ' + get('email') +
-        (topic ? '\nAnliegen: ' + topic : '') +
+      var subject = get('subject') || (topic ? topic : T.mailSubject);
+      var body = T.mailName + get('name') +
+        T.mailEmail + get('email') +
+        (topic ? T.mailTopic + topic : '') +
         '\n\n' + get('message');
 
       window.location.href = 'mailto:info@pro-natura-gmbh.de' +
         '?subject=' + encodeURIComponent(subject) +
         '&body=' + encodeURIComponent(body);
 
-      showStatus('ok', 'Vielen Dank! Ihr E-Mail-Programm wurde mit der Nachricht geöffnet.');
+      showStatus('ok', T.sent);
       form.reset();
       form.dataset.submitted = '';
       inputs.forEach(function (input) { setError(input, ''); });
