@@ -147,12 +147,20 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
   Zurückscrollen bewegt sich nichts – ausdrücklicher Nutzerwunsch: „sodass man sich die
   Seite in Ruhe anschauen kann". Nicht wieder an die momentane Scrollposition hängen.
 
-  ⚠️ **Das Band verschluckt den Faden.** Läuft die Leseposition am Pfadende vorbei,
-  wandert das Ende nach (`stroke-dasharray: 0 <verschluckt> <sichtbar> <rest>`), bis
-  nichts mehr übrig ist. Beides – Kopf wie Ende – wird **allein aus der Leseposition**
-  abgeleitet, ohne Scroll-Historie. Genau deshalb stimmt es auch bei Deep-Link und bei
-  Reload auf halber Höhe, wo der Browser die Position erst nachträglich herstellt.
-  Ein früherer Versuch mit Sprungerkennung über Zeit und Distanz war fragil.
+  ⚠️ **Das Band zieht den Faden in sich hinein** (`stroke-dasharray: 0 <verschluckt>
+  <sichtbar> <rest>`) – und zwar im **selben Fenster, in dem sich die Farbe im Abteil
+  ausbreitet**. Es sieht aus, als liefe die Farbe aus dem Faden ins Band über.
+  Das Ende wird über eine **Y-Position** geführt, nicht über die Bogenlänge, und die
+  Kurve ist bewusst ungleichmäßig (`Math.pow(u, 0.30)`): die weit oben liegenden
+  Abschnitte sind längst aus dem Bild und werden zügig eingezogen, der sichtbare Rest
+  über dem Band läuft langsam hinein.
+  ⚠️ Nicht auf eine lineare Verteilung zurückstellen: dann lag der sichtbare Teil in den
+  letzten Prozenten, das Einlaufen passierte erst, wenn das Band schon oben aus dem Bild
+  gescrollt war, und der Faden wirkte beim Zurückscrollen einfach verschwunden.
+  Kopf wie Ende werden **allein aus der Leseposition** abgeleitet, ohne Scroll-Historie.
+  Genau deshalb stimmt es auch bei Deep-Link und bei Reload auf halber Höhe, wo der
+  Browser die Position erst nachträglich herstellt. Ein früherer Versuch mit
+  Sprungerkennung über Zeit und Distanz war fragil.
 
   ⚠️ **Beim Laden ist noch nichts gezeichnet** (`revealY = yStart`): der Lesepunkt liegt
   bei 76 % Höhe, der Pfad beginnt aber erst unter dem Packshot. Der Vorsprung wird über
@@ -163,6 +171,10 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
   daraus wurden sichtbare Treppenstufen. Es gibt **kein `braid()` mehr**: die
   geflochtenen Kanäle wirkten hektisch und zogen zu viel Aufmerksamkeit. Weniger
   Wegpunkte, `stroke-width: 1.9`, `opacity: .62`.
+  ⚠️ Elemente werden über **Datenattribute** gesucht, nicht über IDs: der Abschnittskopf
+  heißt auf Deutsch `#marken`, auf Englisch `#brands`. Als `build()` noch
+  `#marken .section-head` las, brach der Aufbau auf der englischen Seite still ab und es
+  gab dort gar keine Strahlen. Jetzt `[data-rays-head]` (ebenso `[data-rays-lead]`).
   Geometrie gebündelt in `build()`, `update()` schreibt pro Frame nur Styles. Neu gebaut
   bei Resize, Media-Query-Wechsel, `load`, `fonts.ready` und via `ResizeObserver`.
 
@@ -190,18 +202,18 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
   Das **Distributor-Band** ist in **drei Abteile** geteilt (`.cta-banner__zone`, getrennt
   von den Wellen des Etiketts); jeder Faden taucht in sein eigenes ein und bricht nur
   dort auf.
-  ⚠️ Reihenfolge im Band ist **dunkel → hell**: Oligase-Grün links, Lactrase-Blau Mitte,
-  Fructaid-Lime rechts – NICHT die Kartenreihenfolge. Grund: der weiße Text liegt links,
-  und Weiß auf `#407740` sind 5,3:1 (AA), auf Blau oder Lime wäre es unlesbar. Dadurch
-  braucht das Band **keinen abdunkelnden Scrim** mehr und die Signaturfarben bleiben
-  kräftig. Der frühere Scrim über der ganzen Fläche ließ die Farben ausgewaschen wirken.
-  ⚠️ `.cta-banner__text` ist ab 900 px auf `43 %` begrenzt, damit der Text nicht in ein
-  helles Abteil rutscht (Wellenkante bei 50 %). **Unter 900 px greift diese Fessel nicht**,
-  der Text läuft über die volle Breite – dort zeigt deshalb nur **ein** Feld in
-  Oligase-Grün (`@media (max-width: 899.98px)`). Diese Grenze muss die exakte
-  Gegengleiche zu `min-width: 900px` bleiben: lag sie versehentlich bei 760 px, stand
-  zwischen 761 und 899 px weißer Text auf Lactrase-Blau (2,5:1).
-  `tools/banner.mjs` prüft beide Zustände über 15 Breiten.
+  ⚠️ Reihenfolge im Band **wie die Marken-Karten**: Lactrase-Blau links, Oligase-Grün
+  Mitte, Fructaid-Lime rechts. Weiß auf Lactrase-Blau sind nur 2,5:1, deshalb liegt ein
+  Scrim über dem Band, der **nur die linke Hälfte** abdunkelt und bis 62 % vollständig
+  ausläuft – Grün und Lime bleiben unangetastet. Ein früherer Scrim über der ganzen
+  Fläche ließ alle drei Farben ausgewaschen wirken.
+  `tools/bandcontrast.mjs` misst den echten Kontrast aus dem Screenshot (Text ausgeblendet,
+  hellster Hintergrundpixel): 5,4–6,3:1 über 16 Breiten.
+  ⚠️ `.cta-banner__text` ist ab 900 px auf `43 %` begrenzt, damit der Text im Bereich des
+  Scrims bleibt. **Unter 900 px greift diese Fessel nicht**, der Text läuft über die volle
+  Breite – dort zeigt deshalb nur **ein** Feld in Lactrase-Blau unter einem gleichmäßigen
+  Scrim (`@media (max-width: 899.98px)`). Diese Grenze muss die exakte Gegengleiche zu
+  `min-width: 900px` bleiben.
   ⚠️ Kein gemeinsamer Eintrittspunkt: „alle an einer Seite rein und das ganze Band
   verblasst" war ausdrücklich unerwünscht.
   ⚠️ Der Farbaufbruch hängt NICHT an der Strahlen-Geometrie: ohne Strahlen (< 1001 px,
@@ -213,11 +225,12 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
   Ebenso `html.rays-on` für die Entsättigung.
 - **Footer-Welle:** einzelne Wellen-Silhouette (wie Etikett/Original) als Inline-Data-URI
   oben am Footer. (Original-Wave-SVG rendert NICHT als CSS-Background → clipPath/Transforms.)
-- **Vertrauensleiste:** Symbol und Text sind **getrennt** ausgerichtet
-  (`i { align-self: center }`, `div { align-self: start }`). Alle Symbole liegen dadurch
-  auf einer Höhe und mittig, alle Überschriften auf einer Linie – egal ob ein Text zwei
-  oder drei Zeilen braucht. Vorher klebte das Symbol an der ersten Zeile und wirkte bei
-  dreizeiligem Text zu weit oben. Reihenfolge: **„Nr. 1" zuerst**.
+- **Vertrauensleiste:** Reihenfolge **„Nr. 1" zuerst**. Alle drei Texte sind zweizeilig,
+  deshalb reicht schlicht `align-items: center` – Symbole auf einer Höhe, Überschriften
+  auf einer Linie. ⚠️ Die Quellenangabe („Quelle: IQVIA") steht **nur** in der Fußnote zum
+  Sternchen, nicht noch einmal in der Leiste: dort erzwang sie eine dritte Zeile und die
+  Leiste ließ sich nicht mehr sauber mittig setzen. Symbolgröße (36 px) und Spaltenabstand
+  sind so gewählt, dass auch der längste Text ab 1100 px einzeilig bleibt.
 - **Auslauf über dem Distributor-Band:** der doppelte Abstand ist der Platz, den das
   aufgefächerte Bündel braucht. Sind alle drei Fäden verschluckt, setzt JS
   `html.rays-parked` und der Abstand fällt auf das normale Abschnittsmaß.

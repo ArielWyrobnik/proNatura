@@ -8,9 +8,14 @@ selbst bleibt weiterhin ohne Build-Schritt und ohne Laufzeit-Abhängigkeiten.
 
 ```bash
 cd tools
-npm i playwright          # einmalig, landet in tools/node_modules (gitignored)
+npm i                     # playwright + pngjs, landet in tools/node_modules (gitignored)
 python3 -m pip install pillow   # nur für analyze.py
 ```
+
+> `playwright` ist in `package.json` auf die Version gepinnt, deren
+> Chromium-Build in dieser Umgebung vorinstalliert ist (`/opt/pw-browsers`).
+> Eine neuere Version verlangt einen Build, den es hier nicht gibt, und
+> scheitert beim Start mit „Executable doesn't exist".
 
 > Global installiertes Playwright reicht nicht: Node findet globale Pakete
 > beim `import` nicht. Deshalb lokal in `tools/` installieren.
@@ -39,7 +44,7 @@ Ausgaben dort ab.
 | `svgcheck.mjs` | Übergroße Icons, fehlende `alt`-Texte, Sprünge in der Überschriftenhierarchie, genau eine `h1` je Seite, Formularfelder ohne Label. |
 | `perf.mjs` | Requests, Übertragungsgröße, LCP, CLS und ob ein externer Request rausgeht (muss `keine` sein). |
 | `parity.mjs` | **Deutsche und englische Fassung dürfen nicht auseinanderlaufen.** Vergleicht das Gerüst beider Fassungen (Abschnitte, Überschriftenfolge, Bilder, Formularfelder, Navigations- und Fußzeilenlinks), prüft `lang`, canonical, die drei `hreflang`-Verweise und dass der Sprachumschalter auf beiden Seiten zum jeweiligen Gegenstück führt. |
-| `banner.mjs` | Der weiße Text im Distributor-Band muss über acht Breiten im dunklen Oligase-Abteil bleiben. Rutscht er ins blaue oder lime Abteil, ist er unlesbar. |
+| `bandcontrast.mjs` | Misst den **echten** Kontrast des weißen Bandtextes: blendet den Text aus, nimmt genau denselben Ausschnitt auf und liest den hellsten Hintergrundpixel aus dem Screenshot. Über 16 Breiten, mobil wie Desktop. Weiß auf Lactrase-Blau wären nur 2,5:1 – der Scrim muss das auffangen. |
 | `lines.mjs` | Blöcke mit festen `<br>`-Zeilen (Adresse, Telefon) dürfen nicht auf Kante sitzen. Sitzt eine Zeile exakt auf der Boxbreite, bricht sie in einer anderen Engine mitten im Wort um – in Chromium sieht man davon nichts. |
 
 ## Vor jeder Änderung an der Strahlen-Wegführung
@@ -57,7 +62,7 @@ Verschiebt sich das Layout, kann diese Annahme kippen — dieser Test merkt es.
 
 ```bash
 node shoot.mjs out && node interact.mjs && node a11y.mjs \
-  && node touch.mjs && node svgcheck.mjs && node lines.mjs && node banner.mjs \
+  && node touch.mjs && node svgcheck.mjs && node lines.mjs && node bandcontrast.mjs \
   && node parity.mjs \
   && node perf.mjs \
   && node raytext.mjs && python3 analyze.py
