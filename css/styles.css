@@ -443,6 +443,27 @@ body.is-locked .site-header {
    der Punkt ist rein dekorativ (aria-hidden), Kontrast ist hier keine Vorgabe. */
 .brand-menu__item.is-fructaid { --accent: var(--fructaid); }
 
+/* --- Sprachumschalter
+   Deutsch ist die Standardfassung (Wurzel), Englisch liegt unter /en/.
+   Die aktive Sprache bleibt ein Link auf die eigene Seite – so ist die
+   Gruppe auch mit der Tastatur vollständig erreichbar. */
+.lang-switch {
+  display: inline-flex; align-items: center; flex: none;
+  border: 1px solid var(--line-strong); border-radius: var(--r-pill);
+  overflow: hidden;
+}
+.lang-switch a {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 34px; min-height: 26px; padding: .18rem .42rem;
+  font-size: .75rem; font-weight: 700; letter-spacing: .06em;
+  color: var(--ink-muted);
+  transition: background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+.lang-switch a:hover { background: var(--surface-2); color: var(--ink); }
+.lang-switch a[aria-current="true"] { background: var(--ink); color: #fff; }
+.lang-switch a + a { border-left: 1px solid var(--line); }
+.lang-switch a[aria-current="true"] + a { border-left-color: transparent; }
+
 /* --- Hamburger */
 .nav-toggle {
   display: none; align-items: center; justify-content: center;
@@ -1135,6 +1156,7 @@ html.js [data-reveal][data-delay="3"] { transition-delay: .21s; }
 /* Navigations-Umbruch */
 @media (max-width: 900px) {
   .nav-toggle { display: inline-flex; }
+  .lang-switch { align-self: flex-start; }
 
   /* Footer: Markenblock über die volle Breite, Linkspalten darunter. */
   .footer__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem 1.5rem; }

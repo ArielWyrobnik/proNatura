@@ -2,11 +2,16 @@ import { chromium } from 'playwright';
 import fs from 'fs';
 
 const VPS = (process.env.VPS || '1024x800,1280x800,1440x900,1728x1117').split(',').map(s=>s.split('x').map(Number));
+/* Beide Sprachfassungen: englische Texte sind anders lang, dadurch
+   verschieben sich Abschnittskopf und Karten – und damit die freien Kanäle,
+   durch die die Strahlen laufen. */
+const PAGES = (process.env.PAGES || '/index.html,/en/index.html').split(',');
 const b = await chromium.launch();
 let total = 0;
-for (const [w,h] of VPS) {
+for (const page of PAGES) for (const [w,h] of VPS) {
+  const tag = page.includes('/en/') ? 'en' : 'de';
   const p = await b.newPage({ viewport: { width: w, height: h } });
-  await p.goto('http://127.0.0.1:8000/index.html', { waitUntil: 'load' });
+  await p.goto('http://127.0.0.1:8000' + page, { waitUntil: 'load' });
   await p.addStyleTag({ content: 'html{scroll-behavior:auto !important}.ray{stroke:#ff00ff !important;stroke-width:7 !important;opacity:1 !important}' });
   await p.evaluate(() => document.querySelectorAll('[data-reveal]').forEach(e=>e.classList.add('is-visible')));
   // Pfade vollständig zeichnen
@@ -18,7 +23,7 @@ for (const [w,h] of VPS) {
   for (let top = 0; top < pageH; top += h - 80) {
     await p.evaluate((y) => window.scrollTo(0, y), top);
     await p.waitForTimeout(400);
-    const shot = `rt-${w}-${top}.png`;
+    const shot = `rt-${tag}-${w}-${top}.png`;
     await p.screenshot({ path: shot });
     const boxes = await p.evaluate(() => {
       const out = [];
@@ -37,7 +42,7 @@ for (const [w,h] of VPS) {
       });
       return out;
     });
-    fs.writeFileSync(`rt-${w}-${top}.json`, JSON.stringify({shot, boxes}));
+    fs.writeFileSync(`rt-${tag}-${w}-${top}.json`, JSON.stringify({shot, boxes}));
   }
   await p.close();
 }

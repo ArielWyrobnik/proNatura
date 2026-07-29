@@ -13,6 +13,13 @@ const PAGES = [
   ['oligase', '/oligase.html'],
   ['impressum', '/impressum.html'],
   ['datenschutz', '/datenschutz.html'],
+  ['en-index', '/en/index.html'],
+  ['en-about', '/en/about.html'],
+  ['en-lactrase', '/en/lactrase.html'],
+  ['en-fructaid', '/en/fructaid.html'],
+  ['en-oligase', '/en/oligase.html'],
+  ['en-imprint', '/en/imprint.html'],
+  ['en-privacy', '/en/privacy.html'],
 ];
 
 const VIEWPORTS = [

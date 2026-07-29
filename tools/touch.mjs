@@ -1,5 +1,6 @@
 import { chromium } from 'playwright';
-const pages = ['index','ueber-uns','lactrase','fructaid','oligase','impressum','datenschutz'];
+const pages = ['index','ueber-uns','lactrase','fructaid','oligase','impressum','datenschutz',
+  'en/index','en/about','en/lactrase','en/fructaid','en/oligase','en/imprint','en/privacy'];
 const b = await chromium.launch();
 let bad = 0;
 for (const p of pages) {

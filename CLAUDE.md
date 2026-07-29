@@ -65,6 +65,9 @@ Tech-Stack bewusst **ohne Build-Schritt** (reines HTML/CSS/JS), weil:
 ├── oligase.html        # Produkt-Detailseite Oligase® 600
 ├── impressum.html      # Pflichtangaben (DE) – Platzhalter prüfen!
 ├── datenschutz.html    # DSGVO-Datenschutzerklärung – Platzhalter prüfen!
+├── en/                 # Englische Fassung, 1:1 dieselbe Struktur
+│   ├── index.html · about.html · lactrase.html · fructaid.html · oligase.html
+│   └── imprint.html · privacy.html   # nur Informationsübersetzung, DE ist maßgeblich
 ├── css/styles.css      # Komplettes Designsystem (Fonts, Tokens, Komponenten, Responsive, Strahlen)
 ├── js/main.js          # Kopfzeile · Navigation (Mobil-Panel + Marken-Dropdown) · Scroll-Reveal
 │                       # · Farbaufbruch (Paint-Spill) · Produkt-Strahlen · Formular · Jahr
@@ -311,7 +314,19 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
 
 ## 5. Arbeitskonventionen (für mein zukünftiges Ich)
 
-- **Sprache der Website:** Deutsch (primär). Inhalte konservativ/seriös formulieren.
+- **Sprache der Website:** Deutsch ist die Standardfassung (Wurzel), Englisch liegt unter
+  `/en/`. Inhalte konservativ/seriös formulieren.
+  ⚠️ **Beide Fassungen immer gemeinsam ändern.** Der Sprachumschalter sitzt in der Kopfzeile
+  (`.lang-switch`), jede Seite trägt drei `hreflang`-Verweise (de, en, x-default) und ein
+  eigenes `canonical`. Dateinamen unterscheiden sich: `ueber-uns` → `about`,
+  `impressum` → `imprint`, `datenschutz` → `privacy`; ebenso die Sprungmarken
+  (`#marken` → `#brands`, `#kontakt` → `#contact`, `#geschichte` → `#history`).
+  `tools/parity.mjs` vergleicht das Gerüst beider Fassungen und schlägt an, sobald sie
+  auseinanderlaufen.
+  ⚠️ Sichtbare Texte aus JS stehen in der Tabelle `STRINGS` in `js/main.js` und hängen an
+  `<html lang>`; Deutsch ist der Rückfall. Keine deutschen Strings mehr direkt im Code.
+  ⚠️ Impressum und Datenschutz sind auf Englisch **nur eine Informationsübersetzung** – beide
+  tragen oben den Hinweis, dass die deutsche Fassung maßgeblich ist. Rechtlich freigeben lassen.
 - **Branch:** Entwicklung auf `claude/clever-faraday-9e5sjw`. Nicht auf andere Branches pushen.
   (Ausnahme: wenn der Auftrag ausdrücklich einen anderen Feature-Branch vorgibt.)
 - **Kein Build nötig:** Änderungen direkt in den Dateien. Lokal testen:
