@@ -281,10 +281,9 @@ const ok = (c, m) => { console.log((c ? '  ok   ' : '  FAIL ') + m); if (!c) fai
     const page = await ctx.newPage();
     await page.goto(BASE + '/index.html', { waitUntil: 'load' });
     await page.waitForTimeout(500);
-    const drawn = await page.evaluate(() => [...document.querySelectorAll('.ray')].map(el => {
-      const len = el.getTotalLength();
-      return +(len - parseFloat(el.style.strokeDashoffset || len)).toFixed(1);
-    }));
+    /* Sichtbar ist das dritte Glied des dasharray: 0, verschluckt, sichtbar, Rest. */
+    const drawn = await page.evaluate(() => [...document.querySelectorAll('.ray')].map(el =>
+      +(parseFloat(el.style.strokeDasharray.split(/[ ,]+/).filter(Boolean)[2]) || 0).toFixed(1)));
     ok(drawn.length === 3 && drawn.every(v => v <= 2),
        `rays: bei scroll 0 noch nichts gezeichnet @${vp.width} (${drawn.join(', ')})`);
     await ctx.close();
@@ -349,18 +348,135 @@ const ok = (c, m) => { console.log((c ? '  ok   ' : '  FAIL ') + m); if (!c) fai
     [...document.querySelectorAll('.cta-banner__zone')].map(z => z.classList.contains('is-lit')));
   ok(zonesBefore.length === 3 && zonesBefore.every(v => !v), 'band: Abteile starten unbeleuchtet');
 
-  await page.evaluate(() => document.querySelector('.cta-banner').scrollIntoView({ block: 'center' }));
-  await page.waitForTimeout(1800);
+  /* Der Aufbruch hängt am Scrollweg, nicht an einer Zeitkurve: erst weit
+     genug vorbeiscrollen, dann müssen alle drei Abteile voll sein. */
+  await page.evaluate(() => {
+    const y = document.querySelector('.cta-banner').getBoundingClientRect().top + scrollY;
+    window.scrollTo(0, y + window.innerHeight);
+  });
+  await page.waitForTimeout(900);
   const zones = await page.evaluate(() =>
     [...document.querySelectorAll('.cta-banner__zone')].map(z => ({
+      key: (z.className.match(/zone--(\w+)/) || [])[1],
       lit: z.classList.contains('is-lit'),
-      sx: z.style.getPropertyValue('--sx')
+      r: z.style.getPropertyValue('--rz'),
+      sx: parseFloat(z.style.getPropertyValue('--sx'))
     })));
-  ok(zones.every(z => z.lit), 'band: alle drei Abteile beleuchtet');
-  const xs = zones.map(z => parseFloat(z.sx));
-  ok(xs.every(v => !isNaN(v)) && xs[0] < xs[1] && xs[1] < xs[2],
-     `band: jeder Faden trifft sein eigenes Abteil (${zones.map(z => z.sx).join(', ')})`);
+  ok(zones.every(z => z.lit), `band: alle drei Abteile beleuchtet (${zones.map(z => z.r).join(', ')})`);
+  /* Reihenfolge im Band ist dunkel → hell, nicht die DOM-Reihenfolge. */
+  const HOME = { oligase: 25, lactrase: 67, fructaid: 90 };
+  ok(zones.every(z => Math.abs(z.sx - HOME[z.key]) < 1),
+     `band: jeder Faden trifft sein eigenes Abteil (${zones.map(z => z.key + ' ' + z.sx + '%').join(', ')})`);
   await page.screenshot({ path: path.join(OUT, 'band-zones.png') });
+  await ctx.close();
+}
+
+/* --- Farbe läuft mit dem Scrollen, nicht von allein durch ---------------- */
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(BASE + '/index.html', { waitUntil: 'load' });
+  await page.addStyleTag({ content: 'html{scroll-behavior:auto !important}' });
+  await page.waitForTimeout(400);
+  const radii = () => page.evaluate(() => [...document.querySelectorAll('.brand-card__img')]
+    .map(f => parseFloat(f.style.getPropertyValue('--rf')) || 0));
+
+  const cardTop = await page.evaluate(() =>
+    document.querySelector('.brand-card').getBoundingClientRect().top + scrollY);
+
+  /* Kurz nach dem Einschlag: angefangen, aber noch lange nicht fertig. */
+  await page.evaluate(y => window.scrollTo(0, y - window.innerHeight * 0.66), cardTop);
+  await page.waitForTimeout(500);
+  const early = await radii();
+  ok(early.every(r => r > 0 && r < 120),
+     `spill: kurz nach dem Einschlag erst teilweise (${early.map(r => r.toFixed(0) + '%').join(', ')})`);
+
+  /* Nicht die Zeit füllt die Kachel, sondern das Scrollen: ohne weiteres
+     Scrollen darf sich nichts mehr tun. */
+  await page.waitForTimeout(1500);
+  const stillThere = await radii();
+  ok(stillThere.every((r, i) => Math.abs(r - early[i]) < 1),
+     'spill: ohne Scrollen läuft die Farbe nicht weiter');
+
+  /* Weiterscrollen füllt weiter. */
+  await page.evaluate(y => window.scrollTo(0, y - window.innerHeight * 0.1), cardTop);
+  await page.waitForTimeout(500);
+  const later = await radii();
+  ok(later.every((r, i) => r > early[i] + 15),
+     `spill: weiteres Scrollen füllt weiter (${later.map(r => r.toFixed(0) + '%').join(', ')})`);
+
+  /* Alle drei kommen zusammen an. */
+  const spread = Math.max(...later) - Math.min(...later);
+  ok(spread < 30, `spill: die drei Kacheln laufen im Gleichschritt (Spanne ${spread.toFixed(0)}%)`);
+  await ctx.close();
+}
+
+/* --- Strahlen verschwinden im Band und bleiben beim Hochscrollen weg ----- */
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(BASE + '/index.html', { waitUntil: 'load' });
+  await page.addStyleTag({ content: 'html{scroll-behavior:auto !important}' });
+  const visible = () => page.evaluate(() => [...document.querySelectorAll('.ray')].map(el => {
+    const d = el.style.strokeDasharray.split(/[ ,]+/).filter(Boolean).map(Number);
+    return { verschluckt: d[1] || 0, sichtbar: d[2] || 0 };
+  }));
+
+  const H = await page.evaluate(() => document.body.scrollHeight);
+  for (let y = 0; y < H; y += 120) {
+    await page.evaluate(v => window.scrollTo(0, v), y);
+    await page.waitForTimeout(12);
+  }
+  await page.waitForTimeout(600);
+  const unten = await visible();
+  ok(unten.every(v => v.sichtbar < 2 && v.verschluckt > 100),
+     `rays: am Seitenende komplett im Band verschluckt (${unten.map(v => Math.round(v.sichtbar)).join(', ')} sichtbar)`);
+
+  /* Zurück nach oben: nichts kommt wieder hervor. */
+  for (let y = H; y >= 0; y -= 150) {
+    await page.evaluate(v => window.scrollTo(0, v), y);
+    await page.waitForTimeout(12);
+  }
+  await page.waitForTimeout(700);
+  const oben = await visible();
+  ok(oben.every(v => v.sichtbar < 2),
+     `rays: nach dem Hochscrollen bleiben sie weg (${oben.map(v => Math.round(v.sichtbar)).join(', ')} sichtbar)`);
+
+  /* Und auf halbem Weg zurück fährt auch nichts hin und her. */
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight * 0.35));
+  await page.waitForTimeout(600);
+  const mitte = await visible();
+  ok(mitte.every(v => v.sichtbar < 2), 'rays: kein Wiederauftauchen beim erneuten Runterscrollen');
+  await ctx.close();
+}
+
+/* --- Sprung statt Scrollen: kein Faden quer über der Seite -------------- */
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  const sichtbar = () => page.evaluate(() => [...document.querySelectorAll('.ray')].map(el =>
+    Math.round(parseFloat(el.style.strokeDasharray.split(/[ ,]+/).filter(Boolean)[2]) || 0)));
+
+  /* Deep-Link mitten in die Seite. */
+  await page.goto(BASE + '/index.html#kontakt', { waitUntil: 'load' });
+  await page.waitForTimeout(1000);
+  const deep = await sichtbar();
+  ok(deep.every(v => v < 30), `rays: Deep-Link zeigt keinen Faden (${deep.join(', ')} px)`);
+
+  /* Reload, während die Seite unten steht – der Browser stellt die Position
+     erst nach dem ersten Frame wieder her. */
+  await page.goto(BASE + '/index.html', { waitUntil: 'networkidle' });
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await page.waitForTimeout(500);
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await page.waitForTimeout(400);
+  const unten2 = await page.evaluate(() => Math.round(scrollY));
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForTimeout(1200);
+  const wieder = await page.evaluate(() => Math.round(scrollY));
+  const rel = await sichtbar();
+  ok(wieder > unten2 * 0.8, `rays: Reload landet wieder unten (${unten2} → ${wieder})`);
+  ok(rel.every(v => v < 30), `rays: Reload unten zeigt keinen Faden (${rel.join(', ')} px)`);
   await ctx.close();
 }
 

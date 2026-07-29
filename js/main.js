@@ -273,9 +273,13 @@
        muss die Farbe trotzdem ankommen. */
     /* Ohne Strahlen gibt es keinen Eintauchpunkt – dann bricht jedes Abteil
        aus seiner eigenen Mitte auf, damit das Band trotzdem farbig wird. */
+    /* Wo das jeweilige Abteil liegt – Reihenfolge im Band ist dunkel → hell
+       (Oligase links, Lactrase Mitte, Fructaid rechts). */
+    var ZONE_HOME = { oligase: 25, lactrase: 67, fructaid: 90 };
     function lightAllZones() {
       for (var i = 0; i < zones.length; i++) {
-        setOrigin(zones[i], (i * 33.3 + 16.7), 50);
+        var key = (zones[i].className.match(/zone--(\w+)/) || [])[1];
+        setOrigin(zones[i], ZONE_HOME[key] != null ? ZONE_HOME[key] : 50, 50);
         light(zones[i]);
       }
     }
@@ -320,6 +324,20 @@
       },
       lightZone: function (i) { if (zones[i]) light(zones[i]); },
       lightAllZones: lightAllZones,
+      /* Fortschritt 0…1 → Radius. Das Foto folgt der Farbfront verzögert;
+         der Versatz ergibt den nassen Rand an der Front. */
+      setCardPaint: function (i, p) {
+        var frame = cards[i] && cards[i].querySelector('.brand-card__img');
+        if (!frame) return;
+        frame.style.setProperty('--rf', (p * 165).toFixed(1) + '%');
+        frame.style.setProperty('--rs', (Math.max(0, p - 0.12) / 0.88 * 165).toFixed(1) + '%');
+        if (p >= 1) light(cards[i]);
+      },
+      setZonePaint: function (i, p) {
+        if (!zones[i]) return;
+        zones[i].style.setProperty('--rz', (p * 165).toFixed(1) + '%');
+        if (p >= 1) light(zones[i]);
+      },
       observeFallback: observeFallback,
       stopFallback: stopFallback
     };
@@ -361,9 +379,9 @@
        side  = Randkanal, über den der Faden nach unten läuft.
        hitX  = Einschlagpunkt auf der Karte (Anteil der Kartenbreite). */
     var THREADS = [
-      { key: 'lactrase', heroX: 0.50, lane: 'left',  phase: 0.35,     hitX: 0.26, zone: 0.16 },
-      { key: 'oligase',  heroX: 0.73, lane: 'inner', phase: 0.0,      hitX: 1.0, hitY: 0.18, viaGap: true, zone: 0.50 },
-      { key: 'fructaid', heroX: 0.29, lane: 'outer', phase: Math.PI,  hitX: 0.70, zone: 0.84 }
+      { key: 'lactrase', heroX: 0.50, lane: 'left',  hitX: 0.26, zone: 0.67 },
+      { key: 'oligase',  heroX: 0.73, lane: 'inner', hitX: 1.0, hitY: 0.10, viaGap: true, zone: 0.25 },
+      { key: 'fructaid', heroX: 0.29, lane: 'outer', hitX: 0.70, zone: 0.90 }
     ];
     var wideQuery = window.matchMedia('(min-width: 1001px)');
 
@@ -424,21 +442,6 @@
              ' ' + p2.x.toFixed(1) + ' ' + p2.y.toFixed(1);
       }
       return d;
-    }
-
-    /* Geflochtener Lauf durch einen Kanal: die Fäden schwingen um die
-       Kanalmitte und kreuzen sich dabei. Die Auslenkung hängt an der Länge
-       des Kanals – auf kurzer Strecke wird sonst aus dem Schwung ein Zickzack.
-       Eine knappe Halbwelle je Kanal reicht; mehr wirkt hektisch. */
-    function braid(pts, cx, amp, y0, y1, phase) {
-      var span = y1 - y0;
-      if (span < 40) return;
-      var a = Math.min(amp, span * 0.20);
-      var steps = Math.max(2, Math.round(span / 190));
-      for (var i = 1; i <= steps; i++) {
-        var t = i / steps;
-        pts.push({ x: cx + Math.sin(phase + t * Math.PI * 1.15) * a, y: y0 + span * t });
-      }
     }
 
     function teardown() {
@@ -513,10 +516,12 @@
       var leftLo = edge, leftHi = Math.max(edge + 20, headBox.x - 26);
       var rightLo = Math.min(W - edge - 20, headBox.right + 26), rightHi = W - edge;
       var rightSpan = rightHi - rightLo;
+      /* Nur noch eine Mitte je Kanal, keine Schwingung. Die Kanalmitten sind
+         so gewählt, dass der Bogen zum Einschlagpunkt kurz bleibt. */
       var lanes = {
-        left:  { c: (leftLo + leftHi) / 2, a: (leftHi - leftLo) / 2 * 0.82 },
-        inner: { c: rightLo + rightSpan * 0.42, a: rightSpan * 0.34 },
-        outer: { c: rightLo + rightSpan * 0.58, a: rightSpan * 0.34 }
+        left:  { c: leftLo + (leftHi - leftLo) * 0.62 },
+        inner: { c: rightLo + rightSpan * 0.22 },
+        outer: { c: rightLo + rightSpan * 0.70 }
       };
 
       /* Spalte zwischen Missionsbild und Missionstext. */
@@ -562,13 +567,13 @@
         /* 2. Der große Schwenk quer über die Seite. Er liegt in der Mitte
               hinter dem deckenden Vertrauensband und ist dort verdeckt. */
         var laneTop = headBox.y - 22;
-        pts.push({ x: lane.c + Math.sin(cfg.phase) * lane.a, y: laneTop });
+        pts.push({ x: lane.c, y: laneTop });
 
-        /* 3. Geflochten am Abschnittskopf vorbei: die beiden rechten Fäden
-              schwingen gegenläufig und kreuzen sich. */
+        /* 3. Ruhig am Abschnittskopf vorbei. Kein Geflecht mehr – ein Punkt
+              im Kanal reicht, den Bogen legt der Spline. */
         var corridor = card.y - headBox.bottom;
         var laneEnd = headBox.bottom + Math.max(12, corridor * (cfg.viaGap ? 0.14 : 0.34));
-        braid(pts, lane.c, lane.a, laneTop, laneEnd, cfg.phase);
+        pts.push({ x: lane.c, y: laneEnd });
 
         /* 4. Einschwenken auf den Einschlagpunkt. Der mittlere Faden nimmt
               den Spalt zwischen zwei Karten und trifft seitlich auf – so
@@ -594,8 +599,11 @@
         /* 6. Zusammenlaufen in die Spalte des Missionsblocks. */
         var mTop = leadBox ? leadBox.y + 8 : gridBox.bottom + runway * 0.35;
         var mBot = leadBox ? leadBox.bottom - 8 : bannerBox.y - runway * 0.35;
-        pts.push({ x: midX + (i - 1) * midAmp * 0.9, y: mTop });
-        braid(pts, midX, midAmp, mTop, mBot, cfg.phase + i * 0.7);
+        pts.push({ x: midX + (i - 1) * midAmp, y: mTop });
+        /* Ein einziger flacher Bogen: die drei Fäden tauschen im Bündel
+           sanft die Seite, ohne zu flattern. */
+        pts.push({ x: midX - (i - 1) * midAmp * 0.7, y: (mTop + mBot) / 2 });
+        pts.push({ x: midX + (i - 1) * midAmp * 0.35, y: mBot });
 
         /* 7. Auffächern: das Bündel teilt sich wieder auf, jeder Faden läuft
               in sein eigenes Abteil des Bands und bricht dort auf. */
@@ -610,7 +618,7 @@
         var p = el('path', { class: 'ray', d: toPath(pts) });
         p.style.stroke = 'url(#ray-' + cfg.key + ')';
         frag.appendChild(p);
-        threads.push({ el: p, hitY: hitY, cardIndex: i, zoneIndex: i });
+        threads.push({ el: p, key: cfg.key, hitY: hitY, cardTop: card.y, cardIndex: i, zoneIndex: i });
 
         /* Der Farbaufbruch startet dort, wo der Faden die Kachel trifft. */
         paintApi.setCardOrigin(i, cfg.hitX * 100, cfg.viaGap ? cfg.hitY * 100 : 0);
@@ -623,13 +631,22 @@
       /* Der Scrim, der den weißen Text trägt, läuft vom linken Faden aus los. */
       paintApi.setBannerOrigin(THREADS[0].zone * 100);
 
+      var vh0 = window.innerHeight;
       threads.forEach(function (t) {
         t.len = t.el.getTotalLength();
         t.table = sample(t.el, t.len);
-        t.hit = lengthAtY(t.table, t.hitY);
-        t.bannerL = lengthAtY(t.table, bannerBox.y + 8);
-        t.el.style.strokeDasharray = t.len;
-        t.el.style.strokeDashoffset = reduceMotion.matches ? 0 : t.len;
+        /* Wie weit gescrollt werden muss, bis eine Fläche voll ist – der
+           Farbaufbruch hängt daran, nicht an einer Zeitkurve. Alle drei
+           Kacheln sind an derselben Seitenposition fertig, obwohl der
+           mittlere Faden etwas tiefer aufschlägt. */
+        t.paintSpan = Math.max(120, t.cardTop + vh0 * 0.60 - t.hitY);
+        t.zoneY = bannerBox.y + 8;
+        t.zoneSpan = vh0 * 0.55;
+        t.endY = t.table[t.table.length - 1].y;
+        t.el.style.strokeDashoffset = 0;
+        t.el.style.strokeDasharray = reduceMotion.matches
+          ? ('0 0 ' + t.len.toFixed(1) + ' 0')
+          : ('0 0 0 ' + t.len.toFixed(1));
       });
 
       /* Fortschritt: Ziel-Y = Lesepunkt im Viewport, in Host-Koordinaten. */
@@ -650,27 +667,50 @@
 
     var pageTop = 0;
     var revealY = 0;
+    /* Der Fortschritt überlebt Neuaufbauten (Resize, Font-Load) und läuft
+       ausschließlich vorwärts. Beim Zurückscrollen bewegt sich nichts mehr –
+       die Seite lässt sich in Ruhe ansehen. Anteile statt Pixel, damit die
+       Werte einen Neuaufbau mit anderer Pfadlänge überstehen. */
+    var progress = {};
+    function state(key) {
+      if (!progress[key]) progress[key] = { head: 0, tail: 0, paint: 0, zone: 0 };
+      return progress[key];
+    }
+    function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
 
     function update() {
       if (!ready || reduceMotion.matches) return;
       var vh = window.innerHeight;
-      var read = window.scrollY + vh * 0.76 - pageTop;
-      /* Beim Laden soll die Spitze noch hinter dem Packshot stecken. Sonst
-         ist der Faden schon ein gutes Stück gezeichnet, bevor überhaupt
-         gescrollt wurde. Der Vorsprung wird über die erste Bildschirmhöhe
-         abgebaut, danach gilt wieder der reine Lesepunkt. */
+      var sy = window.scrollY;
+      /* Beim Laden steht die Spitze am Pfadanfang; der Vorsprung auf den
+         Lesepunkt wird über die erste Bildschirmhöhe abgebaut. */
       var headStart = Math.max(0, vh * 0.76 - revealY);
-      var ease = Math.max(0, 1 - window.scrollY / (vh * 0.75));
-      var targetY = read - headStart * ease * ease;
+      var ease = Math.max(0, 1 - sy / (vh * 0.75));
+      var targetY = sy + vh * 0.76 - pageTop - headStart * ease * ease;
+
       for (var i = 0; i < threads.length; i++) {
-        var t = threads[i];
-        var l = lengthAtY(t.table, targetY);
-        t.el.style.strokeDashoffset = (t.len - l).toFixed(1);
-        if (l >= t.hit) paintApi.light(cards[t.cardIndex]);
-        if (l >= t.bannerL) {
-          paintApi.light(banner);
-          paintApi.lightZone(t.zoneIndex);
-        }
+        var t = threads[i], st = state(t.key);
+
+        st.head = Math.max(st.head, lengthAtY(t.table, targetY) / t.len);
+
+        /* Läuft die Leseposition am Pfadende vorbei, zieht das Band den
+           Faden nach: das Ende wandert nach und der Faden verschwindet darin.
+           Bewusst nur aus der Leseposition abgeleitet, ohne Scroll-Historie –
+           dadurch stimmt es auch bei Deep-Link und bei Reload auf halber
+           Höhe, wo der Browser die Position erst nachträglich herstellt. */
+        st.tail = Math.max(st.tail, clamp01((targetY - t.endY) / (vh * 0.9)));
+
+        var a = st.tail * t.len, b = st.head * t.len;
+        t.el.style.strokeDasharray = '0 ' + a.toFixed(1) + ' ' +
+          Math.max(0, b - a).toFixed(1) + ' ' + t.len.toFixed(1);
+
+        /* Farbe breitet sich proportional zum Scrollen aus. */
+        st.paint = Math.max(st.paint, clamp01((targetY - t.hitY) / t.paintSpan));
+        paintApi.setCardPaint(t.cardIndex, st.paint);
+
+        st.zone = Math.max(st.zone, clamp01((targetY - t.zoneY) / t.zoneSpan));
+        paintApi.setZonePaint(t.zoneIndex, st.zone);
+        if (st.zone > 0) paintApi.light(banner);
       }
     }
 
