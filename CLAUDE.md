@@ -210,6 +210,18 @@ verwendet – Marken-Tiles, Distributor-Bänder, Strahlen):
   Ebenso `html.rays-on` für die Entsättigung.
 - **Footer-Welle:** einzelne Wellen-Silhouette (wie Etikett/Original) als Inline-Data-URI
   oben am Footer. (Original-Wave-SVG rendert NICHT als CSS-Background → clipPath/Transforms.)
+- **Vertrauensleiste:** Symbol und Text sind **getrennt** ausgerichtet
+  (`i { align-self: center }`, `div { align-self: start }`). Alle Symbole liegen dadurch
+  auf einer Höhe und mittig, alle Überschriften auf einer Linie – egal ob ein Text zwei
+  oder drei Zeilen braucht. Vorher klebte das Symbol an der ersten Zeile und wirkte bei
+  dreizeiligem Text zu weit oben. Reihenfolge: **„Nr. 1" zuerst**.
+- **Auslauf über dem Distributor-Band:** der doppelte Abstand ist der Platz, den das
+  aufgefächerte Bündel braucht. Sind alle drei Fäden verschluckt, setzt JS
+  `html.rays-parked` und der Abstand fällt auf das normale Abschnittsmaß.
+  ⚠️ Die Scrollposition wird dabei um genau denselben Betrag nachgezogen, sonst springt
+  die Seite. Gemessen wird **das Band**, nicht die Sektion: deren eigenes `padding-top`
+  zu entfernen verschiebt ihre Oberkante nicht, sondern nur alles darunter.
+  Ohne Strahlen (< 1001 px, `prefers-reduced-motion`) gibt es den Auslauf gar nicht.
 - **Kopfzeile:** `--header-base` bestimmt das Layout (`min-height`), `--header-h` ist die
   von JS **gemessene** Höhe und speist nur `scroll-padding` und Abstände darunter.
   ⚠️ Die beiden müssen getrennt bleiben. Früher las `min-height` dieselbe Variable, die

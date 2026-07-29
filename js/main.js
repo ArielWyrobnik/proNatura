@@ -688,6 +688,7 @@
       var ease = Math.max(0, 1 - sy / (vh * 0.75));
       var targetY = sy + vh * 0.76 - pageTop - headStart * ease * ease;
 
+      var swallowed = true;
       for (var i = 0; i < threads.length; i++) {
         var t = threads[i], st = state(t.key);
 
@@ -711,7 +712,40 @@
         st.zone = Math.max(st.zone, clamp01((targetY - t.zoneY) / t.zoneSpan));
         paintApi.setZonePaint(t.zoneIndex, st.zone);
         if (st.zone > 0) paintApi.light(banner);
+
+        if (st.tail < 1) swallowed = false;
       }
+      if (swallowed) park();
+    }
+
+    /* Der große Abstand über dem Distributor-Band ist der Auslauf, den das
+       aufgefächerte Bündel braucht. Sind alle drei Fäden im Band verschluckt,
+       hat er keinen Zweck mehr und wird auf das normale Abschnittsmaß
+       eingezogen – sonst klafft mitten auf der Seite eine doppelt so große
+       Lücke wie zwischen allen anderen Abschnitten. */
+    var parked = false;
+    function park() {
+      if (parked) return;
+      /* Nur einziehen, wenn der Auslauf wirklich aus dem Bild ist. */
+      if (banner.getBoundingClientRect().top >= 0) return;
+      parked = true;
+
+      /* Gemessen wird das Band, nicht die Sektion: deren eigenes padding-top
+         zu entfernen verschiebt ihre Oberkante nicht, sondern nur alles
+         darin und darunter. */
+      var before = banner.getBoundingClientRect().top;
+      root.classList.add('rays-parked');
+      var delta = before - banner.getBoundingClientRect().top;
+      if (delta) {
+        /* Die Scrollposition wandert um genau denselben Betrag mit, damit vor
+           den Augen des Nutzers nichts springt. `scroll-behavior: smooth` muss
+           dafür kurz aus sein, sonst wird daraus eine sichtbare Fahrt. */
+        var prev = root.style.scrollBehavior;
+        root.style.scrollBehavior = 'auto';
+        window.scrollTo(0, window.scrollY - delta);
+        root.style.scrollBehavior = prev;
+      }
+      build();
     }
 
     return { build: build, update: update, media: wideQuery };

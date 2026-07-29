@@ -480,6 +480,77 @@ const ok = (c, m) => { console.log((c ? '  ok   ' : '  FAIL ') + m); if (!c) fai
   await ctx.close();
 }
 
+/* --- Vertrauensleiste: Symbole mittig, Überschriften auf einer Linie ----- */
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(BASE + '/index.html', { waitUntil: 'load' });
+  const bar = await page.evaluate(() => {
+    const inner = document.querySelector('.trust-bar__inner').getBoundingClientRect();
+    return [...document.querySelectorAll('.trust-bar__item')].map(it => {
+      const i = it.querySelector('i').getBoundingClientRect();
+      const t = it.querySelector('strong').getBoundingClientRect();
+      return { titel: it.querySelector('strong').textContent.trim(),
+               iconMitte: +(i.top + i.height / 2 - inner.top).toFixed(1),
+               textOben: +(t.top - inner.top).toFixed(1),
+               innerH: +inner.height.toFixed(1) };
+    });
+  });
+  ok(/^Nr\. 1/.test(bar[0].titel), `trust: "Nr. 1" steht vorn (${bar[0].titel})`);
+  const iconSpread = Math.max(...bar.map(b => b.iconMitte)) - Math.min(...bar.map(b => b.iconMitte));
+  ok(iconSpread < 1, `trust: alle Symbole auf einer Höhe (Spanne ${iconSpread.toFixed(1)} px)`);
+  const textSpread = Math.max(...bar.map(b => b.textOben)) - Math.min(...bar.map(b => b.textOben));
+  ok(textSpread < 1, `trust: alle Überschriften auf einer Linie (Spanne ${textSpread.toFixed(1)} px)`);
+  /* Der dreizeilige Text darf dem Symbol nicht nach unten folgen. */
+  const mitte = bar[0].innerH / 2;
+  ok(Math.abs(bar[0].iconMitte - mitte) < 2,
+     `trust: Symbole sitzen mittig in der Leiste (${bar[0].iconMitte} von ${bar[0].innerH})`);
+  await ctx.close();
+}
+
+/* --- Auslauf über dem Band wird eingezogen, ohne dass etwas springt ------ */
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(BASE + '/index.html', { waitUntil: 'load' });
+  await page.addStyleTag({ content: 'html{scroll-behavior:auto !important}' });
+  const luecke = () => page.evaluate(() => {
+    const off = el => el.getBoundingClientRect().top + scrollY;
+    const bot = el => off(el) + el.getBoundingClientRect().height;
+    return {
+      marken: Math.round(off(document.querySelector('#marken .section-head')) - bot(document.querySelector('.trust-bar'))),
+      mission: Math.round(off(document.querySelector('[data-rays-lead]')) - bot(document.querySelector('.brand-grid'))),
+      band: Math.round(off(document.querySelector('.cta-banner')) - bot(document.querySelector('[data-rays-lead]')))
+    };
+  });
+  const vorher = await luecke();
+  ok(vorher.band > vorher.mission * 1.5,
+     `runway: Auslauf für die Fäden ist anfangs da (${vorher.band} vs ${vorher.mission} px)`);
+
+  /* Schrittweise heranfahren und den Moment des Einziehens abpassen. */
+  const zustand = () => page.evaluate(() => ({
+    k: Math.round(document.querySelector('#kontakt').getBoundingClientRect().top),
+    parked: document.documentElement.classList.contains('rays-parked')
+  }));
+  let prev = await zustand(), sprung = null;
+  for (let y = 2400; y < 3800; y += 5) {
+    await page.evaluate(v => window.scrollTo(0, v), y);
+    await page.waitForTimeout(22);
+    const now = await zustand();
+    if (now.parked && !prev.parked) { sprung = Math.abs((now.k - prev.k) + 5); break; }
+    prev = now;
+  }
+  ok(sprung !== null && sprung < 8,
+     `runway: beim Einziehen springt nichts im Bild (${sprung} px Abweichung vom Scrollschritt)`);
+
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(300);
+  const nachher = await luecke();
+  ok(Math.abs(nachher.band - nachher.mission) < 4 && Math.abs(nachher.marken - nachher.mission) < 20,
+     `runway: Abstände danach einheitlich (${nachher.marken} / ${nachher.mission} / ${nachher.band} px)`);
+  await ctx.close();
+}
+
 await browser.close();
 console.log(fail.length ? `\n${fail.length} FAILURE(S)` : '\nALL INTERACTION CHECKS PASSED');
 process.exit(fail.length ? 1 : 0);
