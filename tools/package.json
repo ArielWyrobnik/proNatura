@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "description": "Nur Prüfwerkzeuge – kein Teil der Website. Siehe README.md.",
+  "comment": "playwright ist auf die Version gepinnt, deren Chromium-Build in dieser Umgebung vorinstalliert ist (/opt/pw-browsers). Eine neuere Version verlangt einen Build, den es hier nicht gibt.",
+  "dependencies": {
+    "playwright": "1.56.0",
+    "pngjs": "^7.0.0"
+  }
+}

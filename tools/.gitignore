@@ -4,3 +4,4 @@ rt-*.png
 rt-*.json
 interact/
 *.png
+package-lock.json

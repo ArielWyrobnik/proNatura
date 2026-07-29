@@ -363,8 +363,8 @@ const ok = (c, m) => { console.log((c ? '  ok   ' : '  FAIL ') + m); if (!c) fai
       sx: parseFloat(z.style.getPropertyValue('--sx'))
     })));
   ok(zones.every(z => z.lit), `band: alle drei Abteile beleuchtet (${zones.map(z => z.r).join(', ')})`);
-  /* Reihenfolge im Band ist dunkel → hell, nicht die DOM-Reihenfolge. */
-  const HOME = { oligase: 25, lactrase: 67, fructaid: 90 };
+  /* Reihenfolge im Band wie die Marken-Karten. */
+  const HOME = { lactrase: 25, oligase: 67, fructaid: 90 };
   ok(zones.every(z => Math.abs(z.sx - HOME[z.key]) < 1),
      `band: jeder Faden trifft sein eigenes Abteil (${zones.map(z => z.key + ' ' + z.sx + '%').join(', ')})`);
   await page.screenshot({ path: path.join(OUT, 'band-zones.png') });
@@ -549,6 +549,56 @@ const ok = (c, m) => { console.log((c ? '  ok   ' : '  FAIL ') + m); if (!c) fai
   ok(Math.abs(nachher.band - nachher.mission) < 4 && Math.abs(nachher.marken - nachher.mission) < 20,
      `runway: Abstände danach einheitlich (${nachher.marken} / ${nachher.mission} / ${nachher.band} px)`);
   await ctx.close();
+}
+
+/* --- Strahlen laufen sichtbar ins Band, solange es im Bild ist ---------- */
+{
+  for (const seite of ['/index.html', '/en/index.html']) {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const page = await ctx.newPage();
+    await page.goto(BASE + seite, { waitUntil: 'load' });
+    await page.addStyleTag({ content: 'html{scroll-behavior:auto !important}' });
+    await page.waitForTimeout(400);
+
+    /* Auf der englischen Fassung heißt der Abschnitt #brands statt #marken –
+       die Strahlen dürfen davon nicht abhängen. */
+    const gebaut = await page.evaluate(() => document.querySelectorAll('.ray').length);
+    ok(gebaut === 3, `${seite}: drei Strahlen gebaut (${gebaut})`);
+
+    const bandY = await page.evaluate(() =>
+      Math.round(document.querySelector('.cta-banner').getBoundingClientRect().top + scrollY));
+    const zustand = () => page.evaluate(() => ({
+      sichtbar: [...document.querySelectorAll('.ray')].map(e =>
+        Math.round(parseFloat(e.style.strokeDasharray.split(/[ ,]+/).filter(Boolean)[2]) || 0)),
+      bandOben: Math.round(document.querySelector('.cta-banner').getBoundingClientRect().top),
+      abteile: [...document.querySelectorAll('.cta-banner__zone')]
+        .map(z => parseFloat(z.style.getPropertyValue('--rz')) || 0)
+    }));
+
+    /* Bis kurz vor das Band scrollen: Faden muss noch da sein. */
+    for (let v = 0; v <= bandY - 750; v += 40) {
+      await page.evaluate(t => window.scrollTo(0, t), v); await page.waitForTimeout(10);
+    }
+    await page.waitForTimeout(400);
+    const vorher = await zustand();
+    ok(vorher.sichtbar.every(v => v > 400) && vorher.bandOben > 0,
+       `${seite}: Faden noch voll da, Band im Bild bei ${vorher.bandOben}px (${vorher.sichtbar.join('/')})`);
+
+    /* Weiterscrollen: der Faden muss verschwunden sein, SOLANGE das Band
+       noch im Bild ist – sonst sieht man das Einlaufen nie. */
+    for (let v = bandY - 750; v <= bandY - 130; v += 40) {
+      await page.evaluate(t => window.scrollTo(0, t), v); await page.waitForTimeout(10);
+    }
+    await page.waitForTimeout(500);
+    const nachher = await zustand();
+    ok(nachher.sichtbar.every(v => v < 3),
+       `${seite}: Faden im Band verschluckt (${nachher.sichtbar.join('/')})`);
+    ok(nachher.bandOben > 0,
+       `${seite}: und das Band ist dabei noch im Bild (Oberkante ${nachher.bandOben}px)`);
+    ok(nachher.abteile.every(r => r > 150),
+       `${seite}: Abteile sind dabei aufgebrochen (${nachher.abteile.join('/')}%)`);
+    await ctx.close();
+  }
 }
 
 await browser.close();

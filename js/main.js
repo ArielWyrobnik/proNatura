@@ -311,9 +311,9 @@
        muss die Farbe trotzdem ankommen. */
     /* Ohne Strahlen gibt es keinen Eintauchpunkt – dann bricht jedes Abteil
        aus seiner eigenen Mitte auf, damit das Band trotzdem farbig wird. */
-    /* Wo das jeweilige Abteil liegt – Reihenfolge im Band ist dunkel → hell
-       (Oligase links, Lactrase Mitte, Fructaid rechts). */
-    var ZONE_HOME = { oligase: 25, lactrase: 67, fructaid: 90 };
+    /* Wo das jeweilige Abteil liegt – Reihenfolge wie die Marken-Karten
+       (Lactrase links, Oligase Mitte, Fructaid rechts). */
+    var ZONE_HOME = { lactrase: 25, oligase: 67, fructaid: 90 };
     function lightAllZones() {
       for (var i = 0; i < zones.length; i++) {
         var key = (zones[i].className.match(/zone--(\w+)/) || [])[1];
@@ -405,7 +405,9 @@
     var heroImg = document.querySelector('.hero__image img');
     var heroCopy = document.querySelector('.hero__copy');
     var swallow = document.querySelector('.trust-bar');
-    var head = document.querySelector('#marken .section-head');
+    /* Über ein Datenattribut, nicht über die ID: die heißt auf Deutsch
+       #marken und auf Englisch #brands. */
+    var head = document.querySelector('[data-rays-head]');
     var grid = document.querySelector('.brand-grid');
     var lead = document.querySelector('[data-rays-lead]');
     var cards = paintApi.cards;
@@ -417,8 +419,8 @@
        side  = Randkanal, über den der Faden nach unten läuft.
        hitX  = Einschlagpunkt auf der Karte (Anteil der Kartenbreite). */
     var THREADS = [
-      { key: 'lactrase', heroX: 0.50, lane: 'left',  hitX: 0.26, zone: 0.67 },
-      { key: 'oligase',  heroX: 0.73, lane: 'inner', hitX: 1.0, hitY: 0.10, viaGap: true, zone: 0.25 },
+      { key: 'lactrase', heroX: 0.50, lane: 'left',  hitX: 0.26, zone: 0.25 },
+      { key: 'oligase',  heroX: 0.73, lane: 'inner', hitX: 1.0, hitY: 0.10, viaGap: true, zone: 0.67 },
       { key: 'fructaid', heroX: 0.29, lane: 'outer', hitX: 0.70, zone: 0.90 }
     ];
     var wideQuery = window.matchMedia('(min-width: 1001px)');
@@ -680,6 +682,7 @@
         t.paintSpan = Math.max(120, t.cardTop + vh0 * 0.60 - t.hitY);
         t.zoneY = bannerBox.y + 8;
         t.zoneSpan = vh0 * 0.55;
+        t.startY = t.table[0].y;
         t.endY = t.table[t.table.length - 1].y;
         t.el.style.strokeDashoffset = 0;
         t.el.style.strokeDasharray = reduceMotion.matches
@@ -732,12 +735,25 @@
 
         st.head = Math.max(st.head, lengthAtY(t.table, targetY) / t.len);
 
-        /* Läuft die Leseposition am Pfadende vorbei, zieht das Band den
-           Faden nach: das Ende wandert nach und der Faden verschwindet darin.
-           Bewusst nur aus der Leseposition abgeleitet, ohne Scroll-Historie –
-           dadurch stimmt es auch bei Deep-Link und bei Reload auf halber
-           Höhe, wo der Browser die Position erst nachträglich herstellt. */
-        st.tail = Math.max(st.tail, clamp01((targetY - t.endY) / (vh * 0.9)));
+        /* Das Band zieht den Faden in sich hinein: das Ende wandert den Pfad
+           entlang von oben nach unten, und zwar im selben Fenster, in dem sich
+           die Farbe im Abteil ausbreitet – es sieht aus, als liefe die Farbe
+           aus dem Faden ins Band über.
+
+           ⚠️ Das Ende wird über eine Y-Position geführt, nicht über die
+           Bogenlänge, und die Kurve ist bewusst ungleichmäßig (Wurzel): die
+           weit oben liegenden Abschnitte sind längst aus dem Bild und werden
+           zügig eingezogen, der sichtbare Rest über dem Band läuft langsam
+           hinein. Linear verteilt lag der sichtbare Teil in den letzten
+           Prozenten – das Einlaufen passierte dann erst, wenn das Band schon
+           oben aus dem Bild gescrollt war, und der Faden wirkte beim
+           Zurückscrollen einfach verschwunden.
+
+           Nur aus der Leseposition abgeleitet, ohne Scroll-Historie – dadurch
+           stimmt es auch bei Deep-Link und bei Reload auf halber Höhe. */
+        var u = clamp01((targetY - t.zoneY) / t.zoneSpan);
+        var tailY = t.startY + (t.endY - t.startY) * Math.pow(u, 0.30);
+        st.tail = Math.max(st.tail, lengthAtY(t.table, tailY) / t.len);
 
         var a = st.tail * t.len, b = st.head * t.len;
         t.el.style.strokeDasharray = '0 ' + a.toFixed(1) + ' ' +
